@@ -50,7 +50,7 @@ namespace Compilador.parser._3d.ast
                 }
             }
 
-            //global.Recorrer();
+            
             
             for (int i = 0; i < Instrucciones.Count(); i++)
             {
@@ -72,6 +72,9 @@ namespace Compilador.parser._3d.ast
                     }
                 }
             }
+            Console.WriteLine("\n");
+            global.Recorrer();
+            Console.WriteLine("\n");
         }
     }
 }

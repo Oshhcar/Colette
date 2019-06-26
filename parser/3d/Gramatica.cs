@@ -24,17 +24,17 @@ namespace Compilador.parser._3d
                 goto_ = ToTerm("goto"),
                 if_ = ToTerm("if"),
                 ifFalse_ = ToTerm("ifFalse"),
-                void_ = ToTerm("void"),
+                proc_ = ToTerm("proc"),
                 begin_ = ToTerm("begin"),
                 end_ = ToTerm("end"),
                 call_ = ToTerm("call"),
                 print_ = ToTerm("print"),
                 c_ = ToTerm("c"),
-                e_ = ToTerm("e"),
-                d_ = ToTerm("d");
+                i_ = ToTerm("i"),
+                f_ = ToTerm("f");
 
-            MarkReservedWords("var", "goto", "if", "ifFalse", "void", "begin", "end", "call", "print",
-                "c", "e", "d");
+            MarkReservedWords("var", "goto", "if", "ifFalse", "proc", "begin", "end", "call", "print",
+                "c", "i", "f");
 
             /* Arithmetic Operators*/
             KeyTerm
@@ -122,15 +122,15 @@ namespace Compilador.parser._3d
             IF.Rule = if_ + leftPar + E + rightPar + goto_ + label
                     | ifFalse_ + leftPar + E + rightPar + goto_ + label;
 
-            METHOD.Rule = void_ + id + leftPar + rightPar + begin_ + BLOCKS + end_;
+            METHOD.Rule = proc_ + id + leftPar + rightPar + begin_ + BLOCKS + end_;
 
             CALL.Rule = call_ + id;
 
             PRINT.Rule = print_ + leftPar + quotes + modulo + CHART + quotes + comma + id + rightPar;
 
             CHART.Rule = c_
-                        | e_
-                        | d_;
+                        | i_
+                        | f_;
 
             DECLARATION.Rule = var_ + IDENTIFIER_LIST
                             | var_ + id + equal + E

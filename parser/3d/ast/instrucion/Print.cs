@@ -26,14 +26,20 @@ namespace Compilador.parser._3d.ast.instrucion
             {
                 if (sim.Tipo == Tipo.NUMERO)
                 {
-                    int valor = Convert.ToInt32(sim.Valor);
                     if (Char.Equals("c"))
                     {
-                        Console.WriteLine((char) valor);
+                        int valor = Convert.ToInt32(sim.Valor);
+                        Console.Write((char)valor);
                     }
+                    else if(Char.Equals("i"))
+                    {
+                        int valor = Convert.ToInt32(sim.Valor);
+                        Console.Write(valor);
+                    } 
                     else
                     {
-                        Console.WriteLine(valor);
+                        double valor = Convert.ToDouble(sim.Valor);
+                        Console.Write(valor);
                     }
                 }
                 else

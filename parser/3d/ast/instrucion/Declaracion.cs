@@ -72,7 +72,8 @@ namespace Compilador.parser._3d.ast.instrucion
                     }
                     else
                     {
-                        e.AddSimbolo(new Simbolo(Id, new int[10000], Tipo.ARREGLO));
+                        //Validar que solo al heap y al stack se le den valores altos.
+                        e.AddSimbolo(new Simbolo(Id, new double[10000], Tipo.ARREGLO));
                     }
                 }
                 else

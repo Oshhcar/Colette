@@ -78,7 +78,6 @@
     <Compile Include="parser\3d\ast\instrucion\Salto.cs" />
     <Compile Include="parser\3d\ast\instrucion\SaltoCond.cs" />
     <Compile Include="parser\3d\ast\NodoAST.cs" />
-    <Compile Include="parser\3d\Constantes.cs" />
     <Compile Include="parser\3d\Gramatica.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

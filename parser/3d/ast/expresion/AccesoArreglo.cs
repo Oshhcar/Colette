@@ -37,8 +37,8 @@ namespace Compilador.parser._3d.ast.expresion
                                 Object valorPosicion = Posicion.GetValor();
                                 if (sim.Tipo == Tipo.ARREGLO)
                                 {
-                                    int[] sArray = sim.Valor as int[];
-                                    valor = sArray[Convert.ToInt32(valorPosicion.ToString())];
+                                    double[] sArray = sim.Valor as double[];
+                                    valor = sArray[Convert.ToInt32(valorPosicion)];
                                     return Tipo.NUMERO;
                                 }
                                 else

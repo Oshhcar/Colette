@@ -61,8 +61,8 @@ namespace Compilador.parser._3d.ast.instrucion
                                         Object valorPosicion = Posicion.GetValor();
                                         if (sim.Tipo == Tipo.ARREGLO)
                                         {
-                                            int[] sArray = sim.Valor as int[];
-                                            sArray[Convert.ToInt32(valorPosicion.ToString())] = Convert.ToInt32(Valor.GetValor().ToString()); ;
+                                            double[] sArray = sim.Valor as double[];
+                                            sArray[Convert.ToInt32(valorPosicion)] = Convert.ToDouble(Valor.GetValor());
                                         }
                                         else
                                         {
