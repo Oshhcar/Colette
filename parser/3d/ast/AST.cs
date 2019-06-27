@@ -73,8 +73,8 @@ namespace Compilador.parser._3d.ast
                 }
             }
             Console.WriteLine("\n");
-            global.Recorrer();
-            Console.WriteLine("\n");
+            //global.Recorrer();
+            //Console.WriteLine("\n");
         }
     }
 }

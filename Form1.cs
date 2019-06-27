@@ -1,5 +1,6 @@
 ﻿using Compilador.parser._3d;
 using Compilador.parser._3d.ast;
+using Compilador.parser.Collete;
 using Irony.Parsing;
 using System;
 using System.Collections.Generic;
@@ -131,8 +132,8 @@ namespace Compilador
             {
                 writer.WriteLine("<tr>");
                 writer.WriteLine("<td>" + raiz.ParserMessages.ElementAt(i).Level.ToString() + "</td>");
-                writer.WriteLine("<td>" + raiz.ParserMessages.ElementAt(i).Location.Line + "</td>");
-                writer.WriteLine("<td>" + raiz.ParserMessages.ElementAt(i).Location.Column + "</td>");
+                writer.WriteLine("<td>" + (raiz.ParserMessages.ElementAt(i).Location.Line+1) + "</td>");
+                writer.WriteLine("<td>" + (raiz.ParserMessages.ElementAt(i).Location.Column+1) + "</td>");
                 writer.WriteLine("<td>" + raiz.ParserMessages.ElementAt(i).Message + "</td>");
                 writer.WriteLine("</tr>");
             }
@@ -159,6 +160,54 @@ namespace Compilador
                     MessageBox.Show("Archivo sin errores.");
                     AST ast = (AST)analizador.GenerarAST(analizador.Raiz.Root);
                     ast.ejecutar();
+
+                }
+                else
+                {
+                    MessageBox.Show("El archivo tiene errores.");
+                    this.ReporteErrores(analizador.Raiz);
+                }
+            }
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            if (!rtb_entrada.Text.Equals(string.Empty))
+            {
+
+                AnalizadorCollete analizador = new AnalizadorCollete();
+                string entrada = this.rtb_entrada.Text;//.Replace("\\", "\\\\");
+                
+                if (analizador.AnalizarEntrada(entrada))
+                {
+                    MessageBox.Show("Archivo sin errores.");
+
+                }
+                else
+                {
+                    MessageBox.Show("El archivo tiene errores.");
+                    this.ReporteErrores(analizador.Raiz);
+                }
+            }
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            if (!rtb_entrada.Text.Equals(string.Empty))
+            {
+
+                AnalizadorCollete analizador = new AnalizadorCollete();
+                string entrada = this.rtb_entrada.Text.Replace("\\", "\\\\");
+
+                if (analizador.AnalizarEntrada(entrada))
+                {
+                    if (analizador.Raiz.ParserMessages.Count > 0)
+                    {
+                        MessageBox.Show("El archivo tiene errores.");
+                        this.ReporteErrores(analizador.Raiz);
+                    }
+
+                    GraficarArbol(analizador.Raiz.Root);
 
                 }
                 else
