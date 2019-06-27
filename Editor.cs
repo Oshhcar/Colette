@@ -54,6 +54,31 @@ namespace Compilador
             CerrarTodo();
         }
 
+        private void DeshacerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UndoArchivo();
+        }
+
+        private void CopiarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CopiarArchivo();
+        }
+
+        private void PegarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PegarArchivo();
+        }
+
+        private void CortarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CortarArchivo();
+        }
+
+        private void SeleccionarTodoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SeleccionarTodo();
+        }
+
         private void NuevoArchivo()
         {
             TabPage nPage = MakeTextPane(null);
@@ -326,6 +351,72 @@ namespace Compilador
 
         }
 
-        
+        private void UndoArchivo()
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                FastColoredTextBox ctbArchivo = (FastColoredTextBox)sPage.Controls[0];
+
+                ctbArchivo.Undo();
+                //ctbArchivo.ClearUndo();
+            }
+        }
+
+        private void CopiarArchivo()
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                FastColoredTextBox ctbArchivo = (FastColoredTextBox)sPage.Controls[0];
+
+                if (!ctbArchivo.Selection.Text.Equals(""))
+                {
+                    ctbArchivo.Copy();
+                }
+            }
+        }
+
+        private void PegarArchivo()
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                FastColoredTextBox ctbArchivo = (FastColoredTextBox)sPage.Controls[0];
+
+                if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text))
+                {
+                    ctbArchivo.Paste();
+                }
+            }
+        }
+
+        private void CortarArchivo()
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                FastColoredTextBox ctbArchivo = (FastColoredTextBox)sPage.Controls[0];
+
+                if (!ctbArchivo.Selection.Text.Equals(""))
+                {
+                    ctbArchivo.Cut();
+                }
+            }
+        }
+
+        private void SeleccionarTodo()
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                FastColoredTextBox ctbArchivo = (FastColoredTextBox)sPage.Controls[0];
+
+                if (!ctbArchivo.Text.Equals(""))
+                {
+                    ctbArchivo.SelectAll();
+                }
+            }
+        }
     }
 }
