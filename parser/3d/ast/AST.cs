@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Compilador.parser._3d.ast
 {
@@ -18,7 +19,7 @@ namespace Compilador.parser._3d.ast
 
         public LinkedList<Instruccion> Instrucciones { get; set; }
 
-        public void ejecutar()
+        public void ejecutar(TextBox salida)
         {
             Entorno global = new Entorno();
 
@@ -26,9 +27,9 @@ namespace Compilador.parser._3d.ast
             {
                 Instruccion instruccion = Instrucciones.ElementAt(i);
 
-                if (instruccion is Label)
+                if (instruccion is Etiqueta)
                 {
-                    Label label = (Label)instruccion;
+                    Etiqueta label = (Etiqueta)instruccion;
                     label.I = i;
                     label.Ejecutar(global);
                 }
@@ -40,9 +41,9 @@ namespace Compilador.parser._3d.ast
                     for (int j = 0; j < bloques.Count(); j++)
                     {
                         Instruccion bloque = bloques.ElementAt(j);
-                        if (bloque is Label)
+                        if (bloque is Etiqueta)
                         {
-                            Label labelJ = (Label)bloque;
+                            Etiqueta labelJ = (Etiqueta)bloque;
                             labelJ.I = j;
                             labelJ.Ejecutar(global);
                         }
@@ -56,11 +57,17 @@ namespace Compilador.parser._3d.ast
             {
                 Instruccion instruccion = Instrucciones.ElementAt(i);
 
-                if (!(instruccion is Label) && !(instruccion is Metodo))
+                if (!(instruccion is Etiqueta) && !(instruccion is Metodo))
                 {
                     if (!(instruccion is Salto) && !(instruccion is SaltoCond))
                     {
+                        if (instruccion is Print)
+                        {
+                            ((Print)instruccion).Output = salida;
+                        }
+
                         instruccion.Ejecutar(global);
+                        
                     }
                     else
                     {

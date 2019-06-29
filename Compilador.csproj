@@ -81,7 +81,7 @@
     <Compile Include="parser\3d\ast\instrucion\Call.cs" />
     <Compile Include="parser\3d\ast\instrucion\Declaracion.cs" />
     <Compile Include="parser\3d\ast\instrucion\Instruccion.cs" />
-    <Compile Include="parser\3d\ast\instrucion\Label.cs" />
+    <Compile Include="parser\3d\ast\instrucion\Etiqueta.cs" />
     <Compile Include="parser\3d\ast\instrucion\Metodo.cs" />
     <Compile Include="parser\3d\ast\instrucion\Print.cs" />
     <Compile Include="parser\3d\ast\instrucion\Salto.cs" />

@@ -28,11 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle71 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle75 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle72 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle73 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle74 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Editor));
             this.menuPrincipal = new System.Windows.Forms.MenuStrip();
             this.subMenuArchivo = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemNuevo = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,27 +43,34 @@
             this.cerrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cerrarTodoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deshacerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cortarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copiarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pegarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.seleccionarTodoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.coletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.traducirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.c3DToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ejecutarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitBottom = new System.Windows.Forms.Splitter();
             this.tabArchivo = new System.Windows.Forms.TabControl();
             this.pageErrores = new System.Windows.Forms.TabPage();
-            this.gridGrammarErrors = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.gridErrors = new System.Windows.Forms.DataGridView();
             this.pageSalida = new System.Windows.Forms.TabPage();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.tabSalida = new System.Windows.Forms.TabControl();
             this.lbLinea = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.deshacerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copiarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pegarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cortarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.seleccionarTodoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuPrincipal.SuspendLayout();
             this.pageErrores.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridGrammarErrors)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridErrors)).BeginInit();
             this.pageSalida.SuspendLayout();
             this.tabSalida.SuspendLayout();
             this.SuspendLayout();
@@ -72,7 +80,10 @@
             this.menuPrincipal.BackColor = System.Drawing.SystemColors.Control;
             this.menuPrincipal.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.subMenuArchivo,
-            this.editarToolStripMenuItem});
+            this.editarToolStripMenuItem,
+            this.coletteToolStripMenuItem,
+            this.c3DToolStripMenuItem,
+            this.ayudaToolStripMenuItem});
             this.menuPrincipal.Location = new System.Drawing.Point(0, 0);
             this.menuPrincipal.Name = "menuPrincipal";
             this.menuPrincipal.Size = new System.Drawing.Size(1022, 24);
@@ -154,6 +165,91 @@
             this.editarToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
             this.editarToolStripMenuItem.Text = "Editar";
             // 
+            // deshacerToolStripMenuItem
+            // 
+            this.deshacerToolStripMenuItem.Name = "deshacerToolStripMenuItem";
+            this.deshacerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.deshacerToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.deshacerToolStripMenuItem.Text = "Deshacer";
+            this.deshacerToolStripMenuItem.Click += new System.EventHandler(this.DeshacerToolStripMenuItem_Click);
+            // 
+            // cortarToolStripMenuItem
+            // 
+            this.cortarToolStripMenuItem.Name = "cortarToolStripMenuItem";
+            this.cortarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.cortarToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.cortarToolStripMenuItem.Text = "Cortar";
+            this.cortarToolStripMenuItem.Click += new System.EventHandler(this.CortarToolStripMenuItem_Click);
+            // 
+            // copiarToolStripMenuItem
+            // 
+            this.copiarToolStripMenuItem.Name = "copiarToolStripMenuItem";
+            this.copiarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.copiarToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.copiarToolStripMenuItem.Text = "Copiar";
+            this.copiarToolStripMenuItem.Click += new System.EventHandler(this.CopiarToolStripMenuItem_Click);
+            // 
+            // pegarToolStripMenuItem
+            // 
+            this.pegarToolStripMenuItem.Name = "pegarToolStripMenuItem";
+            this.pegarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.pegarToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.pegarToolStripMenuItem.Text = "Pegar";
+            this.pegarToolStripMenuItem.Click += new System.EventHandler(this.PegarToolStripMenuItem_Click);
+            // 
+            // seleccionarTodoToolStripMenuItem
+            // 
+            this.seleccionarTodoToolStripMenuItem.Name = "seleccionarTodoToolStripMenuItem";
+            this.seleccionarTodoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.seleccionarTodoToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.seleccionarTodoToolStripMenuItem.Text = "Seleccionar Todo";
+            this.seleccionarTodoToolStripMenuItem.Click += new System.EventHandler(this.SeleccionarTodoToolStripMenuItem_Click);
+            // 
+            // coletteToolStripMenuItem
+            // 
+            this.coletteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.traducirToolStripMenuItem});
+            this.coletteToolStripMenuItem.Name = "coletteToolStripMenuItem";
+            this.coletteToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+            this.coletteToolStripMenuItem.Text = "Colette";
+            // 
+            // traducirToolStripMenuItem
+            // 
+            this.traducirToolStripMenuItem.Name = "traducirToolStripMenuItem";
+            this.traducirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.traducirToolStripMenuItem.Text = "Traducir";
+            this.traducirToolStripMenuItem.Click += new System.EventHandler(this.TraducirToolStripMenuItem_Click);
+            // 
+            // c3DToolStripMenuItem
+            // 
+            this.c3DToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ejecutarToolStripMenuItem});
+            this.c3DToolStripMenuItem.Name = "c3DToolStripMenuItem";
+            this.c3DToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+            this.c3DToolStripMenuItem.Text = "C3D";
+            // 
+            // ejecutarToolStripMenuItem
+            // 
+            this.ejecutarToolStripMenuItem.Name = "ejecutarToolStripMenuItem";
+            this.ejecutarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ejecutarToolStripMenuItem.Text = "Ejecutar";
+            this.ejecutarToolStripMenuItem.Click += new System.EventHandler(this.EjecutarToolStripMenuItem_Click);
+            // 
+            // ayudaToolStripMenuItem
+            // 
+            this.ayudaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.acercaDeToolStripMenuItem});
+            this.ayudaToolStripMenuItem.Name = "ayudaToolStripMenuItem";
+            this.ayudaToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.ayudaToolStripMenuItem.Text = "Ayuda";
+            // 
+            // acercaDeToolStripMenuItem
+            // 
+            this.acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
+            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.acercaDeToolStripMenuItem.Text = "Acerca de";
+            this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.AcercaDeToolStripMenuItem_Click);
+            // 
             // splitBottom
             // 
             this.splitBottom.BackColor = System.Drawing.SystemColors.Control;
@@ -176,7 +272,7 @@
             // 
             // pageErrores
             // 
-            this.pageErrores.Controls.Add(this.gridGrammarErrors);
+            this.pageErrores.Controls.Add(this.gridErrors);
             this.pageErrores.Location = new System.Drawing.Point(4, 22);
             this.pageErrores.Name = "pageErrores";
             this.pageErrores.Padding = new System.Windows.Forms.Padding(3);
@@ -185,75 +281,42 @@
             this.pageErrores.Text = "Errores";
             this.pageErrores.UseVisualStyleBackColor = true;
             // 
-            // gridGrammarErrors
+            // gridErrors
             // 
-            this.gridGrammarErrors.AllowUserToAddRows = false;
-            this.gridGrammarErrors.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle71.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle71.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle71.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle71.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle71.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle71.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle71.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridGrammarErrors.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle71;
-            this.gridGrammarErrors.ColumnHeadersHeight = 24;
-            this.gridGrammarErrors.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.gridGrammarErrors.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.gridErrors.AllowUserToAddRows = false;
+            this.gridErrors.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridErrors.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.gridErrors.ColumnHeadersHeight = 24;
+            this.gridErrors.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.gridErrors.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn5,
-            this.dataGridViewTextBoxColumn6});
-            dataGridViewCellStyle75.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle75.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle75.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle75.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle75.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle75.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle75.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridGrammarErrors.DefaultCellStyle = dataGridViewCellStyle75;
-            this.gridGrammarErrors.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridGrammarErrors.Location = new System.Drawing.Point(3, 3);
-            this.gridGrammarErrors.MultiSelect = false;
-            this.gridGrammarErrors.Name = "gridGrammarErrors";
-            this.gridGrammarErrors.ReadOnly = true;
-            this.gridGrammarErrors.RowHeadersVisible = false;
-            this.gridGrammarErrors.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.gridGrammarErrors.Size = new System.Drawing.Size(1008, 155);
-            this.gridGrammarErrors.TabIndex = 3;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            dataGridViewCellStyle72.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle72;
-            this.dataGridViewTextBoxColumn2.HeaderText = "Error Level";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dataGridViewTextBoxColumn2.ToolTipText = "Double-click grid cell to locate in source code";
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            dataGridViewCellStyle73.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn5.DefaultCellStyle = dataGridViewCellStyle73;
-            this.dataGridViewTextBoxColumn5.HeaderText = "Description";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.ReadOnly = true;
-            this.dataGridViewTextBoxColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dataGridViewTextBoxColumn5.Width = 800;
-            // 
-            // dataGridViewTextBoxColumn6
-            // 
-            this.dataGridViewTextBoxColumn6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn6.DataPropertyName = "State";
-            dataGridViewCellStyle74.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.dataGridViewTextBoxColumn6.DefaultCellStyle = dataGridViewCellStyle74;
-            this.dataGridViewTextBoxColumn6.HeaderText = "Parser State";
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.ReadOnly = true;
-            this.dataGridViewTextBoxColumn6.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn6.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dataGridViewTextBoxColumn6.ToolTipText = "Double-click grid cell to navigate to state details";
-            this.dataGridViewTextBoxColumn6.Width = 71;
+            this.dataGridViewTextBoxColumn3,
+            this.dataGridViewTextBoxColumn4});
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridErrors.DefaultCellStyle = dataGridViewCellStyle5;
+            this.gridErrors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridErrors.Location = new System.Drawing.Point(3, 3);
+            this.gridErrors.MultiSelect = false;
+            this.gridErrors.Name = "gridErrors";
+            this.gridErrors.ReadOnly = true;
+            this.gridErrors.RowHeadersVisible = false;
+            this.gridErrors.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.gridErrors.Size = new System.Drawing.Size(1008, 155);
+            this.gridErrors.TabIndex = 3;
             // 
             // pageSalida
             // 
@@ -294,9 +357,9 @@
             this.lbLinea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbLinea.BackColor = System.Drawing.SystemColors.Control;
-            this.lbLinea.Location = new System.Drawing.Point(125, 0);
+            this.lbLinea.Location = new System.Drawing.Point(281, 0);
             this.lbLinea.Name = "lbLinea";
-            this.lbLinea.Size = new System.Drawing.Size(890, 22);
+            this.lbLinea.Size = new System.Drawing.Size(734, 22);
             this.lbLinea.TabIndex = 26;
             this.lbLinea.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
@@ -307,45 +370,45 @@
             this.openFileDialog1.Tag = "collete, txt";
             this.openFileDialog1.Title = "Abrir Archivo";
             // 
-            // deshacerToolStripMenuItem
+            // dataGridViewTextBoxColumn1
             // 
-            this.deshacerToolStripMenuItem.Name = "deshacerToolStripMenuItem";
-            this.deshacerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.deshacerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.deshacerToolStripMenuItem.Text = "Deshacer";
-            this.deshacerToolStripMenuItem.Click += new System.EventHandler(this.DeshacerToolStripMenuItem_Click);
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridViewTextBoxColumn1.HeaderText = "Valor";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.dataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dataGridViewTextBoxColumn1.ToolTipText = "Double-click grid cell to locate in source code";
             // 
-            // copiarToolStripMenuItem
+            // dataGridViewTextBoxColumn2
             // 
-            this.copiarToolStripMenuItem.Name = "copiarToolStripMenuItem";
-            this.copiarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copiarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.copiarToolStripMenuItem.Text = "Copiar";
-            this.copiarToolStripMenuItem.Click += new System.EventHandler(this.CopiarToolStripMenuItem_Click);
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridViewTextBoxColumn2.HeaderText = "Descripción";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.dataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dataGridViewTextBoxColumn2.Width = 800;
             // 
-            // pegarToolStripMenuItem
+            // dataGridViewTextBoxColumn3
             // 
-            this.pegarToolStripMenuItem.Name = "pegarToolStripMenuItem";
-            this.pegarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.pegarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.pegarToolStripMenuItem.Text = "Pegar";
-            this.pegarToolStripMenuItem.Click += new System.EventHandler(this.PegarToolStripMenuItem_Click);
+            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn3.DataPropertyName = "State";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.dataGridViewTextBoxColumn3.DefaultCellStyle = dataGridViewCellStyle4;
+            this.dataGridViewTextBoxColumn3.HeaderText = "Línea";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            this.dataGridViewTextBoxColumn3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumn3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dataGridViewTextBoxColumn3.ToolTipText = "Double-click grid cell to navigate to state details";
+            this.dataGridViewTextBoxColumn3.Width = 41;
             // 
-            // cortarToolStripMenuItem
+            // dataGridViewTextBoxColumn4
             // 
-            this.cortarToolStripMenuItem.Name = "cortarToolStripMenuItem";
-            this.cortarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.cortarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.cortarToolStripMenuItem.Text = "Cortar";
-            this.cortarToolStripMenuItem.Click += new System.EventHandler(this.CortarToolStripMenuItem_Click);
-            // 
-            // seleccionarTodoToolStripMenuItem
-            // 
-            this.seleccionarTodoToolStripMenuItem.Name = "seleccionarTodoToolStripMenuItem";
-            this.seleccionarTodoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.seleccionarTodoToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.seleccionarTodoToolStripMenuItem.Text = "Seleccionar Todo";
-            this.seleccionarTodoToolStripMenuItem.Click += new System.EventHandler(this.SeleccionarTodoToolStripMenuItem_Click);
+            this.dataGridViewTextBoxColumn4.HeaderText = "Columna";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.ReadOnly = true;
             // 
             // Editor
             // 
@@ -357,14 +420,15 @@
             this.Controls.Add(this.splitBottom);
             this.Controls.Add(this.tabSalida);
             this.Controls.Add(this.menuPrincipal);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuPrincipal;
             this.Name = "Editor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Editor";
+            this.Text = "Colette IDE";
             this.menuPrincipal.ResumeLayout(false);
             this.menuPrincipal.PerformLayout();
             this.pageErrores.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridGrammarErrors)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridErrors)).EndInit();
             this.pageSalida.ResumeLayout(false);
             this.pageSalida.PerformLayout();
             this.tabSalida.ResumeLayout(false);
@@ -381,10 +445,7 @@
         private System.Windows.Forms.Splitter splitBottom;
         private System.Windows.Forms.TabControl tabArchivo;
         private System.Windows.Forms.TabPage pageErrores;
-        private System.Windows.Forms.DataGridView gridGrammarErrors;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
+        private System.Windows.Forms.DataGridView gridErrors;
         private System.Windows.Forms.TabPage pageSalida;
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.TabControl tabSalida;
@@ -402,5 +463,15 @@
         private System.Windows.Forms.ToolStripMenuItem pegarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cortarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem seleccionarTodoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem coletteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem c3DToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ayudaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem acercaDeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ejecutarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem traducirToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
     }
 }

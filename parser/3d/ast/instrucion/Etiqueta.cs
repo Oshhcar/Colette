@@ -7,9 +7,9 @@ using Compilador.parser._3d.ast.entorno;
 
 namespace Compilador.parser._3d.ast.instrucion
 {
-    class Label : Instruccion
+    class Etiqueta : Instruccion
     {
-        public Label(string label, int linea, int columna) : base(linea, columna)
+        public Etiqueta(string label, int linea, int columna) : base(linea, columna)
         {
             Label_ = label;
             I = 0;

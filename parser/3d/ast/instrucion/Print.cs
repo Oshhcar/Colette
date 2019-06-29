@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Compilador.parser._3d.ast.entorno;
 
 namespace Compilador.parser._3d.ast.instrucion
@@ -13,10 +14,13 @@ namespace Compilador.parser._3d.ast.instrucion
         {
             Char = char_;
             Id = id;
+            Output = null;
         }
 
         public string Char { get; set; }
         public string Id { get; set; }
+
+        public TextBox Output { get; set; }
 
         public override object Ejecutar(Entorno e)
         {
@@ -26,20 +30,26 @@ namespace Compilador.parser._3d.ast.instrucion
             {
                 if (sim.Tipo == Tipo.NUMERO)
                 {
-                    if (Char.Equals("c"))
+                    if (Output != null)
                     {
-                        int valor = Convert.ToInt32(sim.Valor);
-                        Console.Write((char)valor);
-                    }
-                    else if(Char.Equals("i"))
-                    {
-                        int valor = Convert.ToInt32(sim.Valor);
-                        Console.Write(valor);
-                    } 
-                    else
-                    {
-                        double valor = Convert.ToDouble(sim.Valor);
-                        Console.Write(valor);
+                        if (Char.Equals("c"))
+                        {
+                            int valor = Convert.ToInt32(sim.Valor);
+                            Output.Text += (char)valor;
+                            //Console.Write((char)valor);
+                        }
+                        else if (Char.Equals("i"))
+                        {
+                            int valor = Convert.ToInt32(sim.Valor);
+                            Output.Text += valor;
+                            //Console.Write(valor);
+                        }
+                        else
+                        {
+                            double valor = Convert.ToDouble(sim.Valor);
+                            Output.Text += valor;
+                            //Console.Write(valor);
+                        }
                     }
                 }
                 else

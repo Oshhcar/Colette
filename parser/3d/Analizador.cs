@@ -97,7 +97,7 @@ namespace Compilador.parser._3d
                 case "LABEL":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
-                    return new Label(hijos[0].Token.Text, linea, columna);
+                    return new Etiqueta(hijos[0].Token.Text, linea, columna);
                 case "GOTO":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;

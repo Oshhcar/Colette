@@ -51,7 +51,7 @@ namespace Compilador.parser.Collete
                 SENTENCIAS = new NonTerminal("SENTENCIAS"),
                 SENTENCIA = new NonTerminal("SENTENCIA");
 
-            this.Root = INICIO;
+            this.Root = INICIO; 
 
             INICIO.Rule = INSTRUCCIONES;
 
@@ -61,13 +61,13 @@ namespace Compilador.parser.Collete
 
             CLASE.Rule = class_ + id + colon + Eos + BLOQUE ;
 
-            PRINT.Rule = print_ + leftPar + rightPar;
-
             BLOQUE.Rule = Indent + SENTENCIAS + Dedent;
 
             SENTENCIAS.Rule = MakePlusRule(SENTENCIAS, SENTENCIA);
 
             SENTENCIA.Rule = PRINT + Eos;
+
+            PRINT.Rule = print_ + leftPar + rightPar;
 
             //LanguageFlags = LanguageFlags.NewLineBeforeEOF;
 

@@ -159,7 +159,7 @@ namespace Compilador
                 {
                     MessageBox.Show("Archivo sin errores.");
                     AST ast = (AST)analizador.GenerarAST(analizador.Raiz.Root);
-                    ast.ejecutar();
+                    //ast.ejecutar(null);
 
                 }
                 else

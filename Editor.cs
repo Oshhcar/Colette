@@ -1,4 +1,9 @@
-﻿using FastColoredTextBoxNS;
+﻿using Compilador.parser._3d;
+using Compilador.parser._3d.ast;
+using Compilador.parser.Collete;
+using FastColoredTextBoxNS;
+using Irony;
+using Irony.Parsing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -79,10 +84,25 @@ namespace Compilador
             SeleccionarTodo();
         }
 
+        private void AcercaDeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Colette 2019\nOscar Morales\noskralberto14@gmail.com", "Acerca de");
+        }
+
+        private void EjecutarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Ejecutar3D();
+        }
+
+        private void TraducirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TraducirColette();
+        }
+
         private void NuevoArchivo()
         {
             TabPage nPage = MakeTextPane(null);
-            nPage.Text = "nuevo" + Archivo + ".collete";
+            nPage.Text = "nuevo" + Archivo + ".colette";
 
             tabArchivo.Controls.Add(nPage);
             tabArchivo.SelectedTab = nPage;
@@ -100,6 +120,7 @@ namespace Compilador
 
         private TabPage MakeTextPane(string path)
         {
+            
             FastColoredTextBox ctbArchivo = new FastColoredTextBox();
             ctbArchivo.BorderStyle = BorderStyle.Fixed3D;
             ctbArchivo.AutoScrollMinSize = new Size(25, 15);
@@ -108,9 +129,33 @@ namespace Compilador
             ctbArchivo.IndentBackColor = Color.LightGray;
             ctbArchivo.LineNumberColor = Color.Black;
             ctbArchivo.SelectionChanged += ColoredTextBox_SelectionChanged;
-            
+
+            TabControl tab = new TabControl();
+
+            TabPage c3d = new TabPage();
+            c3d.Text = "Código 3d";
+            FastColoredTextBox ctb3D = new FastColoredTextBox();
+            ctb3D.BorderStyle = BorderStyle.Fixed3D;
+            ctb3D.AutoScrollMinSize = new Size(25,15);
+            ctb3D.Dock = DockStyle.Fill;
+            ctb3D.Language = Language.Custom;
+            ctb3D.SelectionChanged += ColoredTextBox_SelectionChanged;
+            c3d.Controls.Add(ctb3D);
+            tab.Controls.Add(c3d);
+
+            TabPage AST = new TabPage();
+            AST.Text = "AST";
+            tab.Controls.Add(AST);
+            tab.Dock = DockStyle.Right;
+
+            Splitter sp = new Splitter();
+            sp.Dock = DockStyle.Right;
+            sp.Cursor = Cursors.VSplit;
+
             TabPage nPage = new TabPage();
             nPage.Controls.Add(ctbArchivo);
+            nPage.Controls.Add(sp);
+            nPage.Controls.Add(tab);
 
             if (path == null)
             {
@@ -144,11 +189,11 @@ namespace Compilador
 
         private void AbrirArchivo()
         {
-            openFileDialog1.Filter = "Archivos de collete(*.collete) | *.collete| Todos los archivos(*.*)| *.*";
+            openFileDialog1.Filter = "Archivos de colette(*.colette) | *.colette| Todos los archivos(*.*)| *.*";
             if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
             /*Limpiar salida*/
 
-            if (Path.GetExtension(openFileDialog1.FileName).ToLower().Equals(".collete"))
+            if (Path.GetExtension(openFileDialog1.FileName).ToLower().Equals(".colette"))
             {
                 int i = tabArchivo.SelectedIndex;
                 if (i != -1)
@@ -163,7 +208,7 @@ namespace Compilador
             }
             else
             {
-                MessageBox.Show("La extensión del archivo debe ser .collete.", "Error");
+                MessageBox.Show("La extensión del archivo debe ser .colette.", "Error");
                 AbrirArchivo();
             }
         }
@@ -258,11 +303,11 @@ namespace Compilador
                 TabPage sPage = tabArchivo.SelectedTab;
                 FastColoredTextBox ctbArchivo = (FastColoredTextBox)sPage.Controls[0];
 
-                saveFileDialog1.Filter = "Archivos de collete(*.collete) | *.collete| Todos los archivos(*.*)| *.*";
+                saveFileDialog1.Filter = "Archivos de collete(*.colette) | *.colette| Todos los archivos(*.*)| *.*";
                 saveFileDialog1.FileName = sPage.Text;
                 if (saveFileDialog1.ShowDialog() != DialogResult.OK) return;
 
-                if (Path.GetExtension(saveFileDialog1.FileName).ToLower().Equals(".collete"))
+                if (Path.GetExtension(saveFileDialog1.FileName).ToLower().Equals(".colette"))
                 {
                     StreamWriter writer = null;
 
@@ -291,7 +336,7 @@ namespace Compilador
                 }
                 else
                 {
-                    MessageBox.Show("La extensión del archivo debe ser .collete.", "Error");
+                    MessageBox.Show("La extensión del archivo debe ser .colette.", "Error");
                 }
 
             }
@@ -418,5 +463,88 @@ namespace Compilador
                 }
             }
         }
+
+        private void Ejecutar3D()
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                TabControl tControl = (TabControl) sPage.Controls[2];
+
+                TabPage sPage3d = tControl.TabPages[0];
+                FastColoredTextBox ctb3D = (FastColoredTextBox)sPage3d.Controls[0];
+
+                if (!ctb3D.Text.Equals(string.Empty)) {
+                    Analizador analizador = new Analizador();
+                    string entrada = ctb3D.Text;//.Replace("\\", "\\\\");
+
+                    if (analizador.AnalizarEntrada(entrada))
+                    {
+                        MessageBox.Show("Archivo sin errores.");
+                        ReporteErrores(analizador.Raiz);
+                        tabSalida.SelectedIndex = 0;
+                        txtOutput.Clear();
+                        AST ast = (AST)analizador.GenerarAST(analizador.Raiz.Root);
+                        ast.ejecutar(this.txtOutput);
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("El archivo tiene errores.");
+                        tabSalida.SelectedIndex = 1;
+                        ReporteErrores(analizador.Raiz);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No ha traducido un archivo colette.", "Error");
+            }
+            
+        }
+
+        private void TraducirColette()
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                FastColoredTextBox ctbArchivo = (FastColoredTextBox)sPage.Controls[0];
+
+                if (!ctbArchivo.Text.Equals(string.Empty))
+                {
+                    AnalizadorCollete analizador = new AnalizadorCollete();
+                    string entrada = ctbArchivo.Text;//.Replace("\\", "\\\\");
+
+                    if (analizador.AnalizarEntrada(entrada))
+                    {
+                        MessageBox.Show("Archivo sin errores.");
+                        ReporteErrores(analizador.Raiz);
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("El archivo tiene errores.");
+                        tabSalida.SelectedIndex = 1;
+                        ReporteErrores(analizador.Raiz);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No ha abierto un archivo colette.", "Error");
+            }
+        }
+
+        private void ReporteErrores(ParseTree raiz)
+        {
+            gridErrors.Rows.Clear();
+            for (int i = 0; i < raiz.ParserMessages.Count(); i++)
+            {
+                LogMessage m = raiz.ParserMessages.ElementAt(i);
+                gridErrors.Rows.Add(m.Level.ToString(), m.Message, (m.Location.Line + 1), (m.Location.Column+1));
+            }
+        }
+
+
     }
 }

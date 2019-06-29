@@ -27,7 +27,7 @@ namespace Compilador.parser._3d.ast.instrucion
                 {
                     Instruccion bloque = bloques.ElementAt(i);
 
-                    if (!(bloque is Label))
+                    if (!(bloque is Etiqueta))
                     {
                         if (!(bloque is Salto) && !(bloque is SaltoCond))
                         {
