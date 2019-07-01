@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Compilador.parser.Collete
 {
-    class GramaticaCollete : Grammar
+    class GramaticaColette : Grammar
     {
-        public GramaticaCollete() : base(true)
+        public GramaticaColette() : base(true)
         {
             CommentTerminal blockComment = new CommentTerminal("block-comment", "\"\"\"\"", "\"\"\"\"");
             CommentTerminal lineComment = new CommentTerminal("line-comment", "#",
@@ -26,6 +26,14 @@ namespace Compilador.parser.Collete
                 //init_ = ToTerm("__init__"),
                 self_ = ToTerm("self"),
                 print_ = ToTerm("print");
+            
+            /* Arithmetic Operators*/
+            KeyTerm
+                mas = ToTerm("+"),
+                menos = ToTerm("-"),
+                por = ToTerm("*"),
+                division = ToTerm("/"),
+                modulo = ToTerm("%");
 
             /* Symbols*/
             KeyTerm
@@ -38,7 +46,7 @@ namespace Compilador.parser.Collete
                 leftCor = ToTerm("["),
                 rightCor = ToTerm("]");
 
-            var numero = TerminalFactory.CreatePythonNumber("number");
+            var number = TerminalFactory.CreatePythonNumber("number");
             IdentifierTerminal id = TerminalFactory.CreateCSharpIdentifier("id");
 
             NonTerminal
@@ -49,9 +57,13 @@ namespace Compilador.parser.Collete
                 PRINT = new NonTerminal("PRINT"),
                 BLOQUE = new NonTerminal("BLOQUE"),
                 SENTENCIAS = new NonTerminal("SENTENCIAS"),
-                SENTENCIA = new NonTerminal("SENTENCIA");
+                SENTENCIA = new NonTerminal("SENTENCIA"),
+                E = new NonTerminal("E"),
+                PRIMITIVO = new NonTerminal("PRIMITIVO"),
+                E_ARITMETICA = new NonTerminal("E_ARITMETICA");
 
-            this.Root = INICIO; 
+
+            this.Root = INICIO;
 
             INICIO.Rule = INSTRUCCIONES;
 
@@ -59,7 +71,7 @@ namespace Compilador.parser.Collete
 
             INSTRUCCION.Rule = (CLASE);
 
-            CLASE.Rule = class_ + id + colon + Eos + BLOQUE ;
+            CLASE.Rule = class_ + id + colon + Eos + BLOQUE;
 
             BLOQUE.Rule = Indent + SENTENCIAS + Dedent;
 
@@ -67,7 +79,22 @@ namespace Compilador.parser.Collete
 
             SENTENCIA.Rule = PRINT + Eos;
 
-            PRINT.Rule = print_ + leftPar + rightPar;
+            PRINT.Rule = print_ + leftPar + E + rightPar;
+
+            E.Rule = PRIMITIVO | E_ARITMETICA;
+
+            PRIMITIVO.Rule = number;
+
+            E_ARITMETICA.Rule = E + mas + E
+                                | E + menos + E
+                                | E + por + E
+                                | E + division + E
+                                | E + modulo + E;
+
+
+            this.RegisterOperators(1, Associativity.Left, mas, menos);
+            this.RegisterOperators(2, Associativity.Left, por, division);
+            this.RegisterOperators(3, Associativity.Right, modulo);
 
             //LanguageFlags = LanguageFlags.NewLineBeforeEOF;
 
@@ -77,7 +104,7 @@ namespace Compilador.parser.Collete
 
             // 7. Error recovery rule
             SENTENCIA.ErrorRule = SyntaxError + Eos;
-            CLASE.ErrorRule = SyntaxError + Dedent;
+           //CLASE.ErrorRule = SyntaxError + Dedent;
             BLOQUE.ErrorRule = SyntaxError + Dedent;
         }
 

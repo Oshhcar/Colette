@@ -1,5 +1,6 @@
 ﻿using Compilador.parser._3d;
 using Compilador.parser._3d.ast;
+using Compilador.parser.Colette.ast;
 using Compilador.parser.Collete;
 using FastColoredTextBoxNS;
 using Irony;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -146,6 +148,19 @@ namespace Compilador
             TabPage AST = new TabPage();
             AST.Text = "AST";
             tab.Controls.Add(AST);
+           
+
+            TabPage ASM = new TabPage();
+            ASM.Text = "ASM";
+            FastColoredTextBox ctbAsm = new FastColoredTextBox();
+            ctbAsm.BorderStyle = BorderStyle.Fixed3D;
+            ctbAsm.AutoScrollMinSize = new Size(25, 15);
+            ctbAsm.Dock = DockStyle.Fill;
+            ctbAsm.Language = Language.Custom;
+            ctbAsm.SelectionChanged += ColoredTextBox_SelectionChanged;
+            ASM.Controls.Add(ctbAsm);
+            tab.Controls.Add(ASM);
+
             tab.Dock = DockStyle.Right;
 
             Splitter sp = new Splitter();
@@ -478,12 +493,13 @@ namespace Compilador
                     Analizador analizador = new Analizador();
                     string entrada = ctb3D.Text;//.Replace("\\", "\\\\");
 
+                    txtOutput.Clear();
+
                     if (analizador.AnalizarEntrada(entrada))
                     {
                         MessageBox.Show("Archivo sin errores.");
                         ReporteErrores(analizador.Raiz);
-                        tabSalida.SelectedIndex = 0;
-                        txtOutput.Clear();
+                        tabSalida.SelectedTab = pageSalida;
                         AST ast = (AST)analizador.GenerarAST(analizador.Raiz.Root);
                         ast.ejecutar(this.txtOutput);
 
@@ -491,7 +507,7 @@ namespace Compilador
                     else
                     {
                         MessageBox.Show("El archivo tiene errores.");
-                        tabSalida.SelectedIndex = 1;
+                        tabSalida.SelectedTab = pageErrores;
                         ReporteErrores(analizador.Raiz);
                     }
                 }
@@ -510,21 +526,37 @@ namespace Compilador
                 TabPage sPage = tabArchivo.SelectedTab;
                 FastColoredTextBox ctbArchivo = (FastColoredTextBox)sPage.Controls[0];
 
+                TabControl tControl = (TabControl)sPage.Controls[2];
+
+                TabPage sPage3d = tControl.TabPages[0];
+                FastColoredTextBox ctb3D = (FastColoredTextBox)sPage3d.Controls[0];
+
                 if (!ctbArchivo.Text.Equals(string.Empty))
                 {
-                    AnalizadorCollete analizador = new AnalizadorCollete();
+                    AnalizadorColette analizador = new AnalizadorColette();
                     string entrada = ctbArchivo.Text;//.Replace("\\", "\\\\");
+                    ctb3D.Clear();
+                    txtOutput.Clear();
 
                     if (analizador.AnalizarEntrada(entrada))
                     {
                         MessageBox.Show("Archivo sin errores.");
                         ReporteErrores(analizador.Raiz);
 
+                        Arbol arbol = (Arbol)analizador.GenerarArbol(analizador.Raiz.Root);
+                        
+                        if (arbol != null)
+                        {
+                            MessageBox.Show("todo bien");
+                            string c3d = arbol.GenerarC3D();
+                            ctb3D.Text = c3d;
+                        }
+
                     }
                     else
                     {
                         MessageBox.Show("El archivo tiene errores.");
-                        tabSalida.SelectedIndex = 1;
+                        tabSalida.SelectedTab = pageErrores;
                         ReporteErrores(analizador.Raiz);
                     }
                 }
@@ -535,16 +567,148 @@ namespace Compilador
             }
         }
 
+        private void Traducir3D()
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                TabControl tControl = (TabControl)sPage.Controls[2];
+
+                TabPage sPage3d = tControl.TabPages[0];
+                FastColoredTextBox ctb3D = (FastColoredTextBox)sPage3d.Controls[0];
+
+                if (!ctb3D.Text.Equals(string.Empty))
+                {
+                    Analizador analizador = new Analizador();
+                    string entrada = ctb3D.Text;//.Replace("\\", "\\\\");
+
+                    txtOutput.Clear();
+
+                    if (analizador.AnalizarEntrada(entrada))
+                    {
+                        MessageBox.Show("Archivo sin errores.");
+                        ReporteErrores(analizador.Raiz);
+                        tabSalida.SelectedTab = pageSalida;
+                        AST ast = (AST)analizador.GenerarAST(analizador.Raiz.Root);
+                        ast.ejecutar(this.txtOutput);
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("El archivo tiene errores.");
+                        tabSalida.SelectedTab = pageErrores;
+                        ReporteErrores(analizador.Raiz);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No ha traducido un archivo colette.", "Error");
+            }
+        }
+
         private void ReporteErrores(ParseTree raiz)
         {
             gridErrors.Rows.Clear();
             for (int i = 0; i < raiz.ParserMessages.Count(); i++)
             {
                 LogMessage m = raiz.ParserMessages.ElementAt(i);
-                gridErrors.Rows.Add(m.Level.ToString(), m.Message, (m.Location.Line + 1), (m.Location.Column+1));
+                gridErrors.Rows.Add(m.Level.ToString(), m.Message, (m.Location.Line + 1), (m.Location.Column + 1));
             }
         }
 
+        private void GraficarASTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                FastColoredTextBox ctbArchivo = (FastColoredTextBox)sPage.Controls[0];
+
+                TabControl tControl = (TabControl)sPage.Controls[2];
+
+                TabPage sPage3d = tControl.TabPages[0];
+                FastColoredTextBox ctb3D = (FastColoredTextBox)sPage3d.Controls[0];
+
+                if (!ctbArchivo.Text.Equals(string.Empty))
+                {
+                    AnalizadorColette analizador = new AnalizadorColette();
+                    string entrada = ctbArchivo.Text;//.Replace("\\", "\\\\");
+                    ctb3D.Clear();
+                    txtOutput.Clear();
+
+                    if (analizador.AnalizarEntrada(entrada))
+                    {
+                        MessageBox.Show("Archivo sin errores.");
+                        ReporteErrores(analizador.Raiz);
+                        GraficarArbol(analizador.Raiz.Root);
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("El archivo tiene errores.");
+                        tabSalida.SelectedTab = pageErrores;
+                        ReporteErrores(analizador.Raiz);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No ha abierto un archivo colette.", "Error");
+            }
+        }
+
+        public void GraficarArbol(ParseTreeNode raiz)
+        {
+            string archivo = "arbol.dot";
+            FileStream stream = new FileStream(archivo, FileMode.OpenOrCreate, FileAccess.Write);
+            StreamWriter writer = new StreamWriter(stream);
+            writer.WriteLine("digraph arbol{");
+            writer.WriteLine("rankdir=UD;");
+            writer.WriteLine("node [shape = box, style=filled, color=blanchedalmond];");
+            writer.WriteLine("edge[color=chocolate3];");
+            writer.WriteLine(GraficarNodo(raiz));
+            writer.WriteLine("}");
+            writer.Close();
+
+            try
+            {
+                var command = string.Format("dot -Tpng arbol.dot  -o arbol.png");
+                var procStartInfo = new System.Diagnostics.ProcessStartInfo("cmd", "/C " + command);
+                var proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStartInfo;
+                proc.Start();
+                proc.WaitForExit();
+
+                //var appname = "Microsoft.Photos.exe";
+                // Process.Start(appname, "arbol.jpg");
+
+                Process.Start("arbol.png");
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show("Error en graficar! \n" + x);
+            }
+        }
+
+        public string GraficarNodo(ParseTreeNode raiz)
+        {
+            string nodoString = "";
+            //MessageBox.Show("label = "+raiz.ToString());
+            string label = raiz.ToString();
+
+            nodoString = "nodo" + raiz.GetHashCode() + "[label=\"" + label + " \", fillcolor=\"blanchedalmond\", style =\"filled\", shape=\"box\"]; \n";
+            if (raiz.ChildNodes.Count > 0)
+            {
+                ParseTreeNode[] hijos = raiz.ChildNodes.ToArray();
+                for (int i = 0; i < raiz.ChildNodes.Count; i++)
+                {
+                    nodoString += GraficarNodo(hijos[i]);
+                    nodoString += "\"nodo" + raiz.GetHashCode() + "\"-> \"nodo" + hijos[i].GetHashCode() + "\" \n";
+                }
+            }
+
+            return nodoString;
+        }
 
     }
 }

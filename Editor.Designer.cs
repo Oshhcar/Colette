@@ -50,6 +50,7 @@
             this.seleccionarTodoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.coletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.traducirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.graficarASTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.c3DToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ejecutarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,16 +59,17 @@
             this.tabArchivo = new System.Windows.Forms.TabControl();
             this.pageErrores = new System.Windows.Forms.TabPage();
             this.gridErrors = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pageSalida = new System.Windows.Forms.TabPage();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.tabSalida = new System.Windows.Forms.TabControl();
             this.lbLinea = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.traducirToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuPrincipal.SuspendLayout();
             this.pageErrores.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridErrors)).BeginInit();
@@ -208,7 +210,8 @@
             // coletteToolStripMenuItem
             // 
             this.coletteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.traducirToolStripMenuItem});
+            this.traducirToolStripMenuItem,
+            this.graficarASTToolStripMenuItem});
             this.coletteToolStripMenuItem.Name = "coletteToolStripMenuItem";
             this.coletteToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
             this.coletteToolStripMenuItem.Text = "Colette";
@@ -220,10 +223,18 @@
             this.traducirToolStripMenuItem.Text = "Traducir";
             this.traducirToolStripMenuItem.Click += new System.EventHandler(this.TraducirToolStripMenuItem_Click);
             // 
+            // graficarASTToolStripMenuItem
+            // 
+            this.graficarASTToolStripMenuItem.Name = "graficarASTToolStripMenuItem";
+            this.graficarASTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.graficarASTToolStripMenuItem.Text = "Graficar AST";
+            this.graficarASTToolStripMenuItem.Click += new System.EventHandler(this.GraficarASTToolStripMenuItem_Click);
+            // 
             // c3DToolStripMenuItem
             // 
             this.c3DToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ejecutarToolStripMenuItem});
+            this.ejecutarToolStripMenuItem,
+            this.traducirToolStripMenuItem1});
             this.c3DToolStripMenuItem.Name = "c3DToolStripMenuItem";
             this.c3DToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.c3DToolStripMenuItem.Text = "C3D";
@@ -246,7 +257,7 @@
             // acercaDeToolStripMenuItem
             // 
             this.acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
-            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.acercaDeToolStripMenuItem.Text = "Acerca de";
             this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.AcercaDeToolStripMenuItem_Click);
             // 
@@ -318,6 +329,46 @@
             this.gridErrors.Size = new System.Drawing.Size(1008, 155);
             this.gridErrors.TabIndex = 3;
             // 
+            // dataGridViewTextBoxColumn1
+            // 
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridViewTextBoxColumn1.HeaderText = "Valor";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.dataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dataGridViewTextBoxColumn1.ToolTipText = "Double-click grid cell to locate in source code";
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridViewTextBoxColumn2.HeaderText = "Descripción";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.dataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dataGridViewTextBoxColumn2.Width = 800;
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn3.DataPropertyName = "State";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.dataGridViewTextBoxColumn3.DefaultCellStyle = dataGridViewCellStyle4;
+            this.dataGridViewTextBoxColumn3.HeaderText = "Línea";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            this.dataGridViewTextBoxColumn3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumn3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dataGridViewTextBoxColumn3.ToolTipText = "Double-click grid cell to navigate to state details";
+            this.dataGridViewTextBoxColumn3.Width = 41;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.HeaderText = "Columna";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.ReadOnly = true;
+            // 
             // pageSalida
             // 
             this.pageSalida.Controls.Add(this.txtOutput);
@@ -370,45 +421,11 @@
             this.openFileDialog1.Tag = "collete, txt";
             this.openFileDialog1.Title = "Abrir Archivo";
             // 
-            // dataGridViewTextBoxColumn1
+            // traducirToolStripMenuItem1
             // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dataGridViewTextBoxColumn1.HeaderText = "Valor";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dataGridViewTextBoxColumn1.ToolTipText = "Double-click grid cell to locate in source code";
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridViewTextBoxColumn2.HeaderText = "Descripción";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dataGridViewTextBoxColumn2.Width = 800;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "State";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.dataGridViewTextBoxColumn3.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dataGridViewTextBoxColumn3.HeaderText = "Línea";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dataGridViewTextBoxColumn3.ToolTipText = "Double-click grid cell to navigate to state details";
-            this.dataGridViewTextBoxColumn3.Width = 41;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.HeaderText = "Columna";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
+            this.traducirToolStripMenuItem1.Name = "traducirToolStripMenuItem1";
+            this.traducirToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.traducirToolStripMenuItem1.Text = "Traducir";
             // 
             // Editor
             // 
@@ -473,5 +490,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private System.Windows.Forms.ToolStripMenuItem graficarASTToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem traducirToolStripMenuItem1;
     }
 }

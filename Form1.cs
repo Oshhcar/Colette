@@ -175,7 +175,7 @@ namespace Compilador
             if (!rtb_entrada.Text.Equals(string.Empty))
             {
 
-                AnalizadorCollete analizador = new AnalizadorCollete();
+                AnalizadorColette analizador = new AnalizadorColette();
                 string entrada = this.rtb_entrada.Text;//.Replace("\\", "\\\\");
                 
                 if (analizador.AnalizarEntrada(entrada))
@@ -196,7 +196,7 @@ namespace Compilador
             if (!rtb_entrada.Text.Equals(string.Empty))
             {
 
-                AnalizadorCollete analizador = new AnalizadorCollete();
+                AnalizadorColette analizador = new AnalizadorColette();
                 string entrada = this.rtb_entrada.Text.Replace("\\", "\\\\");
 
                 if (analizador.AnalizarEntrada(entrada))
