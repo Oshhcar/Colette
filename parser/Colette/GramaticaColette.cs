@@ -168,9 +168,7 @@ namespace Compilador.parser.Collete
                 SET_DISPLAY = new NonTerminal("SET_DISPLAY"),
                 GENERATOR_EXPRESSION = new NonTerminal("GENERATOR_EXPRESSION"),
                 EXPRESSION_LIST = new NonTerminal("EXPRESSION_LIST"),
-                STARRED_LIST = new NonTerminal("STARRED_LIST"),
-                STARRED_EXPRESSION = new NonTerminal("STARRED_EXPRESSION"),
-                STARRED_ITEM = new NonTerminal("STARRED_ITEM"),
+                EXPRESSION_LIST_COMMA = new NonTerminal("EXPRESSION_LIST_COMMA"),
                 COMPREHENSION = new NonTerminal("COMPREHENSION"),
                 COMP_FOR = new NonTerminal("COMP_FOR"),
                 COMP_ITER = new NonTerminal("COMP_ITER"),
@@ -181,9 +179,6 @@ namespace Compilador.parser.Collete
                 SLICE_LIST = new NonTerminal("SLICE_LIST"),
                 SLICE_ITEM = new NonTerminal("SLICE_ITEM"),
                 PROPER_SLICE = new NonTerminal("PROPER_SLICE"),
-                LOWER_BOUND = new NonTerminal("LOWER_BOUND"),
-                UPPER_BOUND = new NonTerminal("UPPER_BOUND"),
-                STRIDE = new NonTerminal("STRIDE"),
                 ARGUMENT_LIST = new NonTerminal("ARGUMENT_LIST"),
                 POSITIONAL_ARGUMENTS = new NonTerminal("POSITIONAL_ARGUMENTS"),
                 STARRED_AND_KEYWORDS = new NonTerminal("STARRED_AND_KEYWORDS"),
@@ -204,10 +199,11 @@ namespace Compilador.parser.Collete
                             | FOR_STMT
                             | GLOBAL_STMT + Eos
                             | NONLOCAL_STMT + Eos
-                            //| DEL_STMT + Eos
+                            | DEL_STMT + Eos
                             | ASSIGNMENT_STMT + Eos
                             | AUGMENTED_ASSIGNMENT_STMT + Eos
-                            | EXPRESSION_STMT + Eos;
+                            | EXPRESSION_STMT + Eos
+                           ;
 
             CLASEDEF.Rule = class_ + identifier + colon + Eos + BLOQUE;
 
@@ -226,12 +222,13 @@ namespace Compilador.parser.Collete
                             | CLASEDEF
                             | GLOBAL_STMT + Eos
                             | NONLOCAL_STMT + Eos
-                            //| DEL_STMT + Eos
+                            | DEL_STMT + Eos
                             | ASSIGNMENT_STMT + Eos
                             | AUGMENTED_ASSIGNMENT_STMT + Eos
-                            | EXPRESSION_STMT + Eos;
+                            | EXPRESSION_STMT + Eos
+                            ;
 
-            PRINT.Rule = print_ + leftPar + STARRED_EXPRESSION + rightPar; //CORR
+            PRINT.Rule = print_ + leftPar + EXPRESSION_LIST + rightPar; //CORR
 
             IF_STMT.Rule = IF_LIST + else_ + colon + Eos + BLOQUE //CORR
                     | IF_LIST;
@@ -261,11 +258,11 @@ namespace Compilador.parser.Collete
 
             ID_LIST.Rule = MakePlusRule(ID_LIST, comma, identifier); //CORR
 
-            DEL_STMT.Rule = del_ + TARGET_LIST;
+            DEL_STMT.Rule = del_ + TARGET_LIST; //CORR
 
-            ASSIGNMENT_STMT.Rule = ASSIGNMENT_LIST + equal + STARRED_EXPRESSION; //CORR
+            ASSIGNMENT_STMT.Rule = TARGET_LIST + equal + ASSIGNMENT_LIST; //CORR
 
-            ASSIGNMENT_LIST.Rule = MakePlusRule(ASSIGNMENT_LIST, equal, TARGET_LIST); //CORR
+            ASSIGNMENT_LIST.Rule = MakePlusRule(ASSIGNMENT_LIST, equal, EXPRESSION_LIST); //CORR
 
             TARGET_LIST.Rule = MakePlusRule(TARGET_LIST, comma, TARGET); //probar con [","] //CORR
 
@@ -274,16 +271,16 @@ namespace Compilador.parser.Collete
                         //| leftCor + TARGET_LIST + leftPar //PUENDE SER VACIO
                         | ATTRIBUTEREF
                         | SUBSCRIPTION //ACCESO ARREGLO
-                        /*| SLICING*/;
+                        | SLICING; 
 
             AUGMENTED_ASSIGNMENT_STMT.Rule = AUGTARGET + AUG_OPERATOR + EXPRESSION_LIST; //CORR
 
-            AUGTARGET.Rule = identifier | ATTRIBUTEREF /*| SUBSCRIPTION | SLICING*/; //CORR
+            AUGTARGET.Rule = identifier | ATTRIBUTEREF | SUBSCRIPTION | SLICING; //CORR
 
             AUG_OPERATOR.Rule = masEqual | menosEqual | porEqual | divisionEqual //CORR
                                 | moduloEqual | potenciaEqual | floorEqual;
 
-            EXPRESSION_STMT.Rule = STARRED_EXPRESSION; //CORR
+            EXPRESSION_STMT.Rule = EXPRESSION_LIST; //CORR
 
             EXPRESSION.Rule = LAMBDA_EXP //CORR
                             | OR_TEST;
@@ -318,20 +315,22 @@ namespace Compilador.parser.Collete
 
             POWER.Rule = PRIMARY | PRIMARY + potencia + U_EXPR; //CORR
 
-            PRIMARY.Rule = ATOM | ATTRIBUTEREF | SUBSCRIPTION /*| SLICING */| CALL; 
+            PRIMARY.Rule = ATOM | ATTRIBUTEREF | SUBSCRIPTION | SLICING | CALL; //CORR
 
             ATOM.Rule = identifier | LITERAL | ENCLOSURE;
 
-            LITERAL.Rule = number | stringliteral | stringliteral2;
+            LITERAL.Rule = number | stringliteral | stringliteral2 | none_; //CORR
 
             ENCLOSURE.Rule = PARENTH_FORM | LIST_DISPLAY | DICT_DISPLAY | SET_DISPLAY
                             | GENERATOR_EXPRESSION;
 
-            PARENTH_FORM.Rule = leftPar + STARRED_EXPRESSION + rightPar;
+            PARENTH_FORM.Rule = leftPar + EXPRESSION_LIST + rightPar //TUPLAS CORR
+                               | leftPar + rightPar;
 
-            LIST_DISPLAY.Rule = leftCor + (STARRED_LIST /*| COMPREHENSION*/) + rightCor
+            LIST_DISPLAY.Rule = leftCor + (EXPRESSION_LIST | COMPREHENSION) + rightCor
                                |leftCor + rightCor;
 
+            /*x for x in 'abracadabra' if x not in 'abc'*/
             COMPREHENSION.Rule = EXPRESSION + COMP_FOR;
 
             COMP_FOR.Rule = for_ + TARGET_LIST + in_ + OR_TEST
@@ -341,10 +340,12 @@ namespace Compilador.parser.Collete
 
             COMP_IF.Rule = if_ + EXPRESSION
                           | if_ + EXPRESSION + COMP_ITER;
+            /*------------------------------------------*/
 
-            SET_DISPLAY.Rule = leftLla + (STARRED_LIST | COMPREHENSION) + rightLla;
+            SET_DISPLAY.Rule = leftLla + (EXPRESSION_LIST | COMPREHENSION) + rightLla; //CONJUNTOS CORR
 
-            DICT_DISPLAY.Rule = leftLla + (KEY_DATUM_LIST | DICT_COMPREHENSION) + rightLla;  //CREO QUE PUEDE SER VACIO  
+            DICT_DISPLAY.Rule = leftLla + (KEY_DATUM_LIST | DICT_COMPREHENSION) + rightLla  //DICCIONARIOS CORR
+                                | leftLla + rightLla; 
 
             KEY_DATUM_LIST.Rule = MakePlusRule(KEY_DATUM_LIST, comma, KEY_DATUM);  //probar con [","]
 
@@ -352,36 +353,25 @@ namespace Compilador.parser.Collete
 
             DICT_COMPREHENSION.Rule = EXPRESSION + colon + EXPRESSION + COMP_FOR;
 
-            EXPRESSION_LIST.Rule = MakePlusRule(EXPRESSION_LIST, comma, EXPRESSION); //probar con [","] hacerlo antes
+            EXPRESSION_LIST.Rule = EXPRESSION_LIST_COMMA + comma //CORR
+                                | EXPRESSION_LIST_COMMA;
 
-            STARRED_LIST.Rule = MakePlusRule(STARRED_LIST, comma, STARRED_ITEM); //probar con [","] hacerlo antes
-
-            STARRED_EXPRESSION.Rule = EXPRESSION
-                                    | STARRED_LIST;
-                                   // | STARRED_LIST + comma;
-
-            STARRED_ITEM.Rule = EXPRESSION
-                               /*| por + OR_EXPR*/;
+            EXPRESSION_LIST_COMMA.Rule = MakePlusRule(EXPRESSION_LIST_COMMA, comma, EXPRESSION); //CORR
 
             GENERATOR_EXPRESSION.Rule = leftPar + EXPRESSION + COMP_FOR + rightPar;
 
-            ATTRIBUTEREF.Rule = PRIMARY + dot + identifier;
+            ATTRIBUTEREF.Rule = PRIMARY + dot + identifier; //CORR
 
-            SUBSCRIPTION.Rule = PRIMARY + leftCor + EXPRESSION_LIST + rightCor;
+            SUBSCRIPTION.Rule = PRIMARY + leftCor + EXPRESSION_LIST + rightCor; //CORR
 
-            SLICING.Rule = PRIMARY + leftCor + SLICE_LIST + rightCor;
+            SLICING.Rule = PRIMARY + leftCor + SLICE_LIST + rightCor; //CORR
 
-            SLICE_LIST.Rule = MakePlusRule(SLICE_LIST, comma, SLICE_ITEM); //probar con [","]
+            SLICE_LIST.Rule = MakePlusRule(SLICE_LIST, comma, SLICE_ITEM); //CORR
 
-            SLICE_ITEM.Rule = EXPRESSION | PROPER_SLICE;
+            SLICE_ITEM.Rule = EXPRESSION | PROPER_SLICE; //CORR
 
-            PROPER_SLICE.Rule = LOWER_BOUND + colon + UPPER_BOUND + colon + STRIDE; //arreglar
-
-            LOWER_BOUND.Rule = EXPRESSION;
-
-            UPPER_BOUND.Rule = EXPRESSION;
-
-            STRIDE.Rule = EXPRESSION;
+            PROPER_SLICE.Rule = EXPRESSION + colon + EXPRESSION //CORR
+                                | colon;
 
             CALL.Rule = PRIMARY + leftPar + (ARGUMENT_LIST /*| COMPREHENSION*/) + rightPar
                       | PRIMARY + leftPar + rightPar; //FALTA EL [","]
