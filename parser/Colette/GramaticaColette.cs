@@ -139,8 +139,11 @@ namespace Compilador.parser.Collete
                 ID_LIST = new NonTerminal("ID_LIST"),
                 DEL_STMT = new NonTerminal("DEL_STMT"),
 
+                CONDITIONAL_EXPRESSION = new NonTerminal("CONDITIONAL_EXPRESSION"),
                 EXPRESSION = new NonTerminal("EXPRESSION"),
+                EXPRESSION_NOCOND = new NonTerminal("EXPRESSION_NOCOND"),
                 LAMBDA_EXP = new NonTerminal("LAMBDA_EXP"),
+                LAMBDA_EXP_NOCOND = new NonTerminal("LAMBDA_EXP_NOCOND"),
                 OR_TEST = new NonTerminal("OR_TEST"),
                 AND_TEST = new NonTerminal("AND_TEST"),
                 NOT_TEST = new NonTerminal("NOT_TEST"),
@@ -169,6 +172,10 @@ namespace Compilador.parser.Collete
                 GENERATOR_EXPRESSION = new NonTerminal("GENERATOR_EXPRESSION"),
                 EXPRESSION_LIST = new NonTerminal("EXPRESSION_LIST"),
                 EXPRESSION_LIST_COMMA = new NonTerminal("EXPRESSION_LIST_COMMA"),
+                STARRED_LIST = new NonTerminal("STARRED_LIST"),
+                STARRED_LIST_COMMA = new NonTerminal("STARRED_LIST_COMMA"),
+                STARRED_EXPRESSION = new NonTerminal("STARRED_EXPRESSION"),
+                STARRED_ITEM = new NonTerminal("STARRED_ITEM"),
                 COMPREHENSION = new NonTerminal("COMPREHENSION"),
                 COMP_FOR = new NonTerminal("COMP_FOR"),
                 COMP_ITER = new NonTerminal("COMP_ITER"),
@@ -228,7 +235,7 @@ namespace Compilador.parser.Collete
                             | EXPRESSION_STMT + Eos
                             ;
 
-            PRINT.Rule = print_ + leftPar + EXPRESSION_LIST + rightPar; //CORR
+            PRINT.Rule = print_ + leftPar + STARRED_EXPRESSION + rightPar; //CORR
 
             IF_STMT.Rule = IF_LIST + else_ + colon + Eos + BLOQUE //CORR
                     | IF_LIST;
@@ -262,7 +269,7 @@ namespace Compilador.parser.Collete
 
             ASSIGNMENT_STMT.Rule = TARGET_LIST + equal + ASSIGNMENT_LIST; //CORR
 
-            ASSIGNMENT_LIST.Rule = MakePlusRule(ASSIGNMENT_LIST, equal, EXPRESSION_LIST); //CORR
+            ASSIGNMENT_LIST.Rule = MakePlusRule(ASSIGNMENT_LIST, equal, STARRED_EXPRESSION); //CORR
 
             TARGET_LIST.Rule = MakePlusRule(TARGET_LIST, comma, TARGET); //probar con [","] //CORR
 
@@ -280,12 +287,18 @@ namespace Compilador.parser.Collete
             AUG_OPERATOR.Rule = masEqual | menosEqual | porEqual | divisionEqual //CORR
                                 | moduloEqual | potenciaEqual | floorEqual;
 
-            EXPRESSION_STMT.Rule = EXPRESSION_LIST; //CORR
+            EXPRESSION_STMT.Rule = STARRED_EXPRESSION; //CORR
+
+            CONDITIONAL_EXPRESSION.Rule = OR_TEST | OR_TEST + if_ + OR_TEST + else_ + EXPRESSION; //CORR
 
             EXPRESSION.Rule = LAMBDA_EXP //CORR
-                            | OR_TEST;
+                            | CONDITIONAL_EXPRESSION;
+
+            EXPRESSION_NOCOND.Rule = OR_TEST | LAMBDA_EXP_NOCOND; //CORR
 
             LAMBDA_EXP.Rule = lambda_ + PARAMETER_LIST + colon + EXPRESSION; //CORR
+
+            LAMBDA_EXP_NOCOND.Rule = lambda_ + PARAMETER_LIST + colon + EXPRESSION_NOCOND; //CORR
 
             OR_TEST.Rule = AND_TEST | OR_TEST + or_ + AND_TEST; //CORR
 
@@ -317,48 +330,58 @@ namespace Compilador.parser.Collete
 
             PRIMARY.Rule = ATOM | ATTRIBUTEREF | SUBSCRIPTION | SLICING | CALL; //CORR
 
-            ATOM.Rule = identifier | LITERAL | ENCLOSURE;
+            ATOM.Rule = identifier | LITERAL | ENCLOSURE; //CORR
 
             LITERAL.Rule = number | stringliteral | stringliteral2 | none_; //CORR
 
-            ENCLOSURE.Rule = PARENTH_FORM | LIST_DISPLAY | DICT_DISPLAY | SET_DISPLAY
-                            | GENERATOR_EXPRESSION;
+            ENCLOSURE.Rule = PARENTH_FORM | LIST_DISPLAY | DICT_DISPLAY | SET_DISPLAY //CORR
+                            /*| GENERATOR_EXPRESSION*/;
 
-            PARENTH_FORM.Rule = leftPar + EXPRESSION_LIST + rightPar //TUPLAS CORR
+            PARENTH_FORM.Rule = leftPar + STARRED_EXPRESSION + rightPar //TUPLAS CORR
                                | leftPar + rightPar;
 
-            LIST_DISPLAY.Rule = leftCor + (EXPRESSION_LIST | COMPREHENSION) + rightCor
+            LIST_DISPLAY.Rule = leftCor + (STARRED_LIST | COMPREHENSION) + rightCor //CORR
                                |leftCor + rightCor;
 
             /*x for x in 'abracadabra' if x not in 'abc'*/
-            COMPREHENSION.Rule = EXPRESSION + COMP_FOR;
+            COMPREHENSION.Rule = EXPRESSION + COMP_FOR; //CORR
 
-            COMP_FOR.Rule = for_ + TARGET_LIST + in_ + OR_TEST
+            COMP_FOR.Rule = for_ + TARGET_LIST + in_ + OR_TEST //CORR
                             | for_ + TARGET_LIST + in_ + OR_TEST + COMP_ITER;
 
-            COMP_ITER.Rule = COMP_FOR | COMP_IF;
+            COMP_ITER.Rule = COMP_FOR | COMP_IF; //CORR
 
-            COMP_IF.Rule = if_ + EXPRESSION
-                          | if_ + EXPRESSION + COMP_ITER;
+            COMP_IF.Rule = if_ + EXPRESSION_NOCOND //CORR
+                          | if_ + EXPRESSION_NOCOND + COMP_ITER;
             /*------------------------------------------*/
 
-            SET_DISPLAY.Rule = leftLla + (EXPRESSION_LIST | COMPREHENSION) + rightLla; //CONJUNTOS CORR
+            SET_DISPLAY.Rule = leftLla + (STARRED_LIST | COMPREHENSION) + rightLla; //CONJUNTOS CORR
 
             DICT_DISPLAY.Rule = leftLla + (KEY_DATUM_LIST | DICT_COMPREHENSION) + rightLla  //DICCIONARIOS CORR
                                 | leftLla + rightLla; 
 
-            KEY_DATUM_LIST.Rule = MakePlusRule(KEY_DATUM_LIST, comma, KEY_DATUM);  //probar con [","]
+            KEY_DATUM_LIST.Rule = MakePlusRule(KEY_DATUM_LIST, comma, KEY_DATUM);  //CORR [","]
 
-            KEY_DATUM.Rule = EXPRESSION + colon + EXPRESSION | potencia + OR_EXPR;
+            KEY_DATUM.Rule = EXPRESSION + colon + EXPRESSION; //CORR
 
-            DICT_COMPREHENSION.Rule = EXPRESSION + colon + EXPRESSION + COMP_FOR;
+            DICT_COMPREHENSION.Rule = EXPRESSION + colon + EXPRESSION + COMP_FOR; //CORR
 
             EXPRESSION_LIST.Rule = EXPRESSION_LIST_COMMA + comma //CORR
                                 | EXPRESSION_LIST_COMMA;
 
             EXPRESSION_LIST_COMMA.Rule = MakePlusRule(EXPRESSION_LIST_COMMA, comma, EXPRESSION); //CORR
 
-            GENERATOR_EXPRESSION.Rule = leftPar + EXPRESSION + COMP_FOR + rightPar;
+            STARRED_LIST.Rule = STARRED_LIST_COMMA + comma //CORR
+                            | STARRED_LIST_COMMA;
+
+            STARRED_LIST_COMMA.Rule = MakePlusRule(STARRED_LIST_COMMA, comma, STARRED_ITEM); //CORR
+
+            STARRED_EXPRESSION.Rule = EXPRESSION | STARRED_LIST; //CORR
+
+            STARRED_ITEM.Rule = EXPRESSION //CORR
+                               | por + OR_EXPR;
+
+            //GENERATOR_EXPRESSION.Rule = leftPar + EXPRESSION + COMP_FOR + rightPar;
 
             ATTRIBUTEREF.Rule = PRIMARY + dot + identifier; //CORR
 
@@ -376,19 +399,22 @@ namespace Compilador.parser.Collete
             CALL.Rule = PRIMARY + leftPar + (ARGUMENT_LIST /*| COMPREHENSION*/) + rightPar
                       | PRIMARY + leftPar + rightPar; //FALTA EL [","]
 
-            ARGUMENT_LIST.Rule = POSITIONAL_ARGUMENTS
+            ARGUMENT_LIST.Rule = POSITIONAL_ARGUMENTS //CORR
                                 | POSITIONAL_ARGUMENTS + comma + STARRED_AND_KEYWORDS
-                                | POSITIONAL_ARGUMENTS + comma + KEYWORDS_ARGUMENTS; //arreglar esta regla
+                                | POSITIONAL_ARGUMENTS + comma + STARRED_AND_KEYWORDS + comma + KEYWORDS_ARGUMENTS
+                                | STARRED_AND_KEYWORDS
+                                | STARRED_AND_KEYWORDS + comma + KEYWORDS_ARGUMENTS
+                                | KEYWORDS_ARGUMENTS;
 
-            POSITIONAL_ARGUMENTS.Rule = MakePlusRule(POSITIONAL_ARGUMENTS, comma, EXPRESSION); // FALTA POSICION
+            POSITIONAL_ARGUMENTS.Rule = MakePlusRule(POSITIONAL_ARGUMENTS, comma, EXPRESSION); //CORR
 
-            STARRED_AND_KEYWORDS.Rule = STARRED_AND_KEYWORDS + comma + (EXPRESSION | KEYWORD_ITEM)
+            STARRED_AND_KEYWORDS.Rule = STARRED_AND_KEYWORDS + comma + (EXPRESSION | KEYWORD_ITEM) //CORR
                                        | (EXPRESSION | KEYWORD_ITEM);
 
-            KEYWORDS_ARGUMENTS.Rule = KEYWORDS_ARGUMENTS + comma + (KEYWORD_ITEM | potencia + EXPRESSION)
+            KEYWORDS_ARGUMENTS.Rule = KEYWORDS_ARGUMENTS + comma + (KEYWORD_ITEM | potencia + EXPRESSION) //CORR
                                     | (KEYWORD_ITEM | potencia + EXPRESSION);
 
-            KEYWORD_ITEM.Rule = identifier + equal + EXPRESSION;
+            KEYWORD_ITEM.Rule = identifier + equal + EXPRESSION; //CORR
 
             //LanguageFlags = LanguageFlags.NewLineBeforeEOF;
 
