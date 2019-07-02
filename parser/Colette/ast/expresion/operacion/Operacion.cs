@@ -37,6 +37,13 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             MULTIPLICACION,
             DIVISION,
             MODULO,
+            FLOOR,
+            MENORQUE,
+            MAYORQUE,
+            MENORIGUALQUE,
+            MAYORIGUALQUE,
+            IGUAL,
+            DIFERENTE,
             INDEFINIDO
         }
     }

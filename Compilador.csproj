@@ -97,6 +97,7 @@
     <Compile Include="parser\Colette\ast\expresion\Literal.cs" />
     <Compile Include="parser\Colette\ast\expresion\operacion\Aritmetica.cs" />
     <Compile Include="parser\Colette\ast\expresion\operacion\Operacion.cs" />
+    <Compile Include="parser\Colette\ast\expresion\operacion\Relacional.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Bloque.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Clase.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Instruccion.cs" />

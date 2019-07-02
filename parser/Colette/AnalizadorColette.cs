@@ -57,7 +57,7 @@ namespace Compilador.parser.Collete
                     return new Arbol(sentencias);
                 case "INSTRUCCION":
                     return GenerarArbol(hijos[0]);
-                case "CLASE":
+                case "CLASEDEF":
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;
                     return new Clase(hijos[1].Token.Text, (Bloque)GenerarArbol(hijos[3]), linea, columna);
@@ -76,6 +76,69 @@ namespace Compilador.parser.Collete
                     linea = hijos[0].Token.Location.Line+1;
                     columna = hijos[0].Token.Location.Column+1;
                     return new Print((Expresion)GenerarArbol(hijos[2]), linea, columna);
+                case "STARRED_EXPRESSION":
+                    return GenerarArbol(hijos[0]);
+                case "EXPRESSION":
+                    return GenerarArbol(hijos[0]);
+                case "CONDITIONAL_EXPRESSION":
+                    return GenerarArbol(hijos[0]);
+                case "OR_TEST":
+                    return GenerarArbol(hijos[0]);
+                case "AND_TEST":
+                    return GenerarArbol(hijos[0]);
+                case "NOT_TEST":
+                    return GenerarArbol(hijos[0]);
+                case "COMPARISON":
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        ParseTreeNode comp_operator = (ParseTreeNode)GenerarArbol(hijos[1]);
+                        linea = comp_operator.Token.Location.Line + 1;
+                        columna = comp_operator.Token.Location.Column + 1;
+                        return new Relacional((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), GetOperador(comp_operator), linea, columna);
+                    }
+                case "COMP_OPERATOR":
+                    return hijos[0];
+                case "OR_EXPR":
+                    return GenerarArbol(hijos[0]);
+                case "XOR_EXPR":
+                    return GenerarArbol(hijos[0]);
+                case "AND_EXPR":
+                    return GenerarArbol(hijos[0]);
+                case "SHIFT_EXPR":
+                    return GenerarArbol(hijos[0]);
+                case "A_EXPR":
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        return new Aritmetica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), GetOperador(hijos[1]), linea, columna);
+                    }
+                case "M_EXPR":
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        return new Aritmetica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), GetOperador(hijos[1]), linea, columna);
+                    }
+                case "U_EXPR":
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new Aritmetica((Expresion)GenerarArbol(hijos[1]), null, GetOperador(hijos[0]), linea, columna);
+                    }
+                case "POWER":
+                    return GenerarArbol(hijos[0]);
+                case "PRIMARY":
+                    return GenerarArbol(hijos[0]);
                 case "ATOM":
                     return GenerarArbol(hijos[0]);
                 case "LITERAL":
@@ -95,10 +158,6 @@ namespace Compilador.parser.Collete
                         }   
                     }
                     return null;
-                case "E_ARITMETICA":
-                    linea = hijos[1].Token.Location.Line + 1;
-                    columna = hijos[1].Token.Location.Column + 1;
-                    return new Aritmetica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), GetOperador(hijos[1]), linea, columna);
 
             }
 
@@ -119,6 +178,20 @@ namespace Compilador.parser.Collete
                     return Operador.DIVISION;
                 case "%":
                     return Operador.MODULO;
+                case "//":
+                    return Operador.FLOOR;
+                case ">":
+                    return Operador.MAYORQUE;
+                case "<":
+                    return Operador.MENORQUE;
+                case ">=":
+                    return Operador.MAYORIGUALQUE;
+                case "<=":
+                    return Operador.MENORIGUALQUE;
+                case "==":
+                    return Operador.IGUAL;
+                case "!=":
+                    return Operador.DIFERENTE;
             }
             return Operador.INDEFINIDO;
         }

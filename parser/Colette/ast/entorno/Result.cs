@@ -12,8 +12,9 @@ namespace Compilador.parser.Colette.ast.entorno
         {
         }
 
-        public String Valor { get; set; }
-        public String Codigo { get; set; }
-
+        public string Valor { get; set; }
+        public string Codigo { get; set; }
+        public string EtiquetaV { get; set; }
+        public string EtiquetaF { get; set; }
     }
 }

@@ -21,33 +21,55 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             };
 
             Result rsOp1 = Op1.GetC3D(e);
-            Result rsOp2 = Op2.GetC3D(e);
 
             if (rsOp1.Codigo != null)
             {
                 result.Codigo += rsOp1.Codigo;
             }
-            if (rsOp2.Codigo != null)
+
+            if (Op2 != null)
             {
-                result.Codigo += rsOp2.Codigo;
+                Result rsOp2 = Op2.GetC3D(e);
+
+                if (rsOp2.Codigo != null)
+                {
+                    result.Codigo += rsOp2.Codigo;
+                }
+
+                result.Valor = "t" + NuevoTemporal();
+
+                switch (Op)
+                {
+                    case Operador.SUMA:
+                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " + " + rsOp2.Valor + ";\n";
+                        break;
+                    case Operador.RESTA:
+                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " - " + rsOp2.Valor + ";\n";
+                        break;
+                    case Operador.MULTIPLICACION:
+                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " * " + rsOp2.Valor + ";\n";
+                        break;
+                    case Operador.DIVISION:
+                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " / " + rsOp2.Valor + ";\n";
+                        break;
+                    case Operador.MODULO:
+                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " % " + rsOp2.Valor + ";\n";
+                        break;
+                }
             }
-
-            result.Valor = "t" + NuevoTemporal();
-
-            switch (Op)
+            else
             {
-                case Operador.SUMA:
-                    result.Codigo += result.Valor + " = " + rsOp1.Valor + " + " + rsOp2.Valor + ";\n";
-                    break;
-                case Operador.RESTA:
-                    result.Codigo += result.Valor + " = " + rsOp1.Valor + " - " + rsOp2.Valor + ";\n";
-                    break;
-                case Operador.MULTIPLICACION:
-                    result.Codigo += result.Valor + " = " + rsOp1.Valor + " * " + rsOp2.Valor + ";\n";
-                    break;
-                case Operador.DIVISION:
-                    result.Codigo += result.Valor + " = " + rsOp1.Valor + " / " + rsOp2.Valor + ";\n";
-                    break;
+                result.Valor = "t" + NuevoTemporal();
+
+                switch (Op)
+                {
+                    case Operador.SUMA:
+                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " * 1;\n";
+                        break;
+                    case Operador.RESTA:
+                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " * -1;\n";
+                        break;
+                }
             }
 
             return result;
