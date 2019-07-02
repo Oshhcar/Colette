@@ -76,9 +76,9 @@ namespace Compilador.parser.Collete
                     linea = hijos[0].Token.Location.Line+1;
                     columna = hijos[0].Token.Location.Column+1;
                     return new Print((Expresion)GenerarArbol(hijos[2]), linea, columna);
-                case "E":
+                case "ATOM":
                     return GenerarArbol(hijos[0]);
-                case "PRIMITIVO":
+                case "LITERAL":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     if (hijos[0].Term.Name.Equals("number"))

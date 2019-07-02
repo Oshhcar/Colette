@@ -632,7 +632,7 @@ namespace Compilador
                 if (!ctbArchivo.Text.Equals(string.Empty))
                 {
                     AnalizadorColette analizador = new AnalizadorColette();
-                    string entrada = ctbArchivo.Text;//.Replace("\\", "\\\\");
+                    string entrada = ctbArchivo.Text;
                     ctb3D.Clear();
                     txtOutput.Clear();
 
@@ -640,7 +640,7 @@ namespace Compilador
                     {
                         MessageBox.Show("Archivo sin errores.");
                         ReporteErrores(analizador.Raiz);
-                        GraficarArbol(analizador.Raiz.Root);
+                        //GraficarArbol(analizador.Raiz.Root);
 
                     }
                     else
@@ -660,18 +660,25 @@ namespace Compilador
         public void GraficarArbol(ParseTreeNode raiz)
         {
             string archivo = "arbol.dot";
-            FileStream stream = new FileStream(archivo, FileMode.OpenOrCreate, FileAccess.Write);
-            StreamWriter writer = new StreamWriter(stream);
-            writer.WriteLine("digraph arbol{");
-            writer.WriteLine("rankdir=UD;");
-            writer.WriteLine("node [shape = box, style=filled, color=blanchedalmond];");
-            writer.WriteLine("edge[color=chocolate3];");
-            writer.WriteLine(GraficarNodo(raiz));
-            writer.WriteLine("}");
-            writer.Close();
+
+            StreamWriter writer = null;
 
             try
             {
+                //FileStream stream = new FileStream(archivo, FileMode.OpenOrCreate, FileAccess.Write);
+                //StreamWriter writer = new StreamWriter(stream);
+                writer = new StreamWriter(archivo);
+
+                string grafica = "digraph arbol{\n";
+                grafica += "rankdir=UD;\n";
+                grafica += "node [shape = box, style=filled, color=blanchedalmond];\n";
+                grafica += "edge[color=chocolate3];\n";
+                grafica += GraficarNodo(raiz) + "\n";
+                grafica += "}\n";
+
+                writer.Write(grafica);
+                writer.Close();
+
                 var command = string.Format("dot -Tpng arbol.dot  -o arbol.png");
                 var procStartInfo = new System.Diagnostics.ProcessStartInfo("cmd", "/C " + command);
                 var proc = new System.Diagnostics.Process();
@@ -681,8 +688,14 @@ namespace Compilador
 
                 //var appname = "Microsoft.Photos.exe";
                 // Process.Start(appname, "arbol.jpg");
-
-                Process.Start("arbol.png");
+                if (proc.ExitCode == 1)
+                {
+                    MessageBox.Show("Error al graficar","Graphviz");
+                } else
+                {
+                    Process.Start("arbol.png");
+                }
+               
             }
             catch (Exception x)
             {
@@ -694,7 +707,7 @@ namespace Compilador
         {
             string nodoString = "";
             //MessageBox.Show("label = "+raiz.ToString());
-            string label = raiz.ToString();
+            string label = raiz.ToString().Replace("\"","\\\""); //caracteres especiales
 
             nodoString = "nodo" + raiz.GetHashCode() + "[label=\"" + label + " \", fillcolor=\"blanchedalmond\", style =\"filled\", shape=\"box\"]; \n";
             if (raiz.ChildNodes.Count > 0)
