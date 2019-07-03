@@ -36,7 +36,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     result.Codigo += rsOp2.Codigo;
                 }
 
-                result.Valor = "t" + NuevoTemporal();
+                result.Valor = NuevoTemporal();
 
                 switch (Op)
                 {
@@ -59,7 +59,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             }
             else
             {
-                result.Valor = "t" + NuevoTemporal();
+                result.Valor = NuevoTemporal();
 
                 switch (Op)
                 {

@@ -22,7 +22,7 @@ namespace Compilador.parser.Colette.ast
         {
             Nodo.Etiquetas = 0;
             Nodo.Temporales = 0;
-            Ent global = new Ent();
+            Ent global = new Ent("Global");
 
             Result result = new Result();
             result.Codigo = "";
@@ -38,7 +38,10 @@ namespace Compilador.parser.Colette.ast
                 {
                     rsNodo = ((Expresion)sentencia).GetC3D(global);
                 }
-                result.Codigo += rsNodo.Codigo;
+
+                if(rsNodo != null)
+                    if(!rsNodo.Codigo.Equals(string.Empty))
+                        result.Codigo += rsNodo.Codigo;
             }
 
             string codigo = "var ";

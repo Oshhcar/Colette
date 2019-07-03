@@ -20,7 +20,7 @@ namespace Compilador.parser.Colette.ast
         public static int Etiquetas { get; set; }
         public static int Temporales { get; set; }
 
-        public int NuevaEtiqueta() { return ++Etiquetas; }
-        public int NuevoTemporal() { return ++Temporales; }
+        public string NuevaEtiqueta() { return "L"+(++Etiquetas); }
+        public string NuevoTemporal() { return "t"+(++Temporales); }
     }
 }

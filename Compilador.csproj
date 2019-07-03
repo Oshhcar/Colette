@@ -92,12 +92,16 @@
     <Compile Include="parser\Colette\ast\Arbol.cs" />
     <Compile Include="parser\Colette\ast\entorno\Ent.cs" />
     <Compile Include="parser\Colette\ast\entorno\Result.cs" />
+    <Compile Include="parser\Colette\ast\entorno\Sim.cs" />
     <Compile Include="parser\Colette\ast\entorno\Tipo.cs" />
     <Compile Include="parser\Colette\ast\expresion\Expresion.cs" />
+    <Compile Include="parser\Colette\ast\expresion\Identificador.cs" />
     <Compile Include="parser\Colette\ast\expresion\Literal.cs" />
     <Compile Include="parser\Colette\ast\expresion\operacion\Aritmetica.cs" />
+    <Compile Include="parser\Colette\ast\expresion\operacion\Logica.cs" />
     <Compile Include="parser\Colette\ast\expresion\operacion\Operacion.cs" />
     <Compile Include="parser\Colette\ast\expresion\operacion\Relacional.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\Asignacion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Bloque.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Clase.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Instruccion.cs" />

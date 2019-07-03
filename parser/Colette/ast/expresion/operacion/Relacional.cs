@@ -11,7 +11,9 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
     {
         public Relacional(Expresion op1, Expresion op2, Operacion.Operador op, int linea, int columna)
             : base(op1, op2, op, linea, columna)
-        { }
+        { Cortocircuito = false; }
+
+        public bool Cortocircuito { get; set; }
 
         public override Result GetC3D(Ent e)
         {
@@ -23,20 +25,15 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             Result rsOp1 = Op1.GetC3D(e);
             Result rsOp2 = Op2.GetC3D(e);
 
-            if (rsOp1.Codigo != null)
-            {
-                result.Codigo += rsOp1.Codigo;
-            }
-            if (rsOp2.Codigo != null)
-            {
-                result.Codigo += rsOp2.Codigo;
-            }
+            result.Codigo += rsOp1.Codigo;
+            result.Codigo += rsOp2.Codigo;
+            
 
-            result.Valor = "t" + NuevoTemporal();
+            result.Valor = NuevoTemporal();
 
-            result.EtiquetaV = "L" + NuevaEtiqueta();
-            result.EtiquetaF = "L" + NuevaEtiqueta();
-            string etiquetaS = "L" + NuevaEtiqueta();
+            result.EtiquetaV = NuevaEtiqueta();
+            result.EtiquetaF = NuevaEtiqueta();
+            
             string op = "";
 
             switch (Op)
@@ -61,14 +58,27 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     break;
             }
 
-            result.Codigo += "if (" + rsOp1.Valor + " " + op + " " + rsOp2.Valor + ") goto " + result.EtiquetaV + ";\n";
-            result.Codigo += "goto " + result.EtiquetaF+";\n";
-            result.Codigo += result.EtiquetaV + ":\n";
-            result.Codigo += result.Valor + " = 1;\n";
-            result.Codigo += "goto " + etiquetaS + ";\n";
-            result.Codigo += result.EtiquetaF + ":\n";
-            result.Codigo += result.Valor + " = 0;\n";
-            result.Codigo += etiquetaS + ":\n";
+
+
+
+            if (!Cortocircuito)
+            {
+                result.Codigo += "if (" + rsOp1.Valor + " " + op + " " + rsOp2.Valor + ") goto " + result.EtiquetaV + ";\n";
+                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+
+                string etiquetaS = NuevaEtiqueta();
+                result.Codigo += result.EtiquetaV + ":\n";
+                result.Codigo += result.Valor + " = 1;\n";
+                result.Codigo += "goto " + etiquetaS + ";\n";
+                result.Codigo += result.EtiquetaF + ":\n";
+                result.Codigo += result.Valor + " = 0;\n";
+                result.Codigo += etiquetaS + ":\n";
+            }
+            else
+            {
+                result.Codigo += "ifFalse (" + rsOp1.Valor + " " + op + " " + rsOp2.Valor + ") goto " + result.EtiquetaV + ";\n";
+                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+            }
 
             return result;
         }

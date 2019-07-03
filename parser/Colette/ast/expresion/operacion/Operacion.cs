@@ -44,6 +44,9 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             MAYORIGUALQUE,
             IGUAL,
             DIFERENTE,
+            OR,
+            AND,
+            NOT,
             INDEFINIDO
         }
     }

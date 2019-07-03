@@ -8,8 +8,18 @@ namespace Compilador.parser.Colette.ast.entorno
 {
     enum Tipo
     {
-        ENTERO,
-        DECIMAL,
-        INDEFINIDO
+        INT,
+        DOUBLE,
+        VOID,
+        INDEF
+    }
+
+    enum Rol
+    {
+        METHOD,
+        FUNCION,
+        RETURN,
+        PARAMETER,
+        LOCAL
     }
 }

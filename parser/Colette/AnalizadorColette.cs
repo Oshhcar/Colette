@@ -76,18 +76,88 @@ namespace Compilador.parser.Collete
                     linea = hijos[0].Token.Location.Line+1;
                     columna = hijos[0].Token.Location.Column+1;
                     return new Print((Expresion)GenerarArbol(hijos[2]), linea, columna);
+                case "ASSIGNMENT_STMT":
+                    linea = hijos[1].Token.Location.Line + 1;
+                    columna = hijos[1].Token.Location.Column + 1;
+                    //LinkedList<LinkedList<Expresion>> assignmet_list = ;
+                    return new Asignacion((LinkedList<Expresion>)GenerarArbol(hijos[0]), (LinkedList<LinkedList<Expresion>>)GenerarArbol(hijos[2]), linea, columna);
+                case "TARGET_LIST":
+                    LinkedList<Expresion> target_list = new LinkedList<Expresion>();
+                    foreach (ParseTreeNode hijo in hijos)
+                    {
+                        target_list.AddLast((Expresion)GenerarArbol(hijo));
+                    }
+                    return target_list;
+                case "TARGET":
+                    if (hijos[0].Term.Name.Equals("identifier"))
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new Identificador(hijos[0].Token.Text, linea, columna);
+
+                    }
+                    return GenerarArbol(hijos[0]);
+                case "ASSIGNMENT_LIST":
+                    LinkedList<LinkedList<Expresion>> assignment_list = new LinkedList<LinkedList<Expresion>>();
+                    foreach (ParseTreeNode hijo in hijos)
+                    {
+                        Object starred_expression = GenerarArbol(hijo);
+                        if (starred_expression is Expresion)
+                        {
+                            LinkedList<Expresion> assignment_list2 = new LinkedList<Expresion>();
+                            assignment_list2.AddLast((Expresion)starred_expression);
+                            assignment_list.AddLast(assignment_list2);
+                        }
+                        else
+                        {
+                            assignment_list.AddLast((LinkedList<Expresion>)starred_expression);
+                        }
+                    }
+                    return assignment_list;
+                case "STARRED_LIST":
+                    return GenerarArbol(hijos[0]);
+                case "STARRED_LIST_COMMA":
+                    LinkedList<Expresion> starred_list = new LinkedList<Expresion>();
+                    foreach (ParseTreeNode hijo in hijos)
+                    {
+                        starred_list.AddLast((Expresion)GenerarArbol(hijo));
+                    }
+                    return starred_list;
                 case "STARRED_EXPRESSION":
+                    return GenerarArbol(hijos[0]);
+                case "STARRED_ITEM":
                     return GenerarArbol(hijos[0]);
                 case "EXPRESSION":
                     return GenerarArbol(hijos[0]);
                 case "CONDITIONAL_EXPRESSION":
                     return GenerarArbol(hijos[0]);
                 case "OR_TEST":
-                    return GenerarArbol(hijos[0]);
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        return new Logica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), Operador.OR, linea, columna);
+                    }
                 case "AND_TEST":
-                    return GenerarArbol(hijos[0]);
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        return new Logica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), Operador.AND, linea, columna);
+                    }
                 case "NOT_TEST":
-                    return GenerarArbol(hijos[0]);
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new Logica((Expresion)GenerarArbol(hijos[1]), null, Operador.NOT, linea, columna);
+                    }
                 case "COMPARISON":
                     if (hijos.Count() == 1)
                         return GenerarArbol(hijos[0]);
@@ -149,12 +219,12 @@ namespace Compilador.parser.Collete
                         try
                         {
                             int valor2 = Convert.ToInt32(hijos[0].Token.Text);
-                            return new Literal(Tipo.ENTERO, valor2, linea, columna);
+                            return new Literal(Tipo.INT, valor2, linea, columna);
                         }
                         catch (Exception)
                         {
                             double valor = Convert.ToDouble(hijos[0].Token.Text);
-                            return new Literal(Tipo.DECIMAL, valor, linea, columna);
+                            return new Literal(Tipo.DOUBLE, valor, linea, columna);
                         }   
                     }
                     return null;
