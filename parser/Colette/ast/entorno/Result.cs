@@ -16,5 +16,6 @@ namespace Compilador.parser.Colette.ast.entorno
         public string Codigo { get; set; }
         public string EtiquetaV { get; set; }
         public string EtiquetaF { get; set; }
+        public int PtrStack { get; set; } /*Uso en asignaciones*/
     }
 }

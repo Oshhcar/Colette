@@ -210,6 +210,13 @@ namespace Compilador.parser.Collete
                 case "PRIMARY":
                     return GenerarArbol(hijos[0]);
                 case "ATOM":
+                    if (hijos[0].Term.Name.Equals("identifier"))
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new Identificador(hijos[0].Token.Text, linea, columna);
+
+                    }
                     return GenerarArbol(hijos[0]);
                 case "LITERAL":
                     linea = hijos[0].Token.Location.Line + 1;

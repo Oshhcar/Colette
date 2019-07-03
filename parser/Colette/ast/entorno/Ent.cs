@@ -11,7 +11,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public Ent(string ambito)
         {
             Simbolos = new LinkedList<Sim>();
-            Pos = 0;
+            Pos = -1;
             Ambito = ambito;
             /*ptr Padre*/
         }

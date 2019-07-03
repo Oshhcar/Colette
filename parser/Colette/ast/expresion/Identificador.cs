@@ -36,6 +36,7 @@ namespace Compilador.parser.Colette.ast.expresion
                 }
                 else
                 {
+                    result.PtrStack = s.Pos;
                     result.Valor = "stack[" + ptrStack + "]";
                 }
                 return result;
