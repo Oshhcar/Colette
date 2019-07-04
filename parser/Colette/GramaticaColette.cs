@@ -39,11 +39,17 @@ namespace Compilador.parser.Collete
                 pass_ = ToTerm("pass"),
                 global_ = ToTerm("global"),
                 nonlocal_ = ToTerm("nonlocal"),
-                del_ = ToTerm("del");
+                del_ = ToTerm("del"),
+                int_ = ToTerm("int"),
+                double_ = ToTerm("double"),
+                string_ = ToTerm("String"),
+                dictionary_ = ToTerm("dictionary"),
+                list_ = ToTerm("list"),
+                tup_ = ToTerm("tup");
 
             MarkReservedWords("class", "def", "lambda", "print", "or", "and", "not", "for",
                 "if", "elif", "else", "None", "break", "continue", "return", "pass", "global", "nonlocal",
-                "del");
+                "del", "int", "double", "String", "dictionary", "list", "tup");
 
             /* Relational operators */
             KeyTerm
@@ -117,6 +123,7 @@ namespace Compilador.parser.Collete
                 SENTENCIAS = new NonTerminal("SENTENCIAS"),
                 SENTENCIA = new NonTerminal("SENTENCIA"),
 
+                TYPE = new NonTerminal("TYPE"),
                 EXPRESSION_STMT = new NonTerminal("EXPRESSION_STMT"),
                 ASSIGNMENT_STMT = new NonTerminal("ASSIGNMENT_STMT"),
                 ASSIGNMENT_LIST = new NonTerminal("ASSIGNMENT_LIST"),
@@ -235,6 +242,8 @@ namespace Compilador.parser.Collete
                             | EXPRESSION_STMT + Eos
                             ;
 
+            TYPE.Rule = int_ | double_ | string_ | identifier | dictionary_ | list_ | tup_;
+
             PRINT.Rule = print_ + leftPar + STARRED_EXPRESSION + rightPar; //CORR
 
             IF_STMT.Rule = IF_LIST + else_ + colon + Eos + BLOQUE //CORR
@@ -254,20 +263,21 @@ namespace Compilador.parser.Collete
 
             PASS_STMT.Rule = pass_; //CORR
 
-            FUNCDEF.Rule = def_ + identifier + leftPar + PARAMETER_LIST + rightPar + colon + Eos + BLOQUE //CORR
-                        | def_ + identifier + leftPar + rightPar + colon + Eos + BLOQUE;
+            FUNCDEF.Rule = def_ + TYPE + identifier + leftPar + PARAMETER_LIST + rightPar + colon + Eos + BLOQUE //CORR
+                        | def_ + TYPE + identifier + leftPar + rightPar + colon + Eos + BLOQUE;
 
             PARAMETER_LIST.Rule = MakePlusRule(PARAMETER_LIST, comma, identifier); //CORR
 
-            GLOBAL_STMT.Rule = global_ + ID_LIST; //CORR
+            GLOBAL_STMT.Rule = global_ + TYPE + ID_LIST; //CORR
 
-            NONLOCAL_STMT.Rule = nonlocal_ + ID_LIST; //CORR
+            NONLOCAL_STMT.Rule = nonlocal_ + TYPE + ID_LIST; //CORR
 
             ID_LIST.Rule = MakePlusRule(ID_LIST, comma, identifier); //CORR
 
             DEL_STMT.Rule = del_ + TARGET_LIST; //CORR
 
-            ASSIGNMENT_STMT.Rule = TARGET_LIST + equal + ASSIGNMENT_LIST; //CORR
+            ASSIGNMENT_STMT.Rule = TARGET_LIST + equal + ASSIGNMENT_LIST //CORR
+                                | TYPE + TARGET_LIST + equal + ASSIGNMENT_LIST; 
 
             ASSIGNMENT_LIST.Rule = MakePlusRule(ASSIGNMENT_LIST, equal, STARRED_EXPRESSION); //CORR
 
