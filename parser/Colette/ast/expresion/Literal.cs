@@ -36,21 +36,24 @@ namespace Compilador.parser.Colette.ast.expresion
                     break;
                 case Tipo.STRING:
                     result.Tipo = Tipo.STRING;
-                    result.Valor = NuevoTemporal();
-                    result.Codigo = result.Valor + " = H;\n";
-                    result.Codigo += "H = H + " + (Valor.ToString().Length - 1) + ";\n";
 
+                    string tmp;
                     int cont = 0;
-                    foreach(char c in Valor.ToString().Substring(1, Valor.ToString().Length-2))
+                    foreach (char c in Valor.ToString().Substring(1, Valor.ToString().Length - 2))
                     {
-                        string tmp = NuevoTemporal();
-                        result.Codigo += tmp + " = " + result.Valor + " + " + cont++ + ";\n";
-                        result.Codigo += "heap[" +tmp+ "] = "+(int)c+";\n";
+                        tmp = NuevoTemporal();
+                        result.Codigo += tmp + " = H + " + cont++ + ";\n";
+                        result.Codigo += "heap[" + tmp + "] = " + (int)c + ";\n";
 
                     }
-                    string tmp2 = NuevoTemporal();
-                    result.Codigo += tmp2 + " = " + result.Valor + " + " + cont++ + ";\n";
-                    result.Codigo += "heap[" + tmp2 + "] = 0;\n";
+                    tmp = NuevoTemporal();
+                    result.Codigo += tmp + " = H + " + cont++ + ";\n";
+                    result.Codigo += "heap[" + tmp + "] = 0;\n";
+
+                    result.Valor = NuevoTemporal();
+                    result.Codigo += result.Valor + " = H;\n";
+                    result.Codigo += "H = H + " + cont + ";\n";
+
                     break;
             }
             

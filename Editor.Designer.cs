@@ -53,6 +53,7 @@
             this.graficarASTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.c3DToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ejecutarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.traducirToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitBottom = new System.Windows.Forms.Splitter();
@@ -69,7 +70,6 @@
             this.lbLinea = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.traducirToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuPrincipal.SuspendLayout();
             this.pageErrores.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridErrors)).BeginInit();
@@ -186,7 +186,7 @@
             // copiarToolStripMenuItem
             // 
             this.copiarToolStripMenuItem.Name = "copiarToolStripMenuItem";
-            this.copiarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.copiarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
             this.copiarToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.copiarToolStripMenuItem.Text = "Copiar";
             this.copiarToolStripMenuItem.Click += new System.EventHandler(this.CopiarToolStripMenuItem_Click);
@@ -242,9 +242,15 @@
             // ejecutarToolStripMenuItem
             // 
             this.ejecutarToolStripMenuItem.Name = "ejecutarToolStripMenuItem";
-            this.ejecutarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ejecutarToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.ejecutarToolStripMenuItem.Text = "Ejecutar";
             this.ejecutarToolStripMenuItem.Click += new System.EventHandler(this.EjecutarToolStripMenuItem_Click);
+            // 
+            // traducirToolStripMenuItem1
+            // 
+            this.traducirToolStripMenuItem1.Name = "traducirToolStripMenuItem1";
+            this.traducirToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.traducirToolStripMenuItem1.Text = "Traducir";
             // 
             // ayudaToolStripMenuItem
             // 
@@ -257,7 +263,7 @@
             // acercaDeToolStripMenuItem
             // 
             this.acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
-            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.acercaDeToolStripMenuItem.Text = "Acerca de";
             this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.AcercaDeToolStripMenuItem_Click);
             // 
@@ -420,12 +426,6 @@
             this.openFileDialog1.FileName = "nuevo";
             this.openFileDialog1.Tag = "collete, txt";
             this.openFileDialog1.Title = "Abrir Archivo";
-            // 
-            // traducirToolStripMenuItem1
-            // 
-            this.traducirToolStripMenuItem1.Name = "traducirToolStripMenuItem1";
-            this.traducirToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.traducirToolStripMenuItem1.Text = "Traducir";
             // 
             // Editor
             // 

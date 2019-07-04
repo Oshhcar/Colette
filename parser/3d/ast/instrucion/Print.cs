@@ -35,7 +35,10 @@ namespace Compilador.parser._3d.ast.instrucion
                         if (Char.Equals("c"))
                         {
                             int valor = Convert.ToInt32(sim.Valor);
-                            Output.Text += (char)valor;
+                            if (valor != 10) /*Salto de línea*/
+                                Output.Text += (char)valor;
+                            else
+                                Output.Text += "\r\n";
                             //Console.Write((char)valor);
                         }
                         else if (Char.Equals("i"))
