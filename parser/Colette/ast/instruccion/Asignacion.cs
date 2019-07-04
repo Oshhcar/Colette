@@ -47,6 +47,7 @@ namespace Compilador.parser.Colette.ast.instruccion
 
                         Sim s = new Sim(((Identificador)obj).Id, Tipo.INT, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
                         e.Add(s);
+                        rsObj.Simbolo = s;
 
                         string ptrStack = NuevoTemporal();
                         rsObj.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
@@ -98,6 +99,7 @@ namespace Compilador.parser.Colette.ast.instruccion
 
                     if (rsList.Count() == 1)
                     {
+                        rsObj.Tipo = rsList.ElementAt(0).Tipo;
                         rsObj.Codigo += rsList.ElementAt(0).Codigo;
                         rsObj.Codigo += rsObj.Valor + " = " + rsList.ElementAt(0).Valor + ";\n";
                     }

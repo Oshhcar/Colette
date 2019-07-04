@@ -222,7 +222,7 @@ namespace Compilador.parser.Collete
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     if (hijos[0].Term.Name.Equals("number"))
-                    { 
+                    {
                         try
                         {
                             int valor2 = Convert.ToInt32(hijos[0].Token.Text);
@@ -232,7 +232,11 @@ namespace Compilador.parser.Collete
                         {
                             double valor = Convert.ToDouble(hijos[0].Token.Text);
                             return new Literal(Tipo.DOUBLE, valor, linea, columna);
-                        }   
+                        }
+                    }
+                    else if(hijos[0].Term.Name.Equals("stringliteral"))
+                    {
+                        return new Literal(Tipo.STRING, hijos[0].Token.Text, linea, columna);
                     }
                     return null;
 

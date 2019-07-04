@@ -10,6 +10,7 @@ namespace Compilador.parser.Colette.ast.entorno
     {
         INT,
         DOUBLE,
+        STRING,
         VOID,
         INDEF
     }

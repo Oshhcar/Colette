@@ -24,13 +24,19 @@ namespace Compilador.parser.Colette.ast.expresion
 
             if (s != null)
             {
+                
                 /*verificar tipo para acceder a heap*/
                 Result result = new Result();
                 string ptrStack = NuevoTemporal();
                 result.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
-
+                result.Tipo = s.Tipo;
                 if (Acceso)
                 {
+                    string ptrTipo = NuevoTemporal();
+                    result.Codigo += ptrTipo + " = P + " + (s.Pos + 1) + ";\n";
+                    result.Codigo += "stack[" + ptrTipo + "] = " + (int)s.Tipo + ";\n";
+
+
                     result.Valor = NuevoTemporal();
                     result.Codigo += result.Valor + " = stack[" + ptrStack + "];\n";
                 }

@@ -22,6 +22,7 @@ namespace Compilador.parser.Colette.ast
         {
             Nodo.Etiquetas = 0;
             Nodo.Temporales = 0;
+
             Ent global = new Ent("Global");
 
             Result result = new Result();
@@ -44,18 +45,24 @@ namespace Compilador.parser.Colette.ast
                         result.Codigo += rsNodo.Codigo;
             }
 
-            string codigo = "var ";
+            global.Recorrer();
 
-            int i = 1;
-            while (i <= Nodo.Temporales)
+            string codigo = "";
+
+            if (Nodo.Temporales > 0)
             {
-                codigo += "t" + i;
+                codigo += "var ";
+                int i = 1;
+                while (i <= Nodo.Temporales)
+                {
+                    codigo += "t" + i;
 
-                if (++i <= Nodo.Temporales)
-                    codigo += ",";
+                    if (++i <= Nodo.Temporales)
+                        codigo += ",";
+                }
+                codigo += ";\n";
+
             }
-
-            codigo += ";\n";
 
             codigo += "var stack[];\n";
             codigo += "var heap[];\n";
