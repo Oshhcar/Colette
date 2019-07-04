@@ -273,7 +273,7 @@ namespace Compilador.parser.Collete
             FUNCDEF.Rule = def_ + TYPE + identifier + leftPar + PARAMETER_LIST + rightPar + colon + Eos + BLOQUE //CORR
                         | def_ + TYPE + identifier + leftPar + rightPar + colon + Eos + BLOQUE;
 
-            PARAMETER_LIST.Rule = MakePlusRule(PARAMETER_LIST, comma, identifier); //CORR
+            PARAMETER_LIST.Rule = MakePlusRule(PARAMETER_LIST, comma, TYPE + identifier); //CORR
 
             GLOBAL_STMT.Rule = global_ + TYPE + ID_LIST; //CORR
 

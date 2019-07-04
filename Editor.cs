@@ -640,7 +640,7 @@ namespace Compilador
                     {
                         MessageBox.Show("Archivo sin errores.");
                         ReporteErrores(analizador.Raiz);
-                        //GraficarArbol(analizador.Raiz.Root);
+                        GraficarArbol(analizador.Raiz.Root);
 
                     }
                     else
