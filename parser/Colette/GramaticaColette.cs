@@ -45,11 +45,12 @@ namespace Compilador.parser.Collete
                 string_ = ToTerm("String"),
                 dictionary_ = ToTerm("dictionary"),
                 list_ = ToTerm("list"),
-                tup_ = ToTerm("tup");
+                tup_ = ToTerm("tup"),
+                while_ = ToTerm("while");
 
             MarkReservedWords("class", "def", "lambda", "print", "or", "and", "not", "for",
                 "if", "elif", "else", "None", "break", "continue", "return", "pass", "global", "nonlocal",
-                "del", "int", "double", "String", "dictionary", "list", "tup");
+                "del", "int", "double", "String", "dictionary", "list", "tup", "while");
 
             /* Relational operators */
             KeyTerm
@@ -134,6 +135,7 @@ namespace Compilador.parser.Collete
                 TARGET = new NonTerminal("TARGET"),
                 IF_STMT = new NonTerminal("IF_STMT"),
                 IF_LIST = new NonTerminal("IF_LIST"),
+                WHILE_STMT = new NonTerminal("WHILE_STMT"),
                 FOR_STMT = new NonTerminal("FOR_STMT"),
                 RETURN_STMT = new NonTerminal("RETURN_STMT"),
                 BREAK_STMT = new NonTerminal("BREAK_STMT"),
@@ -210,6 +212,7 @@ namespace Compilador.parser.Collete
                             | FUNCDEF
                             | PRINT + Eos
                             | IF_STMT
+                            | WHILE_STMT
                             | FOR_STMT
                             | GLOBAL_STMT + Eos
                             | NONLOCAL_STMT + Eos
@@ -227,6 +230,7 @@ namespace Compilador.parser.Collete
 
             SENTENCIA.Rule = PRINT + Eos
                             | IF_STMT
+                            | WHILE_STMT
                             | FOR_STMT
                             | RETURN_STMT + Eos
                             | BREAK_STMT + Eos
@@ -251,6 +255,9 @@ namespace Compilador.parser.Collete
 
             IF_LIST.Rule = IF_LIST + elif_ + EXPRESSION + colon + Eos + BLOQUE //CORR
                           | if_ + EXPRESSION + colon + Eos + BLOQUE;
+
+            WHILE_STMT.Rule = while_ + EXPRESSION + colon + Eos + BLOQUE //CORR
+                            | while_ + EXPRESSION + colon + Eos + BLOQUE + else_ + colon + Eos + BLOQUE;
 
             FOR_STMT.Rule = for_ + TARGET_LIST + in_ + EXPRESSION_LIST + colon + Eos + BLOQUE //CORR
                           | for_ + TARGET_LIST + in_ + EXPRESSION_LIST + colon + Eos + BLOQUE + else_ + colon + Eos + BLOQUE;
