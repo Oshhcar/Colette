@@ -95,7 +95,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             return result;
         }
 
-        public override Tipo GetTipo(Ent e)
+        public override Tipo GetTipo()
         {
             throw new NotImplementedException();
         }

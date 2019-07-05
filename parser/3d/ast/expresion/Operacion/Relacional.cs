@@ -25,8 +25,8 @@ namespace Compilador.parser._3d.ast.expresion.Operacion
                 {
                     if (tip1 == Tipo.NUMERO && tip2 == Tipo.NUMERO)
                     {
-                        int val1 = Convert.ToInt32(Op1.GetValor());
-                        int val2 = Convert.ToInt32(Op2.GetValor());
+                        double val1 = Convert.ToDouble(Op1.GetValor());
+                        double val2 = Convert.ToDouble(Op2.GetValor());
 
                         switch (Op)
                         {

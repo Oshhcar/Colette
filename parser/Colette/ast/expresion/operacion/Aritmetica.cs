@@ -11,7 +11,9 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
     {
         public Aritmetica(Expresion op1, Expresion op2, Operador op, int linea, int columna)
             : base(op1, op2, op, linea, columna)
-        { }
+        { Tipo = new Tipo(Tipo.Type.INDEFINIDO); }
+
+        public Tipo Tipo { get; set; }
 
         public override Result GetC3D(Ent e)
         {
@@ -22,62 +24,223 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
 
             Result rsOp1 = Op1.GetC3D(e);
 
-            if (rsOp1.Codigo != null)
-            {
-                result.Codigo += rsOp1.Codigo;
-            }
-
             if (Op2 != null)
             {
                 Result rsOp2 = Op2.GetC3D(e);
 
-                if (rsOp2.Codigo != null)
+                TipoDominante(Op1.GetTipo(), Op2.GetTipo());
+
+                if (!Tipo.IsIndefinido())
                 {
+                    result.Codigo += rsOp1.Codigo;
                     result.Codigo += rsOp2.Codigo;
+
+                    result.Valor = NuevoTemporal();
+
+                    if (Tipo.IsString())
+                    {
+
+                    }
+                    else 
+                    {
+                        switch (Op)
+                        {
+                            case Operador.SUMA:
+                                result.Codigo += result.Valor + " = " + rsOp1.Valor + " + " + rsOp2.Valor + ";\n";
+                                break;
+                            case Operador.RESTA:
+                                result.Codigo += result.Valor + " = " + rsOp1.Valor + " - " + rsOp2.Valor + ";\n";
+                                break;
+                            case Operador.MULTIPLICACION:
+                                result.Codigo += result.Valor + " = " + rsOp1.Valor + " * " + rsOp2.Valor + ";\n";
+                                break;
+                            case Operador.DIVISION:
+                                result.Codigo += result.Valor + " = " + rsOp1.Valor + " / " + rsOp2.Valor + ";\n";
+                                break;
+                            case Operador.MODULO:
+                                result.Codigo += result.Valor + " = " + rsOp1.Valor + " % " + rsOp2.Valor + ";\n";
+                                break;
+                            case Operador.FLOOR:
+                                result.EtiquetaV = NuevaEtiqueta();
+                                string etqSalida = NuevaEtiqueta();
+                                
+                                if (Op1 is Literal)
+                                {
+                                    string tmpOp1 = NuevoTemporal();
+                                    result.Codigo += tmpOp1 + " = " + rsOp1.Valor + ";\n";
+                                    rsOp1.Valor = tmpOp1;
+                                }
+                                if (Op2 is Literal)
+                                {
+                                    string tmpOp2 = NuevoTemporal();
+                                    result.Codigo += tmpOp2 + " = " + rsOp2.Valor + ";\n";
+                                    rsOp2.Valor = tmpOp2;
+                                }
+
+                                result.Codigo += "if (" + rsOp2.Valor + " != 0) goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + etqSalida + ";\n";
+                                result.Codigo += result.EtiquetaV + ":\n";
+
+                                string tmpCond = NuevoTemporal();
+                                result.Codigo += tmpCond + " = 0;\n";
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+                                result.Codigo += "if (" + rsOp2.Valor + " > 0) goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                result.Codigo += result.EtiquetaF + ":\n";
+                                result.Codigo += tmpCond + " = 1;\n";
+                                string menos = NuevoTemporal();
+                                result.Codigo += menos + " = 0 - 1;\n";
+                                result.Codigo += rsOp2.Valor + " = " + rsOp2.Valor + " * " + menos + ";\n";
+                                result.Codigo += result.EtiquetaV + ":\n";
+
+                                string tmpCond2 = NuevoTemporal();
+                                result.Codigo += tmpCond2 + " = 0;\n";
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+                                result.Codigo += "if (" + rsOp1.Valor + " >= 0) goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                result.Codigo += result.EtiquetaF + ":\n";
+                                result.Codigo += tmpCond2 + " = 1;\n";
+                                menos = NuevoTemporal();
+                                result.Codigo += menos + " = 0 - 1;\n";
+                                result.Codigo += rsOp1.Valor + " = " + rsOp1.Valor + " * " + menos + ";\n";
+                                result.Codigo += result.EtiquetaV + ":\n";
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+                                result.Codigo += result.Valor + " = 1;\n";
+                                result.Codigo += "if (" + rsOp2.Valor + " > " + rsOp1.Valor + ") goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                result.Codigo += result.EtiquetaV + ":\n";
+                                result.Codigo += result.Valor + " = 0;\n";
+                                result.Codigo += result.EtiquetaF + ":\n";
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+                                string etqCiclo = NuevaEtiqueta();
+                                string tmp = NuevoTemporal();
+
+                                result.Codigo += tmp + " = " + rsOp1.Valor + " - " + rsOp2.Valor + ";\n";
+                                result.Codigo += etqCiclo + ":\n";
+                                result.Codigo += tmp + " = " + tmp + " - " + rsOp2.Valor + ";\n";
+                                result.Codigo += "if (" + tmp + " >= 0) goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                result.Codigo += result.EtiquetaV + ":\n";
+                                result.Codigo += result.Valor + " = " + result.Valor + " + 1;\n";
+                                result.Codigo += "goto " + etqCiclo + ";\n";
+                                result.Codigo += result.EtiquetaF + ":\n";
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+                                result.Codigo += "if (" + tmpCond + " == 0) goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                result.Codigo += result.EtiquetaF + ":\n";
+                                string etqVerd = result.EtiquetaV;
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+                                result.Codigo += "if (" + tmpCond2 + " == 1) goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                result.Codigo += result.EtiquetaF + ":\n";
+                                result.Codigo += result.Valor + " = " + result.Valor + " + 1;\n";
+                                menos = NuevoTemporal();
+                                result.Codigo += menos + " = 0 - 1;\n";
+                                result.Codigo += result.Valor + " = " + result.Valor + " * " + menos +";\n";
+                                result.Codigo += etqVerd + ":\n";
+                                result.Codigo += result.EtiquetaV + ":\n";
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+                                result.Codigo += "if (" + tmpCond2 + " == 0) goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                result.Codigo += result.EtiquetaF + ":\n";
+                                etqVerd = result.EtiquetaV;
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+                                result.Codigo += "if (" + tmpCond + " == 1) goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                result.Codigo += result.EtiquetaF + ":\n";
+                                result.Codigo += result.Valor + " = " + result.Valor + " + 1;\n";
+                                menos = NuevoTemporal();
+                                result.Codigo += menos + " = 0 - 1;\n";
+                                result.Codigo += result.Valor + " = " + result.Valor + " * " + menos + ";\n";
+                                result.Codigo += etqVerd + ":\n";
+                                result.Codigo += result.EtiquetaV + ":\n";
+
+                                result.Codigo += etqSalida + ":\n";
+                                break;
+                        }
+                    }
                 }
-
-                result.Valor = NuevoTemporal();
-
-                switch (Op)
+                else
                 {
-                    case Operador.SUMA:
-                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " + " + rsOp2.Valor + ";\n";
-                        break;
-                    case Operador.RESTA:
-                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " - " + rsOp2.Valor + ";\n";
-                        break;
-                    case Operador.MULTIPLICACION:
-                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " * " + rsOp2.Valor + ";\n";
-                        break;
-                    case Operador.DIVISION:
-                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " / " + rsOp2.Valor + ";\n";
-                        break;
-                    case Operador.MODULO:
-                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " % " + rsOp2.Valor + ";\n";
-                        break;
+                    Console.WriteLine("Error de tipos Aritmetica" + Linea);
                 }
             }
             else
             {
-                result.Valor = NuevoTemporal();
-
-                switch (Op)
+                if (Op1.GetTipo().IsNumeric())
                 {
-                    case Operador.SUMA:
-                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " * 1;\n";
-                        break;
-                    case Operador.RESTA:
-                        result.Codigo += result.Valor + " = " + rsOp1.Valor + " * -1;\n";
-                        break;
+                    Tipo = Op1.GetTipo();
+                    result.Valor = NuevoTemporal();
+
+                    switch (Op)
+                    {
+                        case Operador.SUMA:
+                            result.Codigo += result.Valor + " = " + rsOp1.Valor + " * 1;\n";
+                            break;
+                        case Operador.RESTA:
+                            result.Codigo += result.Valor + " = 0 - 1;\n";
+                            string tmp = result.Valor;
+                            result.Valor = NuevoTemporal();
+                            result.Codigo += result.Valor + " = " + rsOp1.Valor + " * " + tmp + ";\n";
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Error de tipos Aritmetica" + Linea);
                 }
             }
-
             return result;
         }
 
-        public override Tipo GetTipo(Ent e)
+        public override Tipo GetTipo()
         {
-            throw new NotImplementedException();
+            return Tipo;
+        }
+
+        public void TipoDominante(Tipo op1, Tipo op2)
+        {
+            if (!op1.IsIndefinido() && !op2.IsIndefinido())
+            {
+                if (op1.IsString() || op2.IsString())
+                {
+                    if (Op == Operador.SUMA)
+                    {
+                        Tipo.Tip = Tipo.Type.STRING;
+                        return;
+                    }
+                }
+                else if (!op1.IsBoolean() && !op2.IsBoolean())
+                {
+                    if (op1.IsDouble() || op2.IsDouble())
+                    {
+                        Tipo.Tip = Tipo.Type.DOUBLE;
+                        return;
+                    }
+                    else if (op1.IsInt() || op2.IsInt())
+                    {
+                        Tipo.Tip = Tipo.Type.INT;
+                        return;
+                    }
+                }
+            }
+            Tipo.Tip = Tipo.Type.INDEFINIDO;  
         }
     }
 }

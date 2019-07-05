@@ -34,18 +34,34 @@ namespace Compilador.parser._3d.ast.instrucion
                     {
                         if (Char.Equals("c"))
                         {
-                            int valor = Convert.ToInt32(sim.Valor);
-                            if (valor != 10) /*Salto de línea*/
-                                Output.Text += (char)valor;
-                            else
-                                Output.Text += "\r\n";
-                            //Console.Write((char)valor);
+                            try
+                            {
+                                int valor = Convert.ToInt32(sim.Valor);
+                                if (valor != 10) /*Salto de línea*/
+                                    Output.Text += (char)valor;
+                                else
+                                    Output.Text += "\r\n";
+                                //Console.Write((char)valor);
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine("Error, no puede convertirse el valor. Línea: " + Linea);
+                            }
+
                         }
                         else if (Char.Equals("i"))
                         {
-                            int valor = Convert.ToInt32(sim.Valor);
-                            Output.Text += valor;
-                            //Console.Write(valor);
+                            try
+                            {
+                                int valor = Convert.ToInt32(sim.Valor);
+                                Output.Text += valor;
+                                //Console.Write(valor);
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine("Error, no puede convertirse el valor. Línea: " + Linea);
+                            }
+
                         }
                         else
                         {

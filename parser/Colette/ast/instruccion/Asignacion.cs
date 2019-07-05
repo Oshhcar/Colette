@@ -45,7 +45,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         rsObj = new Result();
 
-                        Sim s = new Sim(((Identificador)obj).Id, Tipo.INT, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
+                        Sim s = new Sim(((Identificador)obj).Id, new Tipo(Tipo.Type.INT), Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
                         e.Add(s);
                         rsObj.Simbolo = s;
 
@@ -82,7 +82,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                                 {
                                     rsTemp = new Result();
 
-                                    Sim s = new Sim(((Identificador)expI).Id, Tipo.INT, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
+                                    Sim s = new Sim(((Identificador)expI).Id, new Tipo(Tipo.Type.INT), Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
                                     e.Add(s);
 
                                     string ptrStack = NuevoTemporal();

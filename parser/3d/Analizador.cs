@@ -1,4 +1,5 @@
 ﻿using Compilador.parser._3d.ast;
+using Compilador.parser._3d.ast.entorno;
 using Compilador.parser._3d.ast.expresion;
 using Compilador.parser._3d.ast.expresion.Operacion;
 using Compilador.parser._3d.ast.instrucion;
@@ -150,7 +151,7 @@ namespace Compilador.parser._3d
                     if (hijos[0].Term.Name.Equals("num"))
                     {
                         double valor = Convert.ToDouble(hijos[0].Token.Text);
-                        return new Literal(valor, linea, columna);
+                        return new Literal(valor, Tipo.NUMERO, linea, columna);
                     }
                     else
                     {

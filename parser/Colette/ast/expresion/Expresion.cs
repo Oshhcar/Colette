@@ -12,7 +12,7 @@ namespace Compilador.parser.Colette.ast.expresion
         public Expresion(int linea, int columna) : base(linea, columna)
         { }
 
-        public abstract Tipo GetTipo(Ent e);
+        public abstract Tipo GetTipo();
 
         public abstract Result GetC3D(Ent e);
 

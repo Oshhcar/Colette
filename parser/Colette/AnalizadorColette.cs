@@ -226,20 +226,30 @@ namespace Compilador.parser.Collete
                         try
                         {
                             int valor2 = Convert.ToInt32(hijos[0].Token.Text);
-                            return new Literal(Tipo.INT, valor2, linea, columna);
+                            return new Literal(new Tipo(Tipo.Type.INT), valor2, linea, columna);
                         }
                         catch (Exception)
                         {
                             double valor = Convert.ToDouble(hijos[0].Token.Text);
-                            return new Literal(Tipo.DOUBLE, valor, linea, columna);
+                            return new Literal(new Tipo(Tipo.Type.DOUBLE), valor, linea, columna);
                         }
                     }
-                    else if(hijos[0].Term.Name.Equals("stringliteral"))
+                    else if (hijos[0].Term.Name.Equals("stringliteral") || hijos[0].Term.Name.Equals("stringliteral2"))
                     {
-                        return new Literal(Tipo.STRING, hijos[0].Token.Text, linea, columna);
+                        return new Literal(new Tipo(Tipo.Type.STRING), hijos[0].Token.Text, linea, columna);
                     }
-                    return null;
-
+                    else if (hijos[0].Term.Name.Equals("true") || hijos[0].Term.Name.Equals("True"))
+                    {
+                        return new Literal(new Tipo(Tipo.Type.BOOLEAN), 1, linea, columna);
+                    }
+                    else if (hijos[0].Term.Name.Equals("false") || hijos[0].Term.Name.Equals("False"))
+                    {
+                        return new Literal(new Tipo(Tipo.Type.BOOLEAN), 0, linea, columna);
+                    }
+                    else
+                    {
+                        return new Literal(new Tipo(Tipo.Type.NONE), null, linea, columna); /*agregar clase new None()*/
+                    }
             }
 
             return null;

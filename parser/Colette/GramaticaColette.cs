@@ -32,7 +32,8 @@ namespace Compilador.parser.Collete
                 if_ = ToTerm("if"),
                 elif_ = ToTerm("elif"),
                 else_ = ToTerm("else"),
-                none_ = ToTerm("None"),
+                None_ = ToTerm("None"),
+                none_ = ToTerm("none"),
                 break_ = ToTerm("break"),
                 continue_ = ToTerm("continue"),
                 return_ = ToTerm("return"),
@@ -43,14 +44,20 @@ namespace Compilador.parser.Collete
                 int_ = ToTerm("int"),
                 double_ = ToTerm("double"),
                 string_ = ToTerm("String"),
+                boolean_ = ToTerm("boolean"),
                 dictionary_ = ToTerm("dictionary"),
                 list_ = ToTerm("list"),
                 tup_ = ToTerm("tup"),
-                while_ = ToTerm("while");
+                while_ = ToTerm("while"),
+                true_ = ToTerm("true"),
+                false_ = ToTerm("false"),
+                True_ = ToTerm("True"),
+                False_ = ToTerm("False");
 
             MarkReservedWords("class", "def", "lambda", "print", "or", "and", "not", "for",
                 "if", "elif", "else", "None", "break", "continue", "return", "pass", "global", "nonlocal",
-                "del", "int", "double", "String", "dictionary", "list", "tup", "while");
+                "del", "int", "double", "String", "boolean", "dictionary", "list", "tup", "while", "true", 
+                "false", "True", "False", "none");
 
             /* Relational operators */
             KeyTerm
@@ -246,7 +253,7 @@ namespace Compilador.parser.Collete
                             | EXPRESSION_STMT + Eos
                             ;
 
-            TYPE.Rule = int_ | double_ | string_ | identifier | dictionary_ | list_ | tup_;
+            TYPE.Rule = int_ | double_ | string_ | boolean_ | identifier | dictionary_ | list_ | tup_;
 
             PRINT.Rule = print_ + leftPar + STARRED_EXPRESSION + rightPar; //CORR
 
@@ -328,13 +335,13 @@ namespace Compilador.parser.Collete
             COMP_OPERATOR.Rule = menorque | mayorque | igual | mayorigual | menorigual //CORR
                                 | diferente | is_ | in_ | is_ + not_ | not_ + in_;
 
-            OR_EXPR.Rule = XOR_EXPR | OR_EXPR + o_ + XOR_EXPR; //CORR
+            OR_EXPR.Rule = XOR_EXPR | OR_EXPR + o_ + XOR_EXPR; //No implementar
 
-            XOR_EXPR.Rule = AND_EXPR | XOR_EXPR + xor_ + AND_EXPR; 
+            XOR_EXPR.Rule = AND_EXPR | XOR_EXPR + xor_ + AND_EXPR; //No implementar
 
-            AND_EXPR.Rule = SHIFT_EXPR | AND_EXPR + y_ + SHIFT_EXPR; //CORR
+            AND_EXPR.Rule = SHIFT_EXPR | AND_EXPR + y_ + SHIFT_EXPR; //No implementar
 
-            SHIFT_EXPR.Rule = A_EXPR | SHIFT_EXPR + leftShift + A_EXPR | SHIFT_EXPR + rightShift + A_EXPR; //CORR
+            SHIFT_EXPR.Rule = A_EXPR | SHIFT_EXPR + leftShift + A_EXPR | SHIFT_EXPR + rightShift + A_EXPR; //No implementar
 
             A_EXPR.Rule = M_EXPR | A_EXPR + mas + M_EXPR | A_EXPR + menos + M_EXPR; //CORR
 
@@ -349,7 +356,8 @@ namespace Compilador.parser.Collete
 
             ATOM.Rule = identifier | LITERAL | ENCLOSURE; //CORR
 
-            LITERAL.Rule = number | stringliteral | stringliteral2 | none_; //CORR
+            LITERAL.Rule = number | stringliteral | stringliteral2 | none_ | true_ | false_
+                            |True_ | False_ | None_; //CORR
 
             ENCLOSURE.Rule = PARENTH_FORM | LIST_DISPLAY | DICT_DISPLAY | SET_DISPLAY //CORR
                             /*| GENERATOR_EXPRESSION*/;

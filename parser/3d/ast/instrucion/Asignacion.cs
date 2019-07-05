@@ -62,7 +62,15 @@ namespace Compilador.parser._3d.ast.instrucion
                                         if (sim.Tipo == Tipo.ARREGLO)
                                         {
                                             double[] sArray = sim.Valor as double[];
-                                            sArray[Convert.ToInt32(valorPosicion)] = Convert.ToDouble(Valor.GetValor());
+                                            try
+                                            {
+                                                int pos = Convert.ToInt32(valorPosicion);
+                                                sArray[pos] = Convert.ToDouble(Valor.GetValor());
+                                            }
+                                            catch (Exception)
+                                            {
+                                                Console.WriteLine("Error, la posición debe ser entero. Línea: " + Linea);
+                                            }
                                         }
                                         else
                                         {

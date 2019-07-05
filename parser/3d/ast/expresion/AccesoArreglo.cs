@@ -37,9 +37,20 @@ namespace Compilador.parser._3d.ast.expresion
                                 Object valorPosicion = Posicion.GetValor();
                                 if (sim.Tipo == Tipo.ARREGLO)
                                 {
-                                    double[] sArray = sim.Valor as double[];
-                                    valor = sArray[Convert.ToInt32(valorPosicion)];
-                                    return Tipo.NUMERO;
+                                    try
+                                    {
+                                        int pos = Convert.ToInt32(valorPosicion);
+
+                                        double[] sArray = sim.Valor as double[];
+                                        double dec = Convert.ToDouble(sArray[pos]);
+                                        valor = dec;
+                                        return Tipo.NUMERO;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        Console.WriteLine("Error, la posición para acceder al arreglo debe se entero. Línea:" + Linea);
+                                    }
+                                    
                                 }
                                 else
                                 {
@@ -48,7 +59,7 @@ namespace Compilador.parser._3d.ast.expresion
                             }
                             else
                             {
-                                Console.WriteLine("Error, la posicion debe ser valor numerico. Línea: " + Linea);
+                                Console.WriteLine("Error, la posicion debe ser valor entero. Línea: " + Linea);
                             }
                         }
                     }

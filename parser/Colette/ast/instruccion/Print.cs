@@ -19,23 +19,48 @@ namespace Compilador.parser.Colette.ast.instruccion
 
         public override Result GetC3D(Ent e)
         {
-            Result rsExp = Expresion.GetC3D(e);
-            Tipo tipoExp = Expresion.GetTipo(e);
-
-            /*Si es literal funciona*/
-            switch (tipoExp)
+            Result result = new Result
             {
-                case Tipo.INT:
-                    string tmpInt = NuevoTemporal();
-                    rsExp.Codigo += tmpInt + " = " + rsExp.Valor + ";\n";
-                    rsExp.Codigo += "print(\"%i\"," + tmpInt + ");\n";
-                    break;
-                case Tipo.DOUBLE:
-                    string tmpDouble = NuevoTemporal();
-                    rsExp.Codigo += tmpDouble + " = " + rsExp.Valor + ";\n";
-                    rsExp.Codigo += "print(\"%f\"," + tmpDouble + ");\n";
-                    break;
-                case Tipo.STRING:
+                Codigo = ""
+            };
+
+            Result rsExp = Expresion.GetC3D(e);
+            Tipo tipoExp = Expresion.GetTipo();
+
+            if (!tipoExp.IsIndefinido())
+            {
+                /*verificar objeto y todas las demas*/
+                result.Codigo += rsExp.Codigo;
+
+                if (tipoExp.IsInt())
+                {
+                    if (Expresion is Literal)
+                    {
+                        string tmp = NuevoTemporal();
+                        result.Codigo += tmp + " = " + rsExp.Valor + ";\n";
+                        result.Codigo += "print(\"%i\"," + tmp + ");\n";
+                    }
+                    else
+                    {
+                        result.Codigo += "print(\"%i\"," + rsExp.Valor + ");\n";
+                    }
+                    
+                }
+                else if (tipoExp.IsDouble())
+                {
+                    if (Expresion is Literal)
+                    {
+                        string tmp = NuevoTemporal();
+                        result.Codigo += tmp + " = " + rsExp.Valor + ";\n";
+                        result.Codigo += "print(\"%f\"," + tmp + ");\n";
+                    }
+                    else
+                    {
+                        result.Codigo += "print(\"%f\"," + rsExp.Valor + ");\n";
+                    }
+                }
+                else if (tipoExp.IsString())
+                {
                     rsExp.EtiquetaV = NuevaEtiqueta();
                     rsExp.EtiquetaF = NuevaEtiqueta();
                     string etqCiclo = NuevaEtiqueta();
@@ -50,15 +75,14 @@ namespace Compilador.parser.Colette.ast.instruccion
                     rsExp.Codigo += rsExp.Valor + " = " + rsExp.Valor + " + 1;\n";
                     rsExp.Codigo += "goto " + etqCiclo + ";\n";
                     rsExp.Codigo += rsExp.EtiquetaV + ":\n";
+                }
 
-                    string tmpSalto = NuevoTemporal();
-                    rsExp.Codigo += tmpSalto + "= 10;\n";
-                    rsExp.Codigo += "print(\"%c\"," + tmpSalto + ");\n";
-                    break;
+                string tmpSalto = NuevoTemporal();
+                rsExp.Codigo += tmpSalto + "= 10;\n";
+                rsExp.Codigo += "print(\"%c\"," + tmpSalto + ");\n";
             }
-           
 
-            return rsExp;
+            return result;
         }
     }
 }

@@ -497,7 +497,7 @@ namespace Compilador
 
                     if (analizador.AnalizarEntrada(entrada))
                     {
-                        MessageBox.Show("Archivo sin errores.");
+                        //MessageBox.Show("Archivo sin errores.");
                         ReporteErrores(analizador.Raiz);
                         tabSalida.SelectedTab = pageSalida;
                         AST ast = (AST)analizador.GenerarAST(analizador.Raiz.Root);
@@ -540,14 +540,14 @@ namespace Compilador
 
                     if (analizador.AnalizarEntrada(entrada))
                     {
-                        MessageBox.Show("Archivo sin errores.");
+                        //MessageBox.Show("Archivo sin errores.");
                         ReporteErrores(analizador.Raiz);
 
                         Arbol arbol = (Arbol)analizador.GenerarArbol(analizador.Raiz.Root);
                         
                         if (arbol != null)
                         {
-                            MessageBox.Show("todo bien");
+                            //MessageBox.Show("todo bien");
                             string c3d = arbol.GenerarC3D();
                             ctb3D.Text = c3d;
                         }

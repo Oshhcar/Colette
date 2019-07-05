@@ -6,13 +6,36 @@ using System.Threading.Tasks;
 
 namespace Compilador.parser.Colette.ast.entorno
 {
-    enum Tipo
+    class Tipo
     {
-        INT,
-        DOUBLE,
-        STRING,
-        VOID,
-        INDEF
+        public Tipo(Type tip)
+        {
+            Tip = tip;
+        }
+
+        public Type Tip { get; set; }
+
+        public bool IsInt() { return Tip == Type.INT; }
+        public bool IsDouble() { return Tip == Type.DOUBLE; }
+        public bool IsString() { return Tip == Type.STRING; }
+        public bool IsBoolean() { return Tip == Type.BOOLEAN; }
+        public bool IsVoid() { return Tip == Type.VOID; }
+        public bool IsObject() { return Tip == Type.OBJECT; }
+        public bool IsNone() { return Tip == Type.NONE; }
+        public bool IsIndefinido() { return Tip == Type.INDEFINIDO; }
+        public bool IsNumeric() { return Tip == Type.INT || Tip == Type.DOUBLE; }
+
+        public enum Type
+        {
+            INT,
+            DOUBLE,
+            STRING,
+            BOOLEAN,
+            VOID,
+            OBJECT,
+            NONE,
+            INDEFINIDO /*error*/
+        }
     }
 
     enum Rol

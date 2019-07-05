@@ -24,43 +24,38 @@ namespace Compilador.parser.Colette.ast.expresion
             Result result = new Result();
             result.Tipo = Tipo;
 
-            switch (Tipo)
+            if (Tipo.IsInt())
             {
-                case Tipo.INT:
-                    result.Tipo = Tipo.INT;
-                    result.Valor = Valor.ToString();
-                    break;
-                case Tipo.DOUBLE:
-                    result.Tipo = Tipo.DOUBLE;
-                    result.Valor = Valor.ToString();
-                    break;
-                case Tipo.STRING:
-                    result.Tipo = Tipo.STRING;
-
-                    string tmp;
-                    int cont = 0;
-                    foreach (char c in Valor.ToString().Substring(1, Valor.ToString().Length - 2))
-                    {
-                        tmp = NuevoTemporal();
-                        result.Codigo += tmp + " = H + " + cont++ + ";\n";
-                        result.Codigo += "heap[" + tmp + "] = " + (int)c + ";\n";
-
-                    }
+                result.Valor = Valor.ToString();
+            }
+            else if (Tipo.IsDouble())
+            {
+                result.Valor = Valor.ToString();
+            }
+            else if (Tipo.IsString())
+            {
+                string tmp;
+                int cont = 0;
+                foreach (char c in Valor.ToString().Substring(1, Valor.ToString().Length - 2))
+                {
                     tmp = NuevoTemporal();
                     result.Codigo += tmp + " = H + " + cont++ + ";\n";
-                    result.Codigo += "heap[" + tmp + "] = 0;\n";
+                    result.Codigo += "heap[" + tmp + "] = " + (int)c + ";\n";
 
-                    result.Valor = NuevoTemporal();
-                    result.Codigo += result.Valor + " = H;\n";
-                    result.Codigo += "H = H + " + cont + ";\n";
+                }
+                tmp = NuevoTemporal();
+                result.Codigo += tmp + " = H + " + cont++ + ";\n";
+                result.Codigo += "heap[" + tmp + "] = 0;\n";
 
-                    break;
+                result.Valor = NuevoTemporal();
+                result.Codigo += result.Valor + " = H;\n";
+                result.Codigo += "H = H + " + cont + ";\n";
             }
-            
+                    
             return result;
         }
 
-        public override Tipo GetTipo(Ent e)
+        public override Tipo GetTipo()
         {
             return Tipo;
         }

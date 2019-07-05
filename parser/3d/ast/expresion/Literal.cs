@@ -9,16 +9,18 @@ namespace Compilador.parser._3d.ast.expresion
 {
     class Literal : Expresion
     {
-        public Literal(Object valor, int linea, int columna) : base(linea, columna)
+        public Literal(Object valor, Tipo tipo, int linea, int columna) : base(linea, columna)
         {
             Valor = valor;
+            Tipo = tipo;
         }
 
         public Object Valor { get; set; }
+        private Tipo Tipo { get; set; }
 
         public override Tipo GetTipo(Entorno e)
         {
-            return Tipo.NUMERO;
+            return Tipo;
         }
 
         public override object GetValor()

@@ -34,7 +34,7 @@ namespace Compilador.parser.Colette.ast.expresion
                 {
                     string ptrTipo = NuevoTemporal();
                     result.Codigo += ptrTipo + " = P + " + (s.Pos + 1) + ";\n";
-                    result.Codigo += "stack[" + ptrTipo + "] = " + (int)s.Tipo + ";\n";
+                    result.Codigo += "stack[" + ptrTipo + "] = " + (int)s.Tipo.Tip + ";\n"; /*verificar*/
 
 
                     result.Valor = NuevoTemporal();
@@ -50,7 +50,7 @@ namespace Compilador.parser.Colette.ast.expresion
             return null;
         }
 
-        public override Tipo GetTipo(Ent e)
+        public override Tipo GetTipo()
         {
             throw new NotImplementedException();
         }
