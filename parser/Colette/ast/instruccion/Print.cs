@@ -19,10 +19,7 @@ namespace Compilador.parser.Colette.ast.instruccion
 
         public override Result GetC3D(Ent e)
         {
-            Result result = new Result
-            {
-                Codigo = ""
-            };
+            Result result = new Result();
 
             Result rsExp = Expresion.GetC3D(e);
             Tipo tipoExp = Expresion.GetTipo();

@@ -31,18 +31,18 @@ namespace Compilador.parser._3d.ast.expresion.Operacion
                         switch (Op)
                         {
                             case Operador.MAS:
-                                valor = Convert.ToDouble(val1) + Convert.ToDouble(val2);
+                                valor = Convert.ToInt32(val1) + Convert.ToInt32(val2);
                                 return Tipo.NUMERO;
                             case Operador.MENOS:
-                                valor = Convert.ToDouble(val1) - Convert.ToDouble(val2);
+                                valor = Convert.ToInt32(val1) - Convert.ToInt32(val2);
                                 return Tipo.NUMERO;
                             case Operador.POR:
-                                valor = Convert.ToDouble(val1) * Convert.ToDouble(val2);
+                                valor = Convert.ToInt32(val1) * Convert.ToInt32(val2);
                                 return Tipo.NUMERO;
                             case Operador.DIVIDIO:
-                                if (Convert.ToDouble(val2) != 0)
+                                if (Convert.ToInt32(val2) != 0)
                                 {
-                                    valor = Convert.ToDouble(val1) / Convert.ToDouble(val2);
+                                    valor = Convert.ToInt32(val1) / Convert.ToInt32(val2);
                                     return Tipo.NUMERO;
                                 }
                                 else
@@ -51,7 +51,7 @@ namespace Compilador.parser._3d.ast.expresion.Operacion
                                     return Tipo.NULL;
                                 }
                             case Operador.MODULO:
-                                valor = Convert.ToDouble(val1) % Convert.ToDouble(val2);
+                                valor = Convert.ToInt32(val1) % Convert.ToInt32(val2);
                                 return Tipo.NUMERO;
                         }
                     }
