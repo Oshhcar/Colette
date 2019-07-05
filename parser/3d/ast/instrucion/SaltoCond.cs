@@ -30,7 +30,7 @@ namespace Compilador.parser._3d.ast.instrucion
                 Tipo tipCond = Cond.GetTipo(e);
                 if(tipCond != Tipo.NULL)
                 {
-                    if (tipCond == Tipo.NUMERO)
+                    if (tipCond == Tipo.ENTERO || tipCond == Tipo.DECIMAL)
                     {
                         Simbolo label = e.GetSimbolo(Label);
                         if (label != null)

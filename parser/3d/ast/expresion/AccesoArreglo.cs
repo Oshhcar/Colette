@@ -32,7 +32,7 @@ namespace Compilador.parser._3d.ast.expresion
                         Tipo tipoPosicion = Posicion.GetTipo(e);
                         if (tipoPosicion != Tipo.NULL)
                         {
-                            if (tipoPosicion == Tipo.NUMERO)
+                            if (tipoPosicion == Tipo.ENTERO || tipoPosicion == Tipo.DECIMAL)
                             {
                                 Object valorPosicion = Posicion.GetValor();
                                 if (sim.Tipo == Tipo.ARREGLO)
@@ -42,9 +42,19 @@ namespace Compilador.parser._3d.ast.expresion
                                         int pos = Convert.ToInt32(valorPosicion);
 
                                         double[] sArray = sim.Valor as double[];
-                                        double dec = Convert.ToDouble(sArray[pos]);
-                                        valor = dec;
-                                        return Tipo.NUMERO;
+
+                                        try
+                                        {
+                                            int ent = Convert.ToInt32(sArray[pos]);
+                                            valor = ent;
+                                            return Tipo.ENTERO;
+                                        }
+                                        catch (Exception)
+                                        {
+                                            double dec = Convert.ToDouble(sArray[pos]);
+                                            valor = dec;
+                                            return Tipo.DECIMAL;
+                                        }
                                     }
                                     catch (Exception)
                                     {

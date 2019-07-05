@@ -150,8 +150,16 @@ namespace Compilador.parser._3d
                     columna = hijos[0].Token.Location.Column + 1;
                     if (hijos[0].Term.Name.Equals("num"))
                     {
-                        double valor = Convert.ToDouble(hijos[0].Token.Text);
-                        return new Literal(valor, Tipo.NUMERO, linea, columna);
+                        try
+                        {
+                            int valor = Convert.ToInt32(hijos[0].Token.Text);
+                            return new Literal(valor, Tipo.ENTERO, linea, columna);
+                        }
+                        catch (Exception)
+                        {
+                            double valor = Convert.ToDouble(hijos[0].Token.Text);
+                            return new Literal(valor, Tipo.DECIMAL, linea, columna);
+                        }
                     }
                     else
                     {

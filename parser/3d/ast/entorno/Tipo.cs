@@ -9,7 +9,8 @@ namespace Compilador.parser._3d.ast.entorno
     public enum Tipo
     {
         NULL,
-        NUMERO,
+        ENTERO,
+        DECIMAL,
         ARREGLO,
         VAR,
         LABEL,

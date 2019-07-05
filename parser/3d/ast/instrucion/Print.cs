@@ -28,7 +28,7 @@ namespace Compilador.parser._3d.ast.instrucion
 
             if (sim != null)
             {
-                if (sim.Tipo == Tipo.NUMERO)
+                if (sim.Tipo == Tipo.ENTERO || sim.Tipo == Tipo.DECIMAL)
                 {
                     if (Output != null)
                     {
@@ -66,7 +66,7 @@ namespace Compilador.parser._3d.ast.instrucion
                         else
                         {
                             double valor = Convert.ToDouble(sim.Valor);
-                            Output.Text += valor;
+                            Output.Text += Math.Round(valor, 6);
                             //Console.Write(valor);
                         }
                     }

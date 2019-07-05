@@ -35,13 +35,13 @@ namespace Compilador.parser._3d.ast.instrucion
                 Tipo tipoValor = Valor.GetTipo(e);
                 if (tipoValor != Tipo.NULL)
                 {
-                    if (tipoValor == Tipo.NUMERO)
+                    if (tipoValor == Tipo.ENTERO || tipoValor == Tipo.DECIMAL)
                     {
                         if (Posicion == null)
                         {
-                            if (sim.Tipo == Tipo.NUMERO || sim.Tipo == Tipo.VAR)
+                            if (sim.Tipo == Tipo.ENTERO || sim.Tipo == Tipo.DECIMAL || sim.Tipo == Tipo.VAR)
                             {
-                                sim.Tipo = Tipo.NUMERO;
+                                sim.Tipo = tipoValor;
                                 sim.Valor = Valor.GetValor();
                             }
                             else
@@ -56,7 +56,7 @@ namespace Compilador.parser._3d.ast.instrucion
                                 Tipo tipoPosicion = Posicion.GetTipo(e);
                                 if (tipoPosicion != Tipo.NULL)
                                 {
-                                    if (tipoPosicion == Tipo.NUMERO)
+                                    if (tipoPosicion == Tipo.ENTERO || tipoPosicion == Tipo.DECIMAL)
                                     {
                                         Object valorPosicion = Posicion.GetValor();
                                         if (sim.Tipo == Tipo.ARREGLO)
@@ -65,7 +65,10 @@ namespace Compilador.parser._3d.ast.instrucion
                                             try
                                             {
                                                 int pos = Convert.ToInt32(valorPosicion);
-                                                sArray[pos] = Convert.ToDouble(Valor.GetValor());
+                                                if(tipoValor == Tipo.DECIMAL)
+                                                    sArray[pos] = Convert.ToDouble(Valor.GetValor());
+                                                else
+                                                    sArray[pos] = Convert.ToInt32(Valor.GetValor());
                                             }
                                             catch (Exception)
                                             {

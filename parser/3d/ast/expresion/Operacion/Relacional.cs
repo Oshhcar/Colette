@@ -23,36 +23,73 @@ namespace Compilador.parser._3d.ast.expresion.Operacion
 
                 if (tip1 != Tipo.NULL && tip2 != Tipo.NULL)
                 {
-                    if (tip1 == Tipo.NUMERO && tip2 == Tipo.NUMERO)
+                    if ((tip1 == Tipo.DECIMAL || tip1 == Tipo.ENTERO) && (tip2 == Tipo.DECIMAL || tip2 == Tipo.ENTERO))
                     {
-                        double val1 = Convert.ToDouble(Op1.GetValor());
-                        double val2 = Convert.ToDouble(Op2.GetValor());
-
-                        switch (Op)
+                        try
                         {
-                            case Operador.MENORQUE:
-                                valor = val1 < val2 ? 1 : 0;
-                                return Tipo.NUMERO;
-                            case Operador.MAYORQUE:
-                                valor = val1 > val2 ? 1 : 0;
-                                return Tipo.NUMERO;
-                            case Operador.MENORIGUAL:
-                                valor = val1 <= val2 ? 1 : 0;
-                                return Tipo.NUMERO;
-                            case Operador.MAYORIGUAL:
-                                valor = val1 >= val2 ? 1 : 0;
-                                return Tipo.NUMERO;
-                            case Operador.IGUAL:
-                                valor = val1 == val2 ? 1 : 0;
-                                return Tipo.NUMERO;
-                            case Operador.DIFERENTE:
-                                valor = val1 != val2 ? 1 : 0;
-                                return Tipo.NUMERO;
+                            if (tip1 == Tipo.DECIMAL || tip2 == Tipo.DECIMAL)
+                            {
+                                double val1 = Convert.ToDouble(Op1.GetValor());
+                                double val2 = Convert.ToDouble(Op2.GetValor());
+
+                                switch (Op)
+                                {
+                                    case Operador.MENORQUE:
+                                        valor = val1 < val2 ? 1 : 0;
+                                        return Tipo.DECIMAL;
+                                    case Operador.MAYORQUE:
+                                        valor = val1 > val2 ? 1 : 0;
+                                        return Tipo.DECIMAL;
+                                    case Operador.MENORIGUAL:
+                                        valor = val1 <= val2 ? 1 : 0;
+                                        return Tipo.DECIMAL;
+                                    case Operador.MAYORIGUAL:
+                                        valor = val1 >= val2 ? 1 : 0;
+                                        return Tipo.DECIMAL;
+                                    case Operador.IGUAL:
+                                        valor = val1 == val2 ? 1 : 0;
+                                        return Tipo.DECIMAL;
+                                    case Operador.DIFERENTE:
+                                        valor = val1 != val2 ? 1 : 0;
+                                        return Tipo.DECIMAL;
+                                }
+                            }
+                            else
+                            {
+                                int val1 = Convert.ToInt32(Op1.GetValor());
+                                int val2 = Convert.ToInt32(Op2.GetValor());
+
+                                switch (Op)
+                                {
+                                    case Operador.MENORQUE:
+                                        valor = val1 < val2 ? 1 : 0;
+                                        return Tipo.ENTERO;
+                                    case Operador.MAYORQUE:
+                                        valor = val1 > val2 ? 1 : 0;
+                                        return Tipo.ENTERO;
+                                    case Operador.MENORIGUAL:
+                                        valor = val1 <= val2 ? 1 : 0;
+                                        return Tipo.ENTERO;
+                                    case Operador.MAYORIGUAL:
+                                        valor = val1 >= val2 ? 1 : 0;
+                                        return Tipo.ENTERO;
+                                    case Operador.IGUAL:
+                                        valor = val1 == val2 ? 1 : 0;
+                                        return Tipo.ENTERO;
+                                    case Operador.DIFERENTE:
+                                        valor = val1 != val2 ? 1 : 0;
+                                        return Tipo.ENTERO;
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("Error, no se puede realizar la operación relacional. Línea: " + Linea);
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Error, no se puede realizar la operación aritmética. Línea: " + Linea);
+                        Console.WriteLine("Error, no se puede realizar la operación relacional. Línea: " + Linea);
                     }
                 }
 

@@ -60,7 +60,7 @@ namespace Compilador.parser._3d.ast.instrucion
                         Tipo tipoValor = Valor.GetTipo(e);
                         if (tipoValor != Tipo.NULL)
                         {
-                            if (tipoValor == Tipo.NUMERO)
+                            if (tipoValor == Tipo.ENTERO || tipoValor == Tipo.DECIMAL)
                             {
                                 e.AddSimbolo(new Simbolo(Id, Valor.GetValor(), tipoValor));
                             }
