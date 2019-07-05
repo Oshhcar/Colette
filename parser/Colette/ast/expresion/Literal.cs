@@ -24,16 +24,13 @@ namespace Compilador.parser.Colette.ast.expresion
             Result result = new Result();
             result.Tipo = Tipo;
 
-            if (Tipo.IsInt())
-            {
-                result.Valor = Valor.ToString();
-            }
-            else if (Tipo.IsDouble())
+            if (Tipo.IsInt() || Tipo.IsDouble() || Tipo.IsBoolean())
             {
                 result.Valor = Valor.ToString();
             }
             else if (Tipo.IsString())
             {
+                /*
                 string tmp;
                 int cont = 0;
                 foreach (char c in Valor.ToString().Substring(1, Valor.ToString().Length - 2))
@@ -50,6 +47,18 @@ namespace Compilador.parser.Colette.ast.expresion
                 result.Valor = NuevoTemporal();
                 result.Codigo += result.Valor + " = H;\n";
                 result.Codigo += "H = H + " + cont + ";\n";
+                */
+                result.Valor = NuevoTemporal();
+                result.Codigo += result.Valor + " = H;\n";
+
+                foreach (char c in Valor.ToString().Substring(1, Valor.ToString().Length - 2))
+                { 
+                    result.Codigo += "heap[H] = " + (int)c + ";\n";
+                    result.Codigo += "H = H + 1;\n";
+
+                }
+                result.Codigo += "heap[H] = 0;\n";
+                result.Codigo += "H = H + 1;\n";
             }
                     
             return result;

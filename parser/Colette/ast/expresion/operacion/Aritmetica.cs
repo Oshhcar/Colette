@@ -40,6 +40,49 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     if (Tipo.IsString())
                     {
 
+                        if (Op1.GetTipo().IsString() && Op2.GetTipo().IsString())
+                        {
+                            result.EtiquetaV = NuevaEtiqueta();
+                            result.EtiquetaF = NuevaEtiqueta();
+                            string etqCiclo = NuevaEtiqueta();
+                            string tmpCiclo = NuevoTemporal();
+
+                            result.Codigo += result.Valor + " = H;\n";
+
+                            result.Codigo += tmpCiclo + " = heap[" + rsOp1.Valor + "];\n";
+                            result.Codigo += etqCiclo + ":\n";
+                            result.Codigo += "if (" + tmpCiclo + " == 0) goto " + result.EtiquetaV + ";\n";
+                            result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                            result.Codigo += result.EtiquetaF + ":\n";
+                            result.Codigo += "heap[H] = " + tmpCiclo + ";\n";
+                            result.Codigo += "H = H + 1;\n";
+                            result.Codigo += rsOp1.Valor + " = " + rsOp1.Valor + " + 1;\n";
+                            result.Codigo += tmpCiclo + " = heap[" + rsOp1.Valor + "];\n";
+                            result.Codigo += "goto " + etqCiclo + ";\n";
+                            result.Codigo += result.EtiquetaV + ":\n";
+
+                            result.EtiquetaV = NuevaEtiqueta();
+                            result.EtiquetaF = NuevaEtiqueta();
+                            etqCiclo = NuevaEtiqueta();
+                            tmpCiclo = NuevoTemporal();
+
+                            result.Codigo += tmpCiclo + " = heap[" + rsOp2.Valor + "];\n";
+                            result.Codigo += etqCiclo + ":\n";
+                            result.Codigo += "if (" + tmpCiclo + " == 0) goto " + result.EtiquetaV + ";\n";
+                            result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                            result.Codigo += result.EtiquetaF + ":\n";
+                            result.Codigo += "heap[H] = " + tmpCiclo + ";\n";
+                            result.Codigo += "H = H + 1;\n";
+                            result.Codigo += rsOp2.Valor + " = " + rsOp2.Valor + " + 1;\n";
+                            result.Codigo += tmpCiclo + " = heap[" + rsOp2.Valor + "];\n";
+                            result.Codigo += "goto " + etqCiclo + ";\n";
+                            result.Codigo += result.EtiquetaV + ":\n";
+
+                            result.Codigo += "heap[H] = 0;\n";
+                            result.Codigo += "H = H + 1;\n";
+
+                        }
+
                     }
                     else 
                     {
@@ -183,9 +226,14 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             }
             else
             {
-                if (Op1.GetTipo().IsNumeric())
+                Tipo tipOp1 = Op1.GetTipo();
+                if (tipOp1.IsNumeric() || tipOp1.IsBoolean())
                 {
-                    Tipo = Op1.GetTipo();
+                    if (tipOp1.IsNumeric())
+                        Tipo = Op1.GetTipo();
+                    else
+                        Tipo = new Tipo(Tipo.Type.INT);
+
                     result.Valor = NuevoTemporal();
 
                     switch (Op)
@@ -203,7 +251,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 }
                 else
                 {
-                    Console.WriteLine("Error de tipos Aritmetica" + Linea);
+                    Console.WriteLine("Error de tipos Aritmetica. Linea" + Linea);
                 }
             }
             return result;
@@ -218,25 +266,33 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
         {
             if (!op1.IsIndefinido() && !op2.IsIndefinido())
             {
-                if (op1.IsString() || op2.IsString())
+                if (!op1.IsNone() && !op2.IsNone())
                 {
-                    if (Op == Operador.SUMA)
+                    if (op1.IsString() || op2.IsString())
                     {
-                        Tipo.Tip = Tipo.Type.STRING;
-                        return;
+                        if (Op == Operador.SUMA)
+                        {
+                            Tipo.Tip = Tipo.Type.STRING;
+                            return;
+                        }
                     }
-                }
-                else if (!op1.IsBoolean() && !op2.IsBoolean())
-                {
-                    if (op1.IsDouble() || op2.IsDouble())
+                    else //if (!op1.IsBoolean() && !op2.IsBoolean())
                     {
-                        Tipo.Tip = Tipo.Type.DOUBLE;
-                        return;
-                    }
-                    else if (op1.IsInt() || op2.IsInt())
-                    {
-                        Tipo.Tip = Tipo.Type.INT;
-                        return;
+                        if (op1.IsDouble() || op2.IsDouble())
+                        {
+                            Tipo.Tip = Tipo.Type.DOUBLE;
+                            return;
+                        }
+                        else if (op1.IsInt() || op2.IsInt())
+                        {
+                            Tipo.Tip = Tipo.Type.INT;
+                            return;
+                        }
+                        else if (op1.IsBoolean() || op2.IsBoolean())
+                        {
+                            Tipo.Tip = Tipo.Type.INT;
+                            return;
+                        }
                     }
                 }
             }
