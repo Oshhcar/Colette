@@ -299,7 +299,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
 
         private void ConvertirString(Expresion op, Result rsOp, Result result)
         {
-            if (op.GetTipo().IsInt() || op.GetTipo().IsDouble())
+            if (op.GetTipo().IsInt())
             {
                 rsOp.EtiquetaV = NuevaEtiqueta();
                 rsOp.EtiquetaF = NuevaEtiqueta();
@@ -356,12 +356,104 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 result.Codigo += "H = H + 1;\n";
 
             }
+            else if (op.GetTipo().IsDouble())
+            {
+
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+                string etqCiclo = NuevaEtiqueta();
+                string tmpCiclo;
+
+                if (op is Literal)
+                {
+                    string tmpOp2 = NuevoTemporal();
+                    result.Codigo += tmpOp2 + " = " + rsOp.Valor + ";\n";
+                    rsOp.Valor = tmpOp2;
+                }
+
+                string contador = NuevoTemporal();
+                result.Codigo += contador + " = 0;\n";
+                result.Codigo += rsOp.Valor + " = " + rsOp.Valor + " * 10;\n";
+
+                tmpCiclo = NuevoTemporal();
+                result.Codigo += etqCiclo + ":\n";
+                result.Codigo += tmpCiclo + " = " + rsOp.Valor + " % 10;\n";
+                result.Codigo += "if (" + tmpCiclo + " > 0) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+                result.Codigo += contador + " = " + contador + " + 1;\n";
+                result.Codigo += rsOp.Valor + " = " + rsOp.Valor + " * 10;\n";
+                result.Codigo += "goto " + etqCiclo + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+
+                result.Codigo += rsOp.Valor + " = " + rsOp.Valor + " / 10;\n";
+
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+                etqCiclo = NuevaEtiqueta();
+
+                result.Codigo += "heap[H] = 0;\n";
+                result.Codigo += "H = H + 1;\n";
+
+                string contador2 = NuevoTemporal();
+                string etiqContV = NuevaEtiqueta();
+                string etiqContF = NuevaEtiqueta();
+                result.Codigo += contador2 + " = 0;\n";
+                tmpCiclo = NuevoTemporal();
+                result.Codigo += tmpCiclo + " = " + rsOp.Valor + " % 10;\n";
+
+                result.Codigo += etqCiclo + ":\n";
+                result.Codigo += "if (" + rsOp.Valor + " < 1) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+                result.Codigo += "heap[H] = " + tmpCiclo + " + 48;\n";
+                result.Codigo += "H = H + 1;\n";
+                result.Codigo += rsOp.Valor + " = " + rsOp.Valor + " / 10;\n";
+                result.Codigo += tmpCiclo + " = " + rsOp.Valor + " % 10;\n";
+
+                result.Codigo += contador2 + " = " + contador2 + " + 1;\n";
+                result.Codigo += "if (" + contador2 + " == " + contador + ") goto " + etiqContV + ";\n";
+                result.Codigo += "goto " + etiqContF + ";\n";
+                result.Codigo += etiqContV + ":\n";
+                result.Codigo += "heap[H] = 46;\n";
+                result.Codigo += "H = H + 1;\n";
+                result.Codigo += etiqContF + ":\n";
+
+                result.Codigo += "goto " + etqCiclo + ";\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+
+                string tmp = NuevoTemporal();
+                result.Codigo += tmp + " = H - 1;\n";
+
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+                etqCiclo = NuevaEtiqueta();
+
+                rsOp.Valor = NuevoTemporal();
+                result.Codigo += rsOp.Valor + " = H;\n";
+
+                tmpCiclo = NuevoTemporal();
+                result.Codigo += tmpCiclo + " = heap[" + tmp + "];\n";
+                result.Codigo += etqCiclo + ":\n";
+                result.Codigo += "if (" + tmpCiclo + " == 0) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+                result.Codigo += "heap[H] = " + tmpCiclo + ";\n";
+                result.Codigo += "H = H + 1;\n";
+                result.Codigo += tmp + " = " + tmp + " - 1;\n";
+                result.Codigo += tmpCiclo + " = heap[" + tmp + "];\n";
+                result.Codigo += "goto " + etqCiclo + ";\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+                result.Codigo += "heap[H] = 0;\n";
+                result.Codigo += "H = H + 1;\n";
+
+            }
             else if (op.GetTipo().IsBoolean())
             {
                 rsOp.EtiquetaV = NuevaEtiqueta();
                 rsOp.EtiquetaF = NuevaEtiqueta();
                 string etqSalida = NuevaEtiqueta();
-                
+
 
                 string tmp = NuevoTemporal();
                 result.Codigo += tmp + " = H;\n";

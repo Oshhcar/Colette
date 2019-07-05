@@ -158,7 +158,7 @@ namespace Compilador.parser._3d
                         catch (Exception)
                         {
                             double valor = Convert.ToDouble(hijos[0].Token.Text);
-                            return new Literal(valor, Tipo.DECIMAL, linea, columna);
+                            return new Literal(Math.Round(valor,6), Tipo.DECIMAL, linea, columna);
                         }
                     }
                     else

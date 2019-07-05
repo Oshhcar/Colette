@@ -39,7 +39,8 @@ namespace Compilador.parser._3d.ast.expresion.Operacion
                                     }
                                     else
                                     {
-                                        valor = Convert.ToInt32(val1) + Convert.ToInt32(val2);
+                                        int val = Convert.ToInt32(val1) + Convert.ToInt32(val2);
+                                        valor = val;
                                         return Tipo.ENTERO;
                                     }
                                 case Operador.MENOS:
@@ -50,7 +51,8 @@ namespace Compilador.parser._3d.ast.expresion.Operacion
                                     }
                                     else
                                     {
-                                        valor = Convert.ToInt32(val1) - Convert.ToInt32(val2);
+                                        int val = Convert.ToInt32(val1) - Convert.ToInt32(val2);
+                                        valor = val;
                                         return Tipo.ENTERO;
                                     }
                                 case Operador.POR:
@@ -61,7 +63,8 @@ namespace Compilador.parser._3d.ast.expresion.Operacion
                                     }
                                     else
                                     {
-                                        valor = Convert.ToInt32(val1) * Convert.ToInt32(val2);
+                                        int val = Convert.ToInt32(val1) * Convert.ToInt32(val2);
+                                        valor = val;
                                         return Tipo.ENTERO;
                                     }
                                 case Operador.DIVIDIO:
@@ -74,7 +77,8 @@ namespace Compilador.parser._3d.ast.expresion.Operacion
                                         }
                                         else
                                         {
-                                            valor = Convert.ToInt32(val1) / Convert.ToInt32(val2);
+                                            double val = Convert.ToDouble(val1) / Convert.ToDouble(val2);
+                                            valor = Math.Truncate(val);
                                             return Tipo.ENTERO;
                                         }
                                     }
@@ -86,12 +90,13 @@ namespace Compilador.parser._3d.ast.expresion.Operacion
                                 case Operador.MODULO:
                                     if (tip1 == Tipo.DECIMAL || tip2 == Tipo.DECIMAL)
                                     {
-                                        valor = Convert.ToDouble(val1) % Convert.ToDouble(val2);
+                                        valor = Math.Truncate(Convert.ToDouble(val1) % Convert.ToDouble(val2));
                                         return Tipo.DECIMAL;
                                     }
                                     else
                                     {
-                                        valor = Convert.ToInt32(val1) % Convert.ToInt32(val2);
+                                        double val = Convert.ToDouble(val1) % Convert.ToDouble(val2);
+                                        valor = Math.Truncate(val);
                                         return Tipo.ENTERO;
                                     }
                             }
