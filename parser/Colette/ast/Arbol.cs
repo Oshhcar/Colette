@@ -41,7 +41,7 @@ namespace Compilador.parser.Colette.ast
                 }
 
                 if(rsNodo != null)
-                    if(!rsNodo.Codigo.Equals(string.Empty))
+                    if(rsNodo.Codigo != null)
                         result.Codigo += rsNodo.Codigo;
             }
 

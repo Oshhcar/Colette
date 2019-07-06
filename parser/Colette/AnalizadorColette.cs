@@ -206,7 +206,14 @@ namespace Compilador.parser.Collete
                         return new Aritmetica((Expresion)GenerarArbol(hijos[1]), null, GetOperador(hijos[0]), linea, columna);
                     }
                 case "POWER":
-                    return GenerarArbol(hijos[0]);
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new Aritmetica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), Operador.POTENCIA, linea, columna);
+                    }
                 case "PRIMARY":
                     return GenerarArbol(hijos[0]);
                 case "ATOM":
@@ -250,6 +257,14 @@ namespace Compilador.parser.Collete
                     {
                         return new Literal(new Tipo(Tipo.Type.NONE), null, linea, columna); /*agregar clase new None()*/
                     }
+                case "ENCLOSURE":
+                    return GenerarArbol(hijos[0]);
+                case "PARENTH_FORM":
+                    if (hijos.Count() == 3)
+                    {
+                        return GenerarArbol(hijos[1]);
+                    }
+                    return null;//parenth vacíos
             }
 
             return null;

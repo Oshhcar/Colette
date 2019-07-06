@@ -22,12 +22,12 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
 
         public override Result GetC3D(Ent e)
         {
-            throw new NotImplementedException();
+            return new Result();
         }
 
         public override Tipo GetTipo()
         {
-            throw new NotImplementedException();
+            return new Tipo(Tipo.Type.INDEFINIDO);
         }
 
         public enum Operador
@@ -38,6 +38,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             DIVISION,
             MODULO,
             FLOOR,
+            POTENCIA,
             MENORQUE,
             MAYORQUE,
             MENORIGUALQUE,

@@ -214,6 +214,9 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
 
                                 result.Codigo += etqSalida + ":\n";
                                 break;
+                            case Operador.POTENCIA:
+
+                                break;
                         }
                     }
                 }
@@ -313,6 +316,21 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     rsOp.Valor = tmpOp2;
                 }
 
+                /*Verificar si el número es negativo*/
+                string negativo = NuevoTemporal();
+                string factor = NuevoTemporal();
+                result.Codigo += negativo + " = 0;\n";
+                result.Codigo += "if (" + rsOp.Valor + " >= 0) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+                result.Codigo += negativo + " = 1;\n";
+                result.Codigo += factor + " = 0-1;\n";
+                result.Codigo += rsOp.Valor + " = " + rsOp.Valor + " * " + factor + ";\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+
                 result.Codigo += "heap[H] = 0;\n";
                 result.Codigo += "H = H + 1;\n";
 
@@ -328,6 +346,16 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 result.Codigo += rsOp.Valor + " = " + rsOp.Valor + " / 10;\n";
                 result.Codigo += tmpCiclo + " = " + rsOp.Valor + " % 10;\n";
                 result.Codigo += "goto " + etqCiclo + ";\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+                
+                /*Coloco el (-) de negativo*/
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+                result.Codigo += "if (" + negativo + " == 0) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+                result.Codigo += "heap[H] = 45;\n";
+                result.Codigo += "H = H + 1;\n";
                 result.Codigo += rsOp.EtiquetaV + ":\n";
 
                 string tmp = NuevoTemporal();
@@ -370,6 +398,22 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     result.Codigo += tmpOp2 + " = " + rsOp.Valor + ";\n";
                     rsOp.Valor = tmpOp2;
                 }
+
+                /*Verificar si el número es negativo*/
+                string negativo = NuevoTemporal();
+                string factor = NuevoTemporal();
+                result.Codigo += negativo + " = 0;\n";
+                result.Codigo += "if (" + rsOp.Valor + " >= 0) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+                result.Codigo += negativo + " = 1;\n";
+                result.Codigo += factor + " = 0-1;\n";
+                result.Codigo += rsOp.Valor + " = " + rsOp.Valor + " * " + factor + ";\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+
 
                 string contador = NuevoTemporal();
                 result.Codigo += contador + " = 0;\n";
@@ -420,6 +464,16 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 result.Codigo += etiqContF + ":\n";
 
                 result.Codigo += "goto " + etqCiclo + ";\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+
+                /*Coloco el (-) de negativo*/
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+                result.Codigo += "if (" + negativo + " == 0) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+                result.Codigo += "heap[H] = 45;\n";
+                result.Codigo += "H = H + 1;\n";
                 result.Codigo += rsOp.EtiquetaV + ":\n";
 
                 string tmp = NuevoTemporal();

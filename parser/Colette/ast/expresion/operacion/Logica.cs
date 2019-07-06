@@ -11,16 +11,14 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
     {
         public Logica(Expresion op1, Expresion op2, Operacion.Operador op, int linea, int columna)
             : base(op1, op2, op, linea, columna)
-        { Evaluar = false; }
+        { Evaluar = false;  Tipo = new Tipo(Tipo.Type.INDEFINIDO); }
 
+        private Tipo Tipo { get; set; }
         public bool Evaluar { get; set; }
 
         public override Result GetC3D(Ent e)
         {
-            Result result = new Result
-            {
-                Codigo = ""
-            };
+            Result result = new Result();
 
             if (Op1 is Relacional)
                 ((Relacional)Op1).Cortocircuito = true;
@@ -36,60 +34,201 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 else if (Op2 is Logica)
                     ((Logica)Op2).Evaluar = true;
 
+
                 Result rsOp2 = Op2.GetC3D(e);
 
-                if (Op == Operador.AND)
-                {
-                    if (!Evaluar)
-                    {
-                        /*EJEMPLO IDEAL=> DOS SON COMPARATIVA*/
-                        result.Valor = NuevoTemporal();
-                        string etiquetaS = NuevaEtiqueta();
+                TipoResultante(Op1.GetTipo(), Op2.GetTipo());
 
-                        result.Codigo += rsOp1.Codigo;
-                        result.Codigo += rsOp1.EtiquetaF + ":\n";
-                        result.Codigo += rsOp2.Codigo;
-                        result.Codigo += rsOp2.EtiquetaF + ":\n";
-                        result.Codigo += result.Valor + " = 1;\n";
-                        result.Codigo += "goto " + etiquetaS + ";\n";
-                        result.Codigo += rsOp1.EtiquetaV + ":\n";
-                        result.Codigo += rsOp2.EtiquetaV + ":\n";
-                        result.Codigo += result.Valor + " = 0;\n";
-                        result.Codigo += etiquetaS + ":\n";
+                if (!Tipo.IsIndefinido())
+                {
+                    if (Tipo.IsBoolean()) /*S*/
+                    {
+                        if (Op1 is Literal)
+                        {
+                            rsOp1.EtiquetaV = NuevaEtiqueta();
+                            rsOp1.EtiquetaF = NuevaEtiqueta();
+
+                            rsOp1.Codigo += "ifFalse (" + rsOp1.Valor + " == 1) goto " + rsOp1.EtiquetaV + ";\n";
+                            rsOp1.Codigo += "goto " + rsOp1.EtiquetaF + ";\n";
+                            rsOp1.EtiquetaV += ":\n";
+                            rsOp1.EtiquetaF += ":\n";
+                        }
+
+                        if (Op2 is Literal)
+                        {
+                            rsOp2.EtiquetaV = NuevaEtiqueta();
+                            rsOp2.EtiquetaF = NuevaEtiqueta();
+
+                            rsOp2.Codigo += "ifFalse (" + rsOp2.Valor + " == 1) goto " + rsOp2.EtiquetaV + ";\n";
+                            rsOp2.Codigo += "goto " + rsOp2.EtiquetaF + ";\n";
+                            rsOp2.EtiquetaV += ":\n";
+                            rsOp2.EtiquetaF += ":\n";
+                        }
+
+                        if (Op == Operador.AND)
+                        {
+                            result.Codigo += rsOp1.Codigo;
+
+                            if (Op1 is Relacional || Op1 is Literal)
+                            {
+                                result.Codigo += rsOp1.EtiquetaF;
+                                rsOp1.EtiquetaF = rsOp1.EtiquetaV;
+                                rsOp1.EtiquetaV = null;
+                            }
+
+                            result.Codigo += rsOp2.Codigo;
+
+                            if (Op2 is Relacional || Op2 is Literal)
+                            {
+                                string copy = rsOp2.EtiquetaV;
+                                rsOp2.EtiquetaV = rsOp2.EtiquetaF;
+                                rsOp2.EtiquetaF = copy;
+                            }
+
+                            /*
+                            if(Op2 is Relacional)
+                                result.Codigo += rsOp2.EtiquetaF;*/
+
+                            if (!Evaluar)
+                            {
+                                result.Valor = NuevoTemporal();
+                                string etiquetaS = NuevaEtiqueta();
+
+                                if (rsOp1.EtiquetaV != null)
+                                    result.Codigo += rsOp1.EtiquetaV;
+
+                                if (rsOp2.EtiquetaV != null)
+                                    result.Codigo += rsOp2.EtiquetaV;
+
+                                result.Codigo += result.Valor + " = 1;\n";
+                                result.Codigo += "goto " + etiquetaS + ";\n";
+
+                                if (rsOp1.EtiquetaF != null)
+                                    result.Codigo += rsOp1.EtiquetaF;
+
+                                if (rsOp2.EtiquetaF != null)
+                                    result.Codigo += rsOp2.EtiquetaF;
+
+                                result.Codigo += result.Valor + " = 0;\n";
+                                result.Codigo += etiquetaS + ":\n";
+                            }
+                            else
+                            {
+                                if (rsOp1.EtiquetaV != null)
+                                    result.Codigo += rsOp1.EtiquetaV;
+                                if (rsOp1.EtiquetaF != null)
+                                    result.EtiquetaF += rsOp1.EtiquetaF;
+                                if (rsOp2.EtiquetaV != null)
+                                    result.Codigo += rsOp2.EtiquetaV;
+                                if (rsOp2.EtiquetaF != null)
+                                    result.EtiquetaF += rsOp2.EtiquetaF;
+                            }
+
+                        }
+                        else
+                        {
+                            result.Codigo += rsOp1.Codigo;
+
+                            if (Op1 is Relacional || Op1 is Literal)
+                            {
+                                result.Codigo += rsOp1.EtiquetaV;
+                                rsOp1.EtiquetaV = rsOp1.EtiquetaF;
+                                rsOp1.EtiquetaF = null;
+                            }
+
+                            result.Codigo += rsOp2.Codigo;
+
+                            if (Op2 is Relacional || Op2 is Literal)
+                            {
+                                string copy = rsOp2.EtiquetaV;
+                                rsOp2.EtiquetaV = rsOp2.EtiquetaF;
+                                rsOp2.EtiquetaF = copy;
+                            }
+
+                            if (!Evaluar)
+                            {
+                                result.Valor = NuevoTemporal();
+                                string etiquetaS = NuevaEtiqueta();
+
+                                if (rsOp1.EtiquetaV != null)
+                                    result.Codigo += rsOp1.EtiquetaV;
+
+                                if (rsOp2.EtiquetaV != null)
+                                    result.Codigo += rsOp2.EtiquetaV;
+
+                                result.Codigo += result.Valor + " = 1;\n";
+                                result.Codigo += "goto " + etiquetaS + ";\n";
+
+                                if (rsOp1.EtiquetaF != null)
+                                    result.Codigo += rsOp1.EtiquetaF;
+
+                                if (rsOp2.EtiquetaF != null)
+                                    result.Codigo += rsOp2.EtiquetaF;
+
+                                result.Codigo += result.Valor + " = 0;\n";
+                                result.Codigo += etiquetaS + ":\n";
+                            }
+                            else
+                            {
+                                if (rsOp1.EtiquetaV != null)
+                                    result.EtiquetaV += rsOp1.EtiquetaV;
+                                if (rsOp1.EtiquetaF != null)
+                                    result.Codigo += rsOp1.EtiquetaF;
+                                if (rsOp2.EtiquetaV != null)
+                                    result.EtiquetaV += rsOp2.EtiquetaV;
+                                if (rsOp2.EtiquetaF != null)
+                                    result.Codigo += rsOp2.EtiquetaF;
+                            }
+                        }
                     }
                     else
                     {
-                        result.Codigo += rsOp1.Codigo;
-                        result.Codigo += rsOp1.EtiquetaF + ":\n";
-                        result.Codigo += rsOp2.Codigo;
-                        result.EtiquetaV = rsOp2.EtiquetaF;
-                        result.EtiquetaF = rsOp1.EtiquetaV + ":\n";
-                        result.EtiquetaF += rsOp2.EtiquetaV;
+                        if (Op1.GetTipo().IsBoolean() || Op2.GetTipo().IsBoolean())
+                        {
+
+                        }
+                        else
+                        {
+                            if (Op == Operador.AND)
+                            {
+                                if (Op2 is Literal && Op2.GetTipo().Tip != Tipo.Type.NONE)
+                                {
+                                    result.Valor = NuevoTemporal();
+                                    result.Codigo += result.Valor + " = " + rsOp2.Valor + ";\n";
+                                }
+                                else
+                                {
+                                    result.Codigo += rsOp2.Codigo;
+                                    result.Valor = rsOp2.Valor;
+                                }
+                                Tipo = Op2.GetTipo();
+                            }
+                            else
+                            {
+                                if (Op1 is Literal && Op2.GetTipo().Tip != Tipo.Type.NONE)
+                                {
+                                    result.Valor = NuevoTemporal();
+                                    result.Codigo += result.Valor + " = " + rsOp1.Valor + ";\n";
+                                }
+                                else
+                                {
+                                    result.Codigo += rsOp1.Codigo;
+                                    result.Valor = rsOp1.Valor;
+                                }
+                                Tipo = Op1.GetTipo();
+                            }
+                        }
                     }
-
-
                 }
                 else
                 {
-                    result.Valor = NuevoTemporal();
-                    string etiquetaS = NuevaEtiqueta();
-
-                    result.Codigo += rsOp1.Codigo;
-                    result.Codigo += rsOp1.EtiquetaV + ":\n";
-                    result.Codigo += rsOp2.Codigo;
-                    result.Codigo += rsOp1.EtiquetaF + ":\n";
-                    result.Codigo += rsOp2.EtiquetaF + ":\n";
-                    result.Codigo += result.Valor + " = 1;\n";
-                    result.Codigo += "goto " + etiquetaS + ";\n";
-                    result.Codigo += rsOp2.EtiquetaV + ":\n";
-                    result.Codigo += result.Valor + " = 0;\n";
-                    result.Codigo += etiquetaS + ":\n";
+                    Console.WriteLine("Error, no se pudo realizar la operacion logica. Linea" + Linea);
                 }
 
             }
             else
             {
-                /*NOT*/
+                
             }
 
             return result;
@@ -97,7 +236,33 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
 
         public override Tipo GetTipo()
         {
-            throw new NotImplementedException();
+            return Tipo;
+        }
+
+        private void TipoResultante(Tipo op1, Tipo op2)
+        {
+            if (!op1.IsIndefinido() && !op2.IsIndefinido())
+            {
+                if (op1.IsBoolean() && op2.IsBoolean())
+                {
+                    Tipo.Tip = Tipo.Type.BOOLEAN;
+                    return;
+                }
+                else
+                {
+                    if (Op == Operador.AND)
+                        Tipo = op2;
+                    else
+                        Tipo = op1;
+                    return;
+                }
+            }
+            Tipo.Tip = Tipo.Type.INDEFINIDO;
+        }
+
+        private void TipoResultante(Tipo op1)
+        {
+            Tipo = op1;
         }
     }
 }
