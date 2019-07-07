@@ -41,7 +41,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
 
                 if (!Tipo.IsIndefinido())
                 {
-                    if (Tipo.IsBoolean()) /*S*/
+                    if (Tipo.IsBoolean()) /*Si los dos son booleanos*/
                     {
                         if (Op1 is Literal)
                         {
@@ -193,41 +193,89 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     }
                     else
                     {
-                        if (Op1.GetTipo().IsBoolean() || Op2.GetTipo().IsBoolean())
+                        if (Op == Operador.AND)
                         {
-
-                        }
-                        else
-                        {
-                            if (Op == Operador.AND)
+                            if (Op2 is Literal && !Op2.GetTipo().IsNone())
                             {
-                                if (Op2 is Literal && Op2.GetTipo().Tip != Tipo.Type.NONE)
-                                {
-                                    result.Valor = NuevoTemporal();
-                                    result.Codigo += result.Valor + " = " + rsOp2.Valor + ";\n";
-                                }
-                                else
-                                {
-                                    result.Codigo += rsOp2.Codigo;
-                                    result.Valor = rsOp2.Valor;
-                                }
-                                Tipo = Op2.GetTipo();
+                                result.Valor = NuevoTemporal();
+                                result.Codigo += result.Valor + " = " + rsOp2.Valor + ";\n";
                             }
                             else
                             {
-                                if (Op1 is Literal && Op2.GetTipo().Tip != Tipo.Type.NONE)
+                                result.Codigo += rsOp2.Codigo;
+                                result.Valor = rsOp2.Valor;
+
+                                if (Op2 is Relacional || Op2 is Logica)
                                 {
-                                    result.Valor = NuevoTemporal();
-                                    result.Codigo += result.Valor + " = " + rsOp1.Valor + ";\n";
+                                    if (!Evaluar)
+                                    {
+                                        result.Valor = NuevoTemporal();
+                                        string etiquetaS = NuevaEtiqueta();
+
+                                        if (rsOp2.EtiquetaV != null)
+                                            result.Codigo += rsOp2.EtiquetaV;
+
+                                        result.Codigo += result.Valor + " = 1;\n";
+                                        result.Codigo += "goto " + etiquetaS + ";\n";
+
+                                        if (rsOp2.EtiquetaF != null)
+                                            result.Codigo += rsOp2.EtiquetaF;
+
+                                        result.Codigo += result.Valor + " = 0;\n";
+                                        result.Codigo += etiquetaS + ":\n";
+                                    }
+                                    else
+                                    {
+                                        result.EtiquetaV = rsOp2.EtiquetaV;
+                                        result.EtiquetaF = rsOp2.EtiquetaF;
+                                    }
+
+
                                 }
-                                else
-                                {
-                                    result.Codigo += rsOp1.Codigo;
-                                    result.Valor = rsOp1.Valor;
-                                }
-                                Tipo = Op1.GetTipo();
                             }
+                            Tipo = Op2.GetTipo();
                         }
+                        else
+                        {
+                            if (Op1 is Literal && !Op1.GetTipo().IsNone())
+                            {
+                                result.Valor = NuevoTemporal();
+                                result.Codigo += result.Valor + " = " + rsOp1.Valor + ";\n";
+                            }
+                            else
+                            {
+                                result.Codigo += rsOp1.Codigo;
+                                result.Valor = rsOp1.Valor;
+
+                                if (Op1 is Relacional || Op1 is Logica)
+                                {
+                                    if (!Evaluar)
+                                    {
+                                        result.Valor = NuevoTemporal();
+                                        string etiquetaS = NuevaEtiqueta();
+
+                                        if (rsOp1.EtiquetaV != null)
+                                            result.Codigo += rsOp1.EtiquetaV;
+
+                                        result.Codigo += result.Valor + " = 1;\n";
+                                        result.Codigo += "goto " + etiquetaS + ";\n";
+
+                                        if (rsOp1.EtiquetaF != null)
+                                            result.Codigo += rsOp1.EtiquetaF;
+
+                                        result.Codigo += result.Valor + " = 0;\n";
+                                        result.Codigo += etiquetaS + ":\n";
+                                    }
+                                    else
+                                    {
+                                        result.EtiquetaV = rsOp1.EtiquetaV;
+                                        result.EtiquetaF = rsOp1.EtiquetaF;
+                                    }
+                                }
+                            }
+                            Tipo = Op1.GetTipo();
+                        }
+                  
                     }
                 }
                 else
@@ -236,7 +284,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 }
 
             }
-            else
+            else /*NOT*/
             {
                 Tipo.Tip = Tipo.Type.BOOLEAN;
 
@@ -341,10 +389,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 }
                 else
                 {
-                    if (Op == Operador.AND)
-                        Tipo = op2;
-                    else
-                        Tipo = op1;
+                    Tipo.Tip = Tipo.Type.INT;
                     return;
                 }
             }
