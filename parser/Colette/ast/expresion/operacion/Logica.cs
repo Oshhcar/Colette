@@ -238,7 +238,88 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             }
             else
             {
-                
+                Tipo.Tip = Tipo.Type.BOOLEAN;
+
+                if (Op1.GetTipo().IsBoolean()) /*Boolean, exp logica y relacional*/
+                {
+                    if (Op1 is Literal)
+                    {
+                        rsOp1.EtiquetaV = NuevaEtiqueta();
+                        rsOp1.EtiquetaF = NuevaEtiqueta();
+
+                        rsOp1.Codigo += "ifFalse (" + rsOp1.Valor + " == 1) goto " + rsOp1.EtiquetaV + ";\n";
+                        rsOp1.Codigo += "goto " + rsOp1.EtiquetaF + ";\n";
+                        rsOp1.EtiquetaV += ":\n";
+                        rsOp1.EtiquetaF += ":\n";
+                    }
+
+                    result.Codigo += rsOp1.Codigo;
+
+                    if (!Evaluar)
+                    {
+                        result.Valor = NuevoTemporal();
+                        string etiquetaS = NuevaEtiqueta();
+
+                        if (rsOp1.EtiquetaV != null)
+                            result.Codigo += rsOp1.EtiquetaV;
+
+                        result.Codigo += result.Valor + " = 1;\n";
+                        result.Codigo += "goto " + etiquetaS + ";\n";
+
+                        if (rsOp1.EtiquetaF != null)
+                            result.Codigo += rsOp1.EtiquetaF;
+
+                        result.Codigo += result.Valor + " = 0;\n";
+                        result.Codigo += etiquetaS + ":\n";
+                    }
+                    else
+                    {
+                        if (rsOp1.EtiquetaV != null)
+                            result.EtiquetaF = rsOp1.EtiquetaV;
+                        if (rsOp1.EtiquetaF != null)
+                            result.EtiquetaV = rsOp1.EtiquetaF;
+                    }
+                }
+                else
+                {
+                    if (Op1 is Literal)
+                    {
+                        string tmp = NuevoTemporal();
+                        rsOp1.Codigo += tmp + " = " + rsOp1.Valor + ";\n";
+                        rsOp1.Valor = tmp;
+                    }
+                    if (Op1.GetTipo().IsString())
+                    {
+                        rsOp1.Codigo += rsOp1.Valor + " = 0 - 1;\n";
+                    }
+
+                    result.Codigo += rsOp1.Codigo;
+
+                    if (!Evaluar)
+                    {
+                        result.EtiquetaV = NuevaEtiqueta();
+                        result.EtiquetaF = NuevaEtiqueta();
+                        result.Valor = NuevoTemporal();
+
+                        result.Codigo += result.Valor + " = 0;\n";
+                        result.Codigo += "ifFalse (" + rsOp1.Valor + " == 0) goto " + result.EtiquetaV + ";\n";
+                        result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                        result.Codigo += result.EtiquetaF + ":\n";
+                        result.Codigo += result.Valor + " = 1;\n";
+                        result.Codigo += result.EtiquetaV + ":\n";
+
+                    }
+                    else
+                    {
+                        result.EtiquetaV = NuevaEtiqueta();
+                        result.EtiquetaF = NuevaEtiqueta();
+                        result.Codigo += "ifFalse (" + rsOp1.Valor + " == 0) goto " + result.EtiquetaF + ";\n";
+                        result.Codigo += "goto " + result.EtiquetaV + ";\n";
+                        result.EtiquetaV += ":\n";
+                        result.EtiquetaF += ":\n";
+                    }
+                    
+                }
             }
 
             return result;
@@ -268,11 +349,6 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 }
             }
             Tipo.Tip = Tipo.Type.INDEFINIDO;
-        }
-
-        private void TipoResultante(Tipo op1)
-        {
-            Tipo = op1;
         }
     }
 }
