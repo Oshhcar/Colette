@@ -470,6 +470,20 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 result.Codigo += factor + " = 0-1;\n";
                 result.Codigo += rsOp.Valor + " = " + rsOp.Valor + " * " + factor + ";\n";
                 result.Codigo += rsOp.EtiquetaV + ":\n";
+                /***************************************************/
+
+                /*Verificar si es menor que 1*/
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+                string menor1 = NuevoTemporal();
+
+                result.Codigo += menor1 + " = 0;\n";
+                result.Codigo += "ifFalse (" + rsOp.Valor + " < 1) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+                result.Codigo += menor1 + " = 1;\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+                /*****************************************/
 
                 rsOp.EtiquetaV = NuevaEtiqueta();
                 rsOp.EtiquetaF = NuevaEtiqueta();
@@ -526,6 +540,18 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 result.Codigo += "goto " + etqCiclo + ";\n";
                 result.Codigo += rsOp.EtiquetaV + ":\n";
 
+
+                /*Coloco el 0 antes del punto*/
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+                result.Codigo += "if (" + menor1 + " == 0) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+                result.Codigo += "heap[H] = 48;\n";
+                result.Codigo += "H = H + 1;\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+                /*******************************************/
+
                 /*Coloco el (-) de negativo*/
                 rsOp.EtiquetaV = NuevaEtiqueta();
                 rsOp.EtiquetaF = NuevaEtiqueta();
@@ -535,6 +561,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 result.Codigo += "heap[H] = 45;\n";
                 result.Codigo += "H = H + 1;\n";
                 result.Codigo += rsOp.EtiquetaV + ":\n";
+                /*************************************************/
 
                 string tmp = NuevoTemporal();
                 result.Codigo += tmp + " = H - 1;\n";
