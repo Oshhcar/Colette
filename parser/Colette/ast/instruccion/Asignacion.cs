@@ -10,15 +10,17 @@ namespace Compilador.parser.Colette.ast.instruccion
 {
     class Asignacion : Instruccion
     {
-        public Asignacion(LinkedList<Expresion> objetivo, LinkedList<LinkedList<Expresion>> valor,
+        public Asignacion(Tipo tipo, LinkedList<Expresion> objetivo, LinkedList<LinkedList<Expresion>> valor,
             int linea, int columna) : base(linea, columna)
         {
             Objetivo = objetivo;
             Valor = valor;
+            Tipo = tipo;
         }
 
         public LinkedList<Expresion> Objetivo { get; set; }
         public LinkedList<LinkedList<Expresion>> Valor { get; set; }
+        public Tipo Tipo { get; set; }
 
         public override Result GetC3D(Ent e)
         {
@@ -38,20 +40,39 @@ namespace Compilador.parser.Colette.ast.instruccion
                 Expresion obj = Objetivo.ElementAt(i);
                 if (obj is Identificador) //verifico que sea id
                 {
-                    ((Identificador)obj).Acceso = false;
-                    Result rsObj = obj.GetC3D(e);
+                    Identificador idObjetivo = (Identificador)obj;
 
-                    if (rsObj == null) //si no existe, creo la variable
+                    idObjetivo.Acceso = false;
+                    Result rsObj = idObjetivo.GetC3D(e);
+
+                    if (rsObj == null) //si no existe, creo la variable si viene con tipo
                     {
-                        rsObj = new Result();
+                        if (!Tipo.IsIndefinido())
+                        {
+                            idObjetivo.Tipo = Tipo;
 
-                        Sim s = new Sim(((Identificador)obj).Id, new Tipo(Tipo.Type.INT), Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
-                        e.Add(s);
-                        rsObj.Simbolo = s;
+                            rsObj = new Result();
 
-                        string ptrStack = NuevoTemporal();
-                        rsObj.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
-                        rsObj.Valor = "stack[" + ptrStack + "]";
+                            Sim s = new Sim(((Identificador)obj).Id, Tipo, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
+                            e.Add(s);
+
+                            string ptrStack = NuevoTemporal();
+                            rsObj.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
+                            rsObj.Valor = "stack[" + ptrStack + "]";
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error! No se pudo encontrar la variable " + idObjetivo.Id + ". Linea: " + Linea);
+                            return null;
+                        }
+                    }
+                    else
+                    {
+                        if (!Tipo.IsIndefinido())
+                        {
+                            Console.WriteLine("Error! Ya se declaro la variable " + idObjetivo.Id + ". Linea: " + Linea);
+                            return null;
+                        }
                     }
 
                     LinkedList<Result> rsList = new LinkedList<Result>();
@@ -64,7 +85,14 @@ namespace Compilador.parser.Colette.ast.instruccion
                         {
                             Result rsTemp = expI.GetC3D(e);
                             if (rsTemp != null)
+                            {
+                                if (expI.GetTipo().Tip != idObjetivo.Tipo.Tip)
+                                {
+                                    Console.WriteLine("Error! El valor no corresponde al tipo. Linea: " + Linea);
+                                    return null;
+                                }
                                 rsList.AddLast(rsTemp);
+                            }
                             else
                             {
                                 Console.WriteLine("Error! No se pudo encontrar el valor. Linea: " + Linea);
@@ -80,26 +108,42 @@ namespace Compilador.parser.Colette.ast.instruccion
 
                                 if (rsTemp == null) //si no existe, creo la variable
                                 {
-                                    rsTemp = new Result();
+                                    if (!Tipo.IsIndefinido())
+                                    {
+                                        rsTemp = new Result();
 
-                                    Sim s = new Sim(((Identificador)expI).Id, new Tipo(Tipo.Type.INT), Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
-                                    e.Add(s);
+                                        Sim s = new Sim(((Identificador)expI).Id, Tipo, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
+                                        e.Add(s);
 
-                                    string ptrStack = NuevoTemporal();
-                                    rsTemp.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
-                                    rsTemp.Valor = "stack[" + ptrStack + "]";
-                                    rsTemp.PtrStack = s.Pos;
+                                        string ptrStack = NuevoTemporal();
+                                        rsTemp.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
+                                        rsTemp.Valor = "stack[" + ptrStack + "]";
+                                        rsTemp.PtrStack = s.Pos;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Error! No se pudo encontrar el valor. Linea: " + Linea);
+                                        return null;
+                                    }
+                                }
+                                else
+                                {
+                                    if (!Tipo.IsIndefinido())
+                                    {
+                                        Console.WriteLine("Error! Ya se declaro la variable " + idObjetivo.Id + ". Linea: " + Linea);
+                                        return null;
+                                    }
                                 }
                                 rsList.AddLast(rsTemp);
                             }
                             else
-                                return null; /*No implementado*/
+                                return null; /*No implementado otro tipo de valores(listas)*/
                         }
                     }
 
                     if (rsList.Count() == 1)
                     {
-                        rsObj.Tipo = rsList.ElementAt(0).Tipo;
+                        //rsObj.Tipo = rsList.ElementAt(0).Tipo;
                         rsObj.Codigo += rsList.ElementAt(0).Codigo;
                         rsObj.Codigo += rsObj.Valor + " = " + rsList.ElementAt(0).Valor + ";\n";
                     }

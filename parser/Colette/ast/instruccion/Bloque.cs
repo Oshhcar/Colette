@@ -35,7 +35,8 @@ namespace Compilador.parser.Colette.ast.instruccion
                     rsNodo = ((Expresion)sentencia).GetC3D(e);
                 }
 
-                result.Codigo += rsNodo.Codigo;
+                if(rsNodo != null)
+                    result.Codigo += rsNodo.Codigo;
             }
 
             return result;

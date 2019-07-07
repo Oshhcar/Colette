@@ -74,6 +74,26 @@ namespace Compilador.parser.Collete
                     return new Bloque(sent, 0, 0);
                 case "SENTENCIA":
                     return GenerarArbol(hijos[0]);
+                case "TYPE":
+                    switch (hijos[0].Term.Name)
+                    {
+                        case "int":
+                            return new Tipo(Tipo.Type.INT);
+                        case "double":
+                            return new Tipo(Tipo.Type.DOUBLE);
+                        case "String":
+                        case "string":
+                            return new Tipo(Tipo.Type.STRING);
+                        case "boolean":
+                            return new Tipo(Tipo.Type.BOOLEAN);
+                        case "identifier":
+                            return new Tipo(hijos[0].Token.Text);
+                        case "dictionary":
+                        case "list":
+                        case "tup":
+                        default:
+                            return new Tipo(Tipo.Type.INDEFINIDO);
+                    }
                 case "PRINT":
                     linea = hijos[0].Token.Location.Line+1;
                     columna = hijos[0].Token.Location.Column+1;
@@ -121,10 +141,19 @@ namespace Compilador.parser.Collete
 
                     }
                 case "ASSIGNMENT_STMT":
-                    linea = hijos[1].Token.Location.Line + 1;
-                    columna = hijos[1].Token.Location.Column + 1;
                     //LinkedList<LinkedList<Expresion>> assignmet_list = ;
-                    return new Asignacion((LinkedList<Expresion>)GenerarArbol(hijos[0]), (LinkedList<LinkedList<Expresion>>)GenerarArbol(hijos[2]), linea, columna);
+                    if (hijos.Count() == 3)
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        return new Asignacion(new Tipo(Tipo.Type.INDEFINIDO), (LinkedList<Expresion>)GenerarArbol(hijos[0]), (LinkedList<LinkedList<Expresion>>)GenerarArbol(hijos[2]), linea, columna);
+                    }
+                    else
+                    {
+                        linea = hijos[2].Token.Location.Line + 1;
+                        columna = hijos[2].Token.Location.Column + 1;
+                        return new Asignacion((Tipo)GenerarArbol(hijos[0]), (LinkedList<Expresion>)GenerarArbol(hijos[1]), (LinkedList<LinkedList<Expresion>>)GenerarArbol(hijos[3]), linea, columna);
+                    }
                 case "TARGET_LIST":
                     LinkedList<Expresion> target_list = new LinkedList<Expresion>();
                     foreach (ParseTreeNode hijo in hijos)

@@ -13,10 +13,13 @@ namespace Compilador.parser.Colette.ast.expresion
         {
             Id = id;
             Acceso = true;
+            Tipo = new Tipo(Tipo.Type.INDEFINIDO);
         }
 
         public string Id { get; set; }
         public bool Acceso { get; set; }
+
+        public Tipo Tipo { get; set; }
 
         public override Result GetC3D(Ent e)
         {
@@ -24,19 +27,13 @@ namespace Compilador.parser.Colette.ast.expresion
 
             if (s != null)
             {
-                
-                /*verificar tipo para acceder a heap*/
+                Tipo = s.Tipo;
                 Result result = new Result();
                 string ptrStack = NuevoTemporal();
                 result.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
-                result.Tipo = s.Tipo;
+
                 if (Acceso)
                 {
-                    string ptrTipo = NuevoTemporal();
-                    result.Codigo += ptrTipo + " = P + " + (s.Pos + 1) + ";\n";
-                    result.Codigo += "stack[" + ptrTipo + "] = " + (int)s.Tipo.Tip + ";\n"; /*verificar*/
-
-
                     result.Valor = NuevoTemporal();
                     result.Codigo += result.Valor + " = stack[" + ptrStack + "];\n";
                 }
@@ -52,7 +49,7 @@ namespace Compilador.parser.Colette.ast.expresion
 
         public override Tipo GetTipo()
         {
-            throw new NotImplementedException();
+            return Tipo;
         }
     }
 }

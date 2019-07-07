@@ -22,7 +22,6 @@ namespace Compilador.parser.Colette.ast.expresion
         public override Result GetC3D(Ent e)
         {
             Result result = new Result();
-            result.Tipo = Tipo;
 
             if (Tipo.IsInt() || Tipo.IsDouble() || Tipo.IsBoolean())
             {

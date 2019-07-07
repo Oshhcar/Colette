@@ -20,7 +20,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public int Pos { get; set; }
         public string Ambito { get; set; }
 
-        public int GetPos() { Pos++; return Pos++; }
+        public int GetPos() { return ++Pos; }
 
         public void Add(Sim s)
         {
@@ -41,7 +41,7 @@ namespace Compilador.parser.Colette.ast.entorno
         {
             foreach (Sim s in Simbolos)
             {
-                Console.WriteLine(s.Id + ", " + s.Tipo + ", " + s.Rol + ", " + s.Tam + ", " + s.Pos+", "+s.Ambito);
+                Console.WriteLine(s.Id + ", " + s.Tipo.Tip + ", " + s.Rol + ", " + s.Tam + ", " + s.Pos+", "+s.Ambito);
             }
         }
     }

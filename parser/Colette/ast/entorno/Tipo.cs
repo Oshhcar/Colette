@@ -13,7 +13,14 @@ namespace Compilador.parser.Colette.ast.entorno
             Tip = tip;
         }
 
+        public Tipo(string objeto)
+        {
+            Tip = Type.OBJECT;
+            Objeto = objeto;
+        }
+
         public Type Tip { get; set; }
+        public string Objeto { get; set; }
 
         public bool IsInt() { return Tip == Type.INT; }
         public bool IsDouble() { return Tip == Type.DOUBLE; }

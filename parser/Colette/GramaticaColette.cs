@@ -43,7 +43,8 @@ namespace Compilador.parser.Collete
                 del_ = ToTerm("del"),
                 int_ = ToTerm("int"),
                 double_ = ToTerm("double"),
-                string_ = ToTerm("String"),
+                String_ = ToTerm("String"),
+                string_ = ToTerm("string"),
                 boolean_ = ToTerm("boolean"),
                 dictionary_ = ToTerm("dictionary"),
                 list_ = ToTerm("list"),
@@ -56,7 +57,7 @@ namespace Compilador.parser.Collete
 
             MarkReservedWords("class", "def", "lambda", "print", "or", "and", "not", "for",
                 "if", "elif", "else", "None", "break", "continue", "return", "pass", "global", "nonlocal",
-                "del", "int", "double", "String", "boolean", "dictionary", "list", "tup", "while", "true", 
+                "del", "int", "double", "String", "string", "boolean", "dictionary", "list", "tup", "while", "true", 
                 "false", "True", "False", "none");
 
             /* Relational operators */
@@ -253,7 +254,7 @@ namespace Compilador.parser.Collete
                             | EXPRESSION_STMT + Eos
                             ;
 
-            TYPE.Rule = int_ | double_ | string_ | boolean_ | identifier | dictionary_ | list_ | tup_;
+            TYPE.Rule = int_ | double_ | string_ | String_ | boolean_ | identifier | dictionary_ | list_ | tup_;
 
             PRINT.Rule = print_ + leftPar + STARRED_EXPRESSION + rightPar; //CORR
 
