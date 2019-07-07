@@ -103,6 +103,7 @@
     <Compile Include="parser\Colette\ast\expresion\operacion\Relacional.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Asignacion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Bloque.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\ciclos\While.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Clase.cs" />
     <Compile Include="parser\Colette\ast\instruccion\condicionales\If.cs" />
     <Compile Include="parser\Colette\ast\instruccion\condicionales\SubIf.cs" />

@@ -3,6 +3,7 @@ using Compilador.parser.Colette.ast.entorno;
 using Compilador.parser.Colette.ast.expresion;
 using Compilador.parser.Colette.ast.expresion.operacion;
 using Compilador.parser.Colette.ast.instruccion;
+using Compilador.parser.Colette.ast.instruccion.ciclos;
 using Compilador.parser.Colette.ast.instruccion.condicionales;
 using Irony.Parsing;
 using System;
@@ -104,6 +105,20 @@ namespace Compilador.parser.Collete
                         LinkedList<SubIf> subifs = (LinkedList<SubIf>)GenerarArbol(hijos[0]);
                         subifs.AddLast(new SubIf((Expresion)GenerarArbol(hijos[2]), (Bloque)GenerarArbol(hijos[4]), linea, columna));
                         return subifs;
+                    }
+                case "WHILE_STMT":
+                    if (hijos.Count() == 4)
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new While((Expresion)GenerarArbol(hijos[1]), (Bloque)GenerarArbol(hijos[3]), null, linea, columna);
+                    }
+                    else
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new While((Expresion)GenerarArbol(hijos[1]), (Bloque)GenerarArbol(hijos[3]), (Bloque)GenerarArbol(hijos[6]), linea, columna);
+
                     }
                 case "ASSIGNMENT_STMT":
                     linea = hijos[1].Token.Location.Line + 1;
