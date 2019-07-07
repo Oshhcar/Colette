@@ -32,8 +32,6 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     result.Codigo += rsOp1.Codigo;
                     result.Codigo += rsOp2.Codigo;
 
-                    result.Valor = NuevoTemporal();
-
                     if (Tipo.IsString())
                     {
                         if (!Op1.GetTipo().IsString())
@@ -45,6 +43,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                         result.EtiquetaF = NuevaEtiqueta();
                         string etqCiclo = NuevaEtiqueta();
                         string tmpCiclo = NuevoTemporal();
+                        result.Valor = NuevoTemporal();
 
                         result.Codigo += result.Valor + " = H;\n";
 
@@ -87,18 +86,23 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                         switch (Op)
                         {
                             case Operador.SUMA:
+                                result.Valor = NuevoTemporal();
                                 result.Codigo += result.Valor + " = " + rsOp1.Valor + " + " + rsOp2.Valor + ";\n";
                                 break;
                             case Operador.RESTA:
+                                result.Valor = NuevoTemporal();
                                 result.Codigo += result.Valor + " = " + rsOp1.Valor + " - " + rsOp2.Valor + ";\n";
                                 break;
                             case Operador.MULTIPLICACION:
+                                result.Valor = NuevoTemporal();
                                 result.Codigo += result.Valor + " = " + rsOp1.Valor + " * " + rsOp2.Valor + ";\n";
                                 break;
                             case Operador.DIVISION:
+                                result.Valor = NuevoTemporal();
                                 result.Codigo += result.Valor + " = " + rsOp1.Valor + " / " + rsOp2.Valor + ";\n";
                                 break;
                             case Operador.MODULO:
+                                result.Valor = NuevoTemporal();
                                 result.Codigo += result.Valor + " = " + rsOp1.Valor + " % " + rsOp2.Valor + ";\n";
                                 break;
                             case Operador.FLOOR:
@@ -117,6 +121,8 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                                     result.Codigo += tmpOp2 + " = " + rsOp2.Valor + ";\n";
                                     rsOp2.Valor = tmpOp2;
                                 }
+
+                                result.Valor = NuevoTemporal();
 
                                 result.Codigo += "if (" + rsOp2.Valor + " != 0) goto " + result.EtiquetaV + ";\n";
                                 result.Codigo += "goto " + etqSalida + ";\n";
@@ -216,6 +222,59 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                                 break;
                             case Operador.POTENCIA:
 
+                                if (Op1 is Literal)
+                                {
+                                    string tmpOp1 = NuevoTemporal();
+                                    result.Codigo += tmpOp1 + " = " + rsOp1.Valor + ";\n";
+                                    rsOp1.Valor = tmpOp1;
+                                }
+                                if (Op2 is Literal)
+                                {
+                                    string tmpOp2 = NuevoTemporal();
+                                    result.Codigo += tmpOp2 + " = " + rsOp2.Valor + ";\n";
+                                    rsOp2.Valor = tmpOp2;
+                                }
+                                else if (Op2 is Aritmetica)
+                                {
+                                    if (((Aritmetica)Op2).Op2 == null && ((Aritmetica)Op2).Op == Operador.RESTA)
+                                    {
+                                        Tipo.Tip = Tipo.Type.DOUBLE;
+                                    }
+                                }
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+                                string factorNeg = NuevoTemporal();
+                                string nuevoValor = NuevoTemporal();
+                                string etqSalida2 = NuevaEtiqueta();
+                                //string etqError = NuevaEtiqueta();
+
+                                result.Codigo += "if (" + rsOp2.Valor + " >= 0) goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                result.Codigo += result.EtiquetaF + ":\n";
+                                result.Codigo += factorNeg + " = 0 - 1;\n";
+                                result.Codigo += rsOp2.Valor + " = " + rsOp2.Valor + " * " + factorNeg + ";\n";
+                                //result.Codigo += "if (" + rsOp1.Valor + " == 0) goto " + etqError + ";\n";/*0**-num*/
+                                result.Codigo += nuevoValor + " = 1.0 / " + rsOp1.Valor + ";\n";
+                                result.Codigo += "goto " + etqSalida2 + ";\n";
+                                result.Codigo += result.EtiquetaV + ":\n";
+                                result.Codigo += nuevoValor + " = " + rsOp1.Valor + ";\n";
+                                result.Codigo += etqSalida2 + ":\n";
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+                                string etqCiclo2 = NuevaEtiqueta();
+                                result.Valor = NuevoTemporal();
+
+                                result.Codigo += result.Valor + " = 1;\n";
+                                result.Codigo += etqCiclo2 + ":\n";
+                                result.Codigo += "if (" + rsOp2.Valor + " <= 0) goto " + result.EtiquetaV + ";\n";
+                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                result.Codigo += result.EtiquetaF + ":\n";
+                                result.Codigo += result.Valor + " = " + result.Valor + " * " + nuevoValor + ";\n";
+                                result.Codigo += rsOp2.Valor + " = " + rsOp2.Valor + " - 1;\n";
+                                result.Codigo += "goto " + etqCiclo2 + ";\n";
+                                result.Codigo += result.EtiquetaV + ":\n";
                                 break;
                         }
                     }
@@ -235,6 +294,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     else
                         Tipo = new Tipo(Tipo.Type.INT);
 
+                    result.Codigo += rsOp1.Codigo;
                     result.Valor = NuevoTemporal();
 
                     switch (Op)

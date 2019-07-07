@@ -210,8 +210,8 @@ namespace Compilador.parser.Collete
                         return GenerarArbol(hijos[0]);
                     else
                     {
-                        linea = hijos[0].Token.Location.Line + 1;
-                        columna = hijos[0].Token.Location.Column + 1;
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
                         return new Aritmetica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), Operador.POTENCIA, linea, columna);
                     }
                 case "PRIMARY":
