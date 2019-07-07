@@ -75,6 +75,11 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                                 rsOp1.EtiquetaF = rsOp1.EtiquetaV;
                                 rsOp1.EtiquetaV = null;
                             }
+                            else if (Op1 is Logica)
+                            {
+                                result.Codigo += rsOp1.EtiquetaV;
+                                rsOp1.EtiquetaV = null;
+                            }
 
                             result.Codigo += rsOp2.Codigo;
 
@@ -115,11 +120,11 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                             else
                             {
                                 if (rsOp1.EtiquetaV != null)
-                                    result.Codigo += rsOp1.EtiquetaV;
+                                    result.EtiquetaV += rsOp1.EtiquetaV;
                                 if (rsOp1.EtiquetaF != null)
                                     result.EtiquetaF += rsOp1.EtiquetaF;
                                 if (rsOp2.EtiquetaV != null)
-                                    result.Codigo += rsOp2.EtiquetaV;
+                                    result.EtiquetaV += rsOp2.EtiquetaV;
                                 if (rsOp2.EtiquetaF != null)
                                     result.EtiquetaF += rsOp2.EtiquetaF;
                             }
@@ -133,6 +138,11 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                             {
                                 result.Codigo += rsOp1.EtiquetaV;
                                 rsOp1.EtiquetaV = rsOp1.EtiquetaF;
+                                rsOp1.EtiquetaF = null;
+                            }
+                            else if (Op1 is Logica)
+                            {
+                                result.Codigo += rsOp1.EtiquetaF;
                                 rsOp1.EtiquetaF = null;
                             }
 
@@ -173,11 +183,11 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                                 if (rsOp1.EtiquetaV != null)
                                     result.EtiquetaV += rsOp1.EtiquetaV;
                                 if (rsOp1.EtiquetaF != null)
-                                    result.Codigo += rsOp1.EtiquetaF;
+                                    result.EtiquetaF += rsOp1.EtiquetaF;
                                 if (rsOp2.EtiquetaV != null)
                                     result.EtiquetaV += rsOp2.EtiquetaV;
                                 if (rsOp2.EtiquetaF != null)
-                                    result.Codigo += rsOp2.EtiquetaF;
+                                    result.EtiquetaF += rsOp2.EtiquetaF;
                             }
                         }
                     }
