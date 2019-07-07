@@ -45,7 +45,7 @@ namespace Compilador.parser.Colette.ast
                         result.Codigo += rsNodo.Codigo;
             }
 
-            global.Recorrer();
+            //global.Recorrer();
 
             string codigo = "";
 

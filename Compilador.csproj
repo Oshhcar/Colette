@@ -104,6 +104,8 @@
     <Compile Include="parser\Colette\ast\instruccion\Asignacion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Bloque.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Clase.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\condicionales\If.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\condicionales\SubIf.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Instruccion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Print.cs" />
     <Compile Include="parser\Colette\ast\Nodo.cs" />

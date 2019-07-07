@@ -3,6 +3,7 @@ using Compilador.parser.Colette.ast.entorno;
 using Compilador.parser.Colette.ast.expresion;
 using Compilador.parser.Colette.ast.expresion.operacion;
 using Compilador.parser.Colette.ast.instruccion;
+using Compilador.parser.Colette.ast.instruccion.condicionales;
 using Irony.Parsing;
 using System;
 using System.Collections.Generic;
@@ -76,6 +77,34 @@ namespace Compilador.parser.Collete
                     linea = hijos[0].Token.Location.Line+1;
                     columna = hijos[0].Token.Location.Column+1;
                     return new Print((Expresion)GenerarArbol(hijos[2]), linea, columna);
+                case "IF_STMT":
+                    if (hijos.Count() == 1)
+                        return new If((LinkedList<SubIf>)GenerarArbol(hijos[0]), 0, 0);
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        LinkedList <SubIf> subifs= (LinkedList<SubIf>)GenerarArbol(hijos[0]);
+                        subifs.AddLast(new SubIf(null, (Bloque)GenerarArbol(hijos[3]), linea, columna));
+                        return new If(subifs, 0, 0);
+                    }
+                case "IF_LIST":
+                    if (hijos.Count() == 4)
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        LinkedList<SubIf> subifs = new LinkedList<SubIf>();
+                        subifs.AddLast(new SubIf((Expresion)GenerarArbol(hijos[1]), (Bloque)GenerarArbol(hijos[3]), linea, columna));
+                        return subifs;
+                    }
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        LinkedList<SubIf> subifs = (LinkedList<SubIf>)GenerarArbol(hijos[0]);
+                        subifs.AddLast(new SubIf((Expresion)GenerarArbol(hijos[2]), (Bloque)GenerarArbol(hijos[4]), linea, columna));
+                        return subifs;
+                    }
                 case "ASSIGNMENT_STMT":
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;
