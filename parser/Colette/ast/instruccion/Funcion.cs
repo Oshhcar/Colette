@@ -23,46 +23,55 @@ namespace Compilador.parser.Colette.ast.instruccion
         public LinkedList<Identificador> Parametros { get; set; }
         public Bloque Bloque { get; set; }
 
-        public override Result GetC3D(Ent e)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
+            Result result = new Result();
             string firma = Id;
 
             if(Parametros != null)
             {
-                for (int i = 1; i < Parametros.Count(); i++)
+                for (int i = 1; i < Parametros.Count(); i++)/*en 1 porque el self no lo cuento*/
                 {
                     firma += "_" + Parametros.ElementAt(i).GetTipo().ToString();
                 }
             }
 
-            Ent local = new Ent(firma, e);
-
-            /*Agrego return*/
-            local.Add(new Sim("return", Tipo, Rol.RETURN, 1, local.GetPos(),local.Ambito,-1,-1));
-
-            /*Agrego parametros*/
-            int parametros = 0;
-            if (Parametros != null)
+            if (e.GetMetodo(firma) == null)
             {
-                foreach (Identificador id in Parametros)
+                Ent local = new Ent(firma, e);
+
+                /*Agrego return*/
+                local.Add(new Sim("return", Tipo, Rol.RETURN, 1, local.GetPos(), local.Ambito, -1, -1));
+
+                /*Agrego parametros*/
+                int parametros = 0;
+                if (Parametros != null)
                 {
-                    local.Add(new Sim(id.Id, id.Tipo, Rol.PARAMETER, 1, local.GetPos(), local.Ambito, -1, 0));
-                    parametros++;
+                    foreach (Identificador id in Parametros)
+                    {
+                        local.Add(new Sim(id.Id, id.Tipo, Rol.PARAMETER, 1, local.GetPos(), local.Ambito, -1, 0));
+                        parametros++;
+                    }
                 }
+
+
+                result.Codigo += "proc " + firma + "() begin\n";
+                /*agregar salto final para return (recorrer aqui el bloque)*/
+                result.Codigo += Bloque.GetC3D(local, true, false, errores).Codigo;
+                result.Codigo += "end\n\n";
+
+                Sim fun = new Sim(firma, Tipo, Rol.FUNCION, local.Pos, -1, e.Ambito, parametros, -1);
+                fun.Firma = firma;
+                fun.Entorno = local;
+                //local.Recorrer();
+
+                e.Add(fun);
+
             }
-
-            Result result = new Result();
-            result.Codigo += "proc " + firma + "() begin\n";
-            /*agregar salto final para return (recorrer aqui el bloque)*/
-            result.Codigo += Bloque.GetC3D(local).Codigo;
-            result.Codigo += "end\n\n";
-
-            Sim funcion = new Sim(Id,Tipo,Rol.FUNCION, local.Pos+1,-1,e.Ambito, parametros, -1);
-            funcion.Firma = firma;
-
-            //local.Recorrer();
-
-            e.Add(funcion);
+            else
+            {
+                errores.AddLast(new Error("Semántico","Ya se definió una funcion con la misma firma: "+ Id,Linea, Columna));
+            }
             return result;
         }
     }

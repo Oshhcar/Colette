@@ -21,7 +21,7 @@ namespace Compilador.parser.Colette.ast.expresion
         public Tipo Tipo { get; set; }
 
 
-        public override Result GetC3D(Ent e)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
             Result result = new Result();
 
@@ -32,7 +32,7 @@ namespace Compilador.parser.Colette.ast.expresion
                 LinkedList<Result> rsParametros = new LinkedList<Result>();
                 foreach (Expresion parametro in Parametros)
                 {
-                    Result rsParametro = parametro.GetC3D(e);
+                    Result rsParametro = parametro.GetC3D(e, funcion, ciclo, errores);
                     if (rsParametro != null)
                     {
                         if (!parametro.GetTipo().IsIndefinido())
@@ -43,7 +43,8 @@ namespace Compilador.parser.Colette.ast.expresion
                         }
                     }
 
-                    Console.WriteLine("Error! En parametro. Linea: " + Linea);
+                    errores.AddLast(new Error("Semántico", "El parámetro contiene error.", Linea, Columna));
+
                     return null;
                 }
 
@@ -70,7 +71,7 @@ namespace Compilador.parser.Colette.ast.expresion
                 }
                 else
                 {
-                    Console.WriteLine("Error! No se pudo encontrar el Metodo " + Id + ". Linea: " + Linea);
+                    errores.AddLast(new Error("Semántico", "La función: " + Id + " no está declarada.", Linea, Columna));
                     return null;
                 }
             }
@@ -86,7 +87,7 @@ namespace Compilador.parser.Colette.ast.expresion
                 }
                 else
                 {
-                    Console.WriteLine("Error! No se pudo encontrar el Metodo " + Id + ". Linea: " + Linea);
+                    errores.AddLast(new Error("Semántico", "La función: " + Id + " no está declarada.", Linea, Columna));
                     return null;
                 }
             }

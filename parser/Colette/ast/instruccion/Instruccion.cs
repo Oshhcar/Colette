@@ -12,6 +12,6 @@ namespace Compilador.parser.Colette.ast.instruccion
         public Instruccion(int linea, int columna) : base(linea, columna)
         { }
 
-        public abstract Result GetC3D(Ent e);
+        public abstract Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores);
     }
 }

@@ -18,7 +18,7 @@ namespace Compilador.parser.Colette.ast
 
         public LinkedList<Nodo> Sentencias { get; set; }
 
-        public String GenerarC3D()
+        public String GenerarC3D(LinkedList<Error> errores)
         {
             Nodo.Etiquetas = 0;
             Nodo.Temporales = 0;
@@ -32,7 +32,7 @@ namespace Compilador.parser.Colette.ast
             {
                 if (sentencia is Funcion)
                 {
-                    Result rsNodo = ((Funcion)sentencia).GetC3D(global);
+                    Result rsNodo = ((Funcion)sentencia).GetC3D(global, false, false, errores);
                     if(rsNodo != null)
                         if(rsNodo.Codigo != null)
                             result.Codigo += rsNodo.Codigo;
@@ -46,11 +46,11 @@ namespace Compilador.parser.Colette.ast
                     Result rsNodo;
                     if (sentencia is Instruccion)
                     {
-                        rsNodo = ((Instruccion)sentencia).GetC3D(global);
+                        rsNodo = ((Instruccion)sentencia).GetC3D(global, false, false, errores);
                     }
                     else
                     {
-                        rsNodo = ((Expresion)sentencia).GetC3D(global);
+                        rsNodo = ((Expresion)sentencia).GetC3D(global, false, false, errores);
                     }
 
                     if (rsNodo != null)
@@ -59,7 +59,7 @@ namespace Compilador.parser.Colette.ast
                 }
             }
 
-           // global.Recorrer();
+            global.Recorrer();
 
             string codigo = "";
 

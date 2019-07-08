@@ -16,12 +16,12 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
         public bool Cortocircuito { get; set; }
         private Tipo Tipo { get; set; }
 
-        public override Result GetC3D(Ent e)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
             Result result = new Result();
 
-            Result rsOp1 = Op1.GetC3D(e);
-            Result rsOp2 = Op2.GetC3D(e);
+            Result rsOp1 = Op1.GetC3D(e, funcion, ciclo, errores);
+            Result rsOp2 = Op2.GetC3D(e, funcion, ciclo, errores);
 
             TipoResultante(Op1.GetTipo(), Op2.GetTipo());
 
@@ -118,12 +118,12 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                         }
                         else
                         {
-                            Console.WriteLine("Error, no se pudo realizar la operacion relacional. Linea" + Linea);
+                            errores.AddLast(new Error("Semántico", "Error de tipos en operación relacional.", Linea, Columna));
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Error, no se pudo realizar la operacion relacional. Linea" + Linea);
+                        errores.AddLast(new Error("Semántico", "Error de tipos en operación relacional.", Linea, Columna));
                     }
                 }
                 else
@@ -159,13 +159,13 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     }
                     else
                     {
-                        Console.WriteLine("Error, no se pudo realizar la operacion relacional. Linea" + Linea);
+                        errores.AddLast(new Error("Semántico", "Error de tipos en operación relacional.", Linea, Columna));
                     }
                 }
             }
             else
             {
-                Console.WriteLine("Error, no se pudo realizar la operacion relacional. Linea" + Linea);
+                errores.AddLast(new Error("Semántico", "Error de tipos en operación relacional.", Linea, Columna));
             }
             return result;
         }

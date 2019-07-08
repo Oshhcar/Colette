@@ -15,15 +15,15 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
 
         public Tipo Tipo { get; set; }
 
-        public override Result GetC3D(Ent e)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
             Result result = new Result();
 
-            Result rsOp1 = Op1.GetC3D(e);
+            Result rsOp1 = Op1.GetC3D(e, funcion, ciclo, errores);
 
             if (Op2 != null)
             {
-                Result rsOp2 = Op2.GetC3D(e);
+                Result rsOp2 = Op2.GetC3D(e, funcion, ciclo, errores);
 
                 TipoDominante(Op1.GetTipo(), Op2.GetTipo());
 
@@ -281,7 +281,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 }
                 else
                 {
-                    Console.WriteLine("Error de tipos Aritmetica" + Linea);
+                    errores.AddLast(new Error("Semántico", "Error de tipos en operación aritmética.", Linea, Columna));
                 }
             }
             else
@@ -312,7 +312,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 }
                 else
                 {
-                    Console.WriteLine("Error de tipos Aritmetica. Linea" + Linea);
+                    errores.AddLast(new Error("Semántico", "Error de tipos en operación aritmética.", Linea, Columna));
                 }
             }
             return result;

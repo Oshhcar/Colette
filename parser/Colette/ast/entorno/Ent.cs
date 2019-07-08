@@ -72,6 +72,11 @@ namespace Compilador.parser.Colette.ast.entorno
             {
                 Console.WriteLine(s.Id + ", " + s.Tipo.Tip + ", " + s.Rol + ", " + s.Tam + ", " 
                     + s.Pos+", "+s.Ambito +", "+s.NumParam+", "+s.TipoParam);
+
+                if (s.Entorno != null)
+                {
+                    s.Entorno.Recorrer();
+                }
             }
         }
     }

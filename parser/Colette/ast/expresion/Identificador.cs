@@ -25,10 +25,9 @@ namespace Compilador.parser.Colette.ast.expresion
 
         public string Id { get; set; }
         public bool Acceso { get; set; }
-
         public Tipo Tipo { get; set; }
 
-        public override Result GetC3D(Ent e)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
             Sim s = e.Get(Id);
 
@@ -50,6 +49,12 @@ namespace Compilador.parser.Colette.ast.expresion
                     result.Valor = "stack[" + ptrStack + "]";
                 }
                 return result;
+            }
+            else
+            {
+                if(Acceso)
+                    errores.AddLast(new Error("Semántico", "La variable: " + Id + " no está declarada.", Linea, Columna));
+
             }
             return null;
         }

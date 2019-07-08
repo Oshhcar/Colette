@@ -17,10 +17,9 @@ namespace Compilador.parser.Colette.ast.instruccion
 
         public LinkedList<Nodo> Sentencias { get; set; }
 
-        public override Result GetC3D(Ent e)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
             Result result = new Result();
-            result.Codigo = "";
 
             foreach(Nodo sentencia in Sentencias)
             {
@@ -28,15 +27,16 @@ namespace Compilador.parser.Colette.ast.instruccion
 
                 if (sentencia is Instruccion)
                 {
-                    rsNodo = ((Instruccion)sentencia).GetC3D(e);
+                    rsNodo = ((Instruccion)sentencia).GetC3D(e, funcion, ciclo, errores);
                 }
                 else
                 {
-                    rsNodo = ((Expresion)sentencia).GetC3D(e);
+                    rsNodo = ((Expresion)sentencia).GetC3D(e, funcion, ciclo, errores);
                 }
 
                 if(rsNodo != null)
-                    result.Codigo += rsNodo.Codigo;
+                    if(rsNodo.Codigo != null)
+                        result.Codigo += rsNodo.Codigo;
             }
 
             return result;

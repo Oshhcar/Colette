@@ -18,9 +18,9 @@ namespace Compilador.parser.Colette.ast.instruccion
         public string Id { get; set; }
         public Bloque Bloque { get; set; }
 
-        public override Result GetC3D(Ent e)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
-            return Bloque.GetC3D(e);
+            return Bloque.GetC3D(e, funcion, ciclo, errores);
         }
     }
 }

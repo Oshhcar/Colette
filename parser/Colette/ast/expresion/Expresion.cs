@@ -14,7 +14,7 @@ namespace Compilador.parser.Colette.ast.expresion
 
         public abstract Tipo GetTipo();
 
-        public abstract Result GetC3D(Ent e);
+        public abstract Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores);
 
 
     }

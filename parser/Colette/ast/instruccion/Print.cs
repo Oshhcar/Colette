@@ -17,11 +17,11 @@ namespace Compilador.parser.Colette.ast.instruccion
 
         public Expresion Expresion { get; set; }
 
-        public override Result GetC3D(Ent e)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
             Result result = new Result();
 
-            Result rsExp = Expresion.GetC3D(e);
+            Result rsExp = Expresion.GetC3D(e, funcion, ciclo, errores);
             Tipo tipoExp = Expresion.GetTipo();
 
             if (!tipoExp.IsIndefinido())
@@ -130,6 +130,10 @@ namespace Compilador.parser.Colette.ast.instruccion
                         string tmpSalto = NuevoTemporal();
                         result.Codigo += tmpSalto + " = 10;\n";
                         result.Codigo += "print(\"%c\"," + tmpSalto + ");\n";
+                    }
+                    else
+                    {
+                        errores.AddLast(new Error("Semantico", "Valor no encontrado en print", Linea, Columna));
                     }
                 }
             }

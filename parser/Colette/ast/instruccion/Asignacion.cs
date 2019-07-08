@@ -22,7 +22,7 @@ namespace Compilador.parser.Colette.ast.instruccion
         public LinkedList<LinkedList<Expresion>> Valor { get; set; }
         public Tipo Tipo { get; set; }
 
-        public override Result GetC3D(Ent e)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
             Result result = new Result();
 
@@ -30,7 +30,7 @@ namespace Compilador.parser.Colette.ast.instruccion
             {
                 if (Objetivo.Count() != valList.Count())
                 {
-                    Console.WriteLine("Error! Listas no simetricas. Linea: " + Linea);
+                    errores.AddLast(new Error("Semántico", "La lista de ids debe ser simétrica", Linea, Columna));
                     return null;
                 }
             }
@@ -43,7 +43,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     Identificador idObjetivo = (Identificador)obj;
 
                     idObjetivo.Acceso = false;
-                    Result rsObj = idObjetivo.GetC3D(e);
+                    Result rsObj = idObjetivo.GetC3D(e, funcion, ciclo, errores);
 
                     if (rsObj == null) //si no existe, creo la variable si viene con tipo
                     {
@@ -62,7 +62,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                         }
                         else
                         {
-                            Console.WriteLine("Error! No se pudo encontrar la variable " + idObjetivo.Id + ". Linea: " + Linea);
+                            errores.AddLast(new Error("Semántico", "No se pudo encontrar la variable: "+idObjetivo.Id+".", Linea, Columna));
                             return null;
                         }
                     }
@@ -70,7 +70,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         if (!Tipo.IsIndefinido())
                         {
-                            Console.WriteLine("Error! Ya se declaro la variable " + idObjetivo.Id + ". Linea: " + Linea);
+                            errores.AddLast(new Error("Semántico", "Ya se declaró una variable con el id: "+ idObjetivo.Id+".", Linea, Columna));
                             return null;
                         }
                     }
@@ -83,19 +83,19 @@ namespace Compilador.parser.Colette.ast.instruccion
 
                         if (j + 1 == Valor.Count())
                         {
-                            Result rsTemp = expI.GetC3D(e);
+                            Result rsTemp = expI.GetC3D(e, funcion, ciclo, errores);
                             if (rsTemp != null)
                             {
                                 if (expI.GetTipo().Tip != idObjetivo.Tipo.Tip)
                                 {
-                                    Console.WriteLine("Error! El valor no corresponde al tipo. Linea: " + Linea);
+                                    errores.AddLast(new Error("Semántico", "El valor a asignar no es del mismo tipo.", Linea, Columna));
                                     return null;
                                 }
                                 rsList.AddLast(rsTemp);
                             }
                             else
                             {
-                                Console.WriteLine("Error! No se pudo encontrar el valor. Linea: " + Linea);
+                                errores.AddLast(new Error("Semántico", "El valor contiene errores.", Linea, Columna));
                                 return null;
                             }
                         }
@@ -104,7 +104,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                             if (expI is Identificador)
                             {
                                 ((Identificador)expI).Acceso = false;
-                                Result rsTemp = expI.GetC3D(e);
+                                Result rsTemp = expI.GetC3D(e, funcion, ciclo, errores);
 
                                 if (rsTemp == null) //si no existe, creo la variable
                                 {
@@ -122,7 +122,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                                     }
                                     else
                                     {
-                                        Console.WriteLine("Error! No se pudo encontrar el valor. Linea: " + Linea);
+                                        errores.AddLast(new Error("Semántico", "El valor contiene errores.", Linea, Columna));
                                         return null;
                                     }
                                 }
@@ -130,7 +130,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                                 {
                                     if (!Tipo.IsIndefinido())
                                     {
-                                        Console.WriteLine("Error! Ya se declaro la variable " + idObjetivo.Id + ". Linea: " + Linea);
+                                        errores.AddLast(new Error("Semántico", "Ya se declaró una variable con el id: " + idObjetivo.Id + ".", Linea, Columna));
                                         return null;
                                     }
                                 }

@@ -18,6 +18,7 @@ namespace Compilador.parser.Colette.ast.entorno
             Ambito = ambito;
             NumParam = numParam;
             TipoParam = tipoParam;
+            Entorno = null;
         }
 
         public string Id { get; set; }
@@ -28,7 +29,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public string Ambito { get; set; }
         public int NumParam { get; set; }
         public int TipoParam { get; set; }
-
+        public Ent Entorno { get; set; } //para funciones y clases
         public string Firma { get; set; }
     }
 }

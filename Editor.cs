@@ -548,8 +548,16 @@ namespace Compilador
                         if (arbol != null)
                         {
                             //MessageBox.Show("todo bien");
-                            string c3d = arbol.GenerarC3D();
+                            LinkedList<Error> errores = new LinkedList<Error>();
+                            string c3d = arbol.GenerarC3D(errores);
                             ctb3D.Text = c3d;
+
+                            if (errores.Count() > 0)
+                            {
+                                MessageBox.Show("El archivo tiene errores.");
+                                tabSalida.SelectedTab = pageErrores;
+                                ReporteErroresAnalisis(errores);
+                            }
                         }
 
                     }
@@ -613,7 +621,20 @@ namespace Compilador
             for (int i = 0; i < raiz.ParserMessages.Count(); i++)
             {
                 LogMessage m = raiz.ParserMessages.ElementAt(i);
-                gridErrors.Rows.Add(m.Level.ToString(), m.Message, (m.Location.Line + 1), (m.Location.Column + 1));
+                if(m.Message.ToString().Contains("character"))
+                    gridErrors.Rows.Add("Léxico", m.Message.Replace("Invalid character","Carácter inválido"), (m.Location.Line + 1), (m.Location.Column + 1));
+                else
+                    gridErrors.Rows.Add("Sintáctico", m.Message.Replace("Syntax error, expected:","Error de sintáxis, se esperaba:"), (m.Location.Line + 1), (m.Location.Column + 1));
+
+            }
+        }
+
+        private void ReporteErroresAnalisis(LinkedList<Error> errores)
+        {
+            gridErrors.Rows.Clear();
+            foreach (Error error in errores)
+            {
+                gridErrors.Rows.Add(error.Valor, error.Descripcion, error.Linea, error.Columna);
             }
         }
 
