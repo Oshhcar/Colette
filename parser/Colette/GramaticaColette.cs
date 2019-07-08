@@ -398,7 +398,8 @@ namespace Compilador.parser.Collete
             EXPRESSION_LIST.Rule = EXPRESSION_LIST_COMMA + comma //CORR
                                 | EXPRESSION_LIST_COMMA;
 
-            EXPRESSION_LIST_COMMA.Rule = MakePlusRule(EXPRESSION_LIST_COMMA, comma, EXPRESSION); //CORR
+            EXPRESSION_LIST_COMMA.Rule = EXPRESSION_LIST_COMMA + comma + EXPRESSION
+                                        |EXPRESSION; //CORR
 
             STARRED_LIST.Rule = STARRED_LIST_COMMA + comma //CORR
                             | STARRED_LIST_COMMA;

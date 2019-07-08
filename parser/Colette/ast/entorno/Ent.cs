@@ -28,6 +28,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public int Pos { get; set; }
         public string Ambito { get; set; }
         public Ent Padre { get; set; }
+        public string EtiquetaSalida { get; set; }
 
         public int GetPos() { return Pos++; }
 
@@ -40,8 +41,30 @@ namespace Compilador.parser.Colette.ast.entorno
         {
             foreach (Sim s in Simbolos)
             {
-                if (s.Id.Equals(id))
-                    return s;
+                if (s.Rol != Rol.FUNCION)
+                {
+                    if (s.Id.Equals(id))
+                        return s;
+                }
+            }
+            return null;
+        }
+
+        public Sim GetGlobal(string id)
+        {
+            Ent actual = this;
+
+            while (actual != null)
+            {
+                foreach (Sim s in actual.Simbolos)
+                {
+                    if (s.Rol != Rol.FUNCION)
+                    {
+                        if (s.Id.Equals(id))
+                            return s;
+                    }
+                }
+                actual = actual.Padre;
             }
             return null;
         }
@@ -52,12 +75,11 @@ namespace Compilador.parser.Colette.ast.entorno
 
             while (actual != null)
             {
-                LinkedList<Sim> simActual = actual.Simbolos;
-                foreach (Sim s in simActual)
+                foreach (Sim s in actual.Simbolos)
                 {
                     if (s.Rol == Rol.FUNCION)
                     {
-                        if (s.Firma == firma)
+                        if (s.Firma.Equals(firma))
                             return s;
                     }
                 }

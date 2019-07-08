@@ -68,7 +68,7 @@ namespace Compilador.parser.Colette.ast.entorno
 
     enum Rol
     {
-        METHOD,
+        //METHOD,
         FUNCION,
         RETURN,
         PARAMETER,

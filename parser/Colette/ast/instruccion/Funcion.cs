@@ -54,10 +54,12 @@ namespace Compilador.parser.Colette.ast.instruccion
                     }
                 }
 
+                /*Agrego etiqueta salida*/
+                local.EtiquetaSalida = NuevaEtiqueta();
 
                 result.Codigo += "proc " + firma + "() begin\n";
-                /*agregar salto final para return (recorrer aqui el bloque)*/
                 result.Codigo += Bloque.GetC3D(local, true, false, errores).Codigo;
+                result.Codigo += local.EtiquetaSalida + ":\n";
                 result.Codigo += "end\n\n";
 
                 Sim fun = new Sim(firma, Tipo, Rol.FUNCION, local.Pos, -1, e.Ambito, parametros, -1);

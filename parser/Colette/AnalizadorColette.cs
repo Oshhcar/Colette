@@ -166,6 +166,14 @@ namespace Compilador.parser.Collete
                         return new While((Expresion)GenerarArbol(hijos[1]), (Bloque)GenerarArbol(hijos[3]), (Bloque)GenerarArbol(hijos[6]), linea, columna);
 
                     }
+                case "RETURN_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 1)
+                    {
+                        return new Return(null, linea, columna);
+                    }
+                    return new Return((Expresion)GenerarArbol(hijos[1]), linea, columna);
                 case "ASSIGNMENT_STMT":
                     //LinkedList<LinkedList<Expresion>> assignmet_list = ;
                     if (hijos.Count() == 3)
@@ -215,6 +223,10 @@ namespace Compilador.parser.Collete
                     return assignment_list;
                 case "EXPRESSION_STMT":
                     return GenerarArbol(hijos[0]);
+                case "EXPRESSION_LIST":
+                    return GenerarArbol(hijos[0]);//falta
+                case "EXPRESSION_LIST_COMMA":
+                    return GenerarArbol(hijos[0]); //falta lista /*return solo 1*/
                 case "STARRED_LIST":
                     return GenerarArbol(hijos[0]);
                 case "STARRED_LIST_COMMA":
