@@ -66,10 +66,27 @@ namespace Compilador.parser.Collete
                 case "FUNCDEF":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
-                    if(hijos.Count() == 8)
-                        return new Funcion((Tipo)GenerarArbol(hijos[1]), hijos[2].Token.Text,(LinkedList<Expresion>)GenerarArbol(hijos[4]), (Bloque)GenerarArbol(hijos[7]), linea, columna);
+                    if (hijos.Count() == 8)
+                        return new Funcion((Tipo)GenerarArbol(hijos[1]), hijos[2].Token.Text, (LinkedList<Identificador>)GenerarArbol(hijos[4]), (Bloque)GenerarArbol(hijos[7]), linea, columna);
                     else
                         return new Funcion((Tipo)GenerarArbol(hijos[1]), hijos[2].Token.Text, null, (Bloque)GenerarArbol(hijos[6]), linea, columna);
+                case "PARAMETER_LIST":
+                    if (hijos.Count() == 4)
+                    {
+                        linea = hijos[3].Token.Location.Line + 1;
+                        columna = hijos[3].Token.Location.Column + 1;
+                        LinkedList<Identificador> parameter_list = (LinkedList<Identificador>)GenerarArbol(hijos[0]);
+                        parameter_list.AddLast(new Identificador(hijos[3].Token.Text, (Tipo)GenerarArbol(hijos[2]), linea, columna));
+                        return parameter_list;
+                    }
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        LinkedList<Identificador> parameter_list = new LinkedList<Identificador>();
+                        parameter_list.AddLast(new Identificador(hijos[1].Token.Text, (Tipo)GenerarArbol(hijos[0]), linea, columna));
+                        return parameter_list;
+                    }
                 case "BLOQUE":
                     return GenerarArbol(hijos[0]);
                 case "SENTENCIAS":
@@ -350,6 +367,8 @@ namespace Compilador.parser.Collete
                     }
                     return null;//parenth vacíos
                 case "CALL":
+                    linea = hijos[1].Token.Location.Line + 1;
+                    columna = hijos[1].Token.Location.Column + 1;
                     Expresion callPrimary = (Expresion)GenerarArbol(hijos[0]);
                     if (callPrimary is Identificador)
                     {
@@ -357,8 +376,27 @@ namespace Compilador.parser.Collete
                         {
                             return new Llamada(((Identificador)callPrimary).Id, null, linea, columna);
                         }
+                        else
+                        {
+                            return new Llamada(((Identificador)callPrimary).Id,(LinkedList<Expresion>)GenerarArbol(hijos[2]), linea, columna);
+                        }
                     }
                     return null;//no implementando
+                case "ARGUMENT_LIST": //para parametros
+                    return GenerarArbol(hijos[0]);
+                case "POSITIONAL_ARGUMENTS":
+                    if (hijos.Count() == 3)
+                    {
+                        LinkedList<Expresion> positional_arguments = (LinkedList<Expresion>)GenerarArbol(hijos[0]);
+                        positional_arguments.AddLast((Expresion)GenerarArbol(hijos[2]));
+                        return positional_arguments;
+                    }
+                    else
+                    {
+                        LinkedList<Expresion> positional_arguments = new LinkedList<Expresion>();
+                        positional_arguments.AddLast((Expresion)GenerarArbol(hijos[0]));
+                        return positional_arguments;
+                    }
             }
 
             return null;

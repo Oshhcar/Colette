@@ -16,6 +16,13 @@ namespace Compilador.parser.Colette.ast.expresion
             Tipo = new Tipo(Tipo.Type.INDEFINIDO);
         }
 
+        public Identificador(string id, Tipo tipo, int linea, int columna) : base(linea, columna)
+        {
+            Id = id;
+            Acceso = true;
+            Tipo = tipo;
+        }
+
         public string Id { get; set; }
         public bool Acceso { get; set; }
 

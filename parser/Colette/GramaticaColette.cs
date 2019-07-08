@@ -283,7 +283,8 @@ namespace Compilador.parser.Collete
             FUNCDEF.Rule = def_ + TYPE + identifier + leftPar + PARAMETER_LIST + rightPar + colon + Eos + BLOQUE //CORR
                         | def_ + TYPE + identifier + leftPar + rightPar + colon + Eos + BLOQUE;
 
-            PARAMETER_LIST.Rule = MakePlusRule(PARAMETER_LIST, comma, TYPE + identifier); //CORR
+            PARAMETER_LIST.Rule = PARAMETER_LIST + comma + TYPE + identifier
+                                | TYPE + identifier; //CORR
 
             GLOBAL_STMT.Rule = global_ + TYPE + ID_LIST; //CORR
 
@@ -434,7 +435,8 @@ namespace Compilador.parser.Collete
                                 | STARRED_AND_KEYWORDS + comma + KEYWORDS_ARGUMENTS
                                 | KEYWORDS_ARGUMENTS;
 
-            POSITIONAL_ARGUMENTS.Rule = MakePlusRule(POSITIONAL_ARGUMENTS, comma, EXPRESSION); //CORR
+            POSITIONAL_ARGUMENTS.Rule = POSITIONAL_ARGUMENTS + comma + EXPRESSION
+                                       | EXPRESSION; //CORR
 
             STARRED_AND_KEYWORDS.Rule = STARRED_AND_KEYWORDS + comma + (EXPRESSION | KEYWORD_ITEM) //CORR
                                        | (EXPRESSION | KEYWORD_ITEM);

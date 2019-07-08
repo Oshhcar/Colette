@@ -11,7 +11,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public Ent(string ambito)
         {
             Simbolos = new LinkedList<Sim>();
-            Pos = -1;
+            Pos = 0;
             Ambito = ambito;
             Padre = null;
         }
@@ -19,7 +19,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public Ent(string ambito, Ent padre)
         {
             Simbolos = new LinkedList<Sim>();
-            Pos = -1;
+            Pos = 0;
             Ambito = ambito;
             Padre = padre;
         }
@@ -29,7 +29,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public string Ambito { get; set; }
         public Ent Padre { get; set; }
 
-        public int GetPos() { return ++Pos; }
+        public int GetPos() { return Pos++; }
 
         public void Add(Sim s)
         {
