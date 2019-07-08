@@ -28,21 +28,35 @@ namespace Compilador.parser.Colette.ast
             Result result = new Result();
             result.Codigo = "";
 
+            foreach (Nodo sentencia in Sentencias)
+            {
+                if (sentencia is Funcion)
+                {
+                    Result rsNodo = ((Funcion)sentencia).GetC3D(global);
+                    if(rsNodo != null)
+                        if(rsNodo.Codigo != null)
+                            result.Codigo += rsNodo.Codigo;
+                }
+            }
+
             foreach(Nodo sentencia in Sentencias)
             {
-                Result rsNodo;
-                if (sentencia is Instruccion)
+                if (!(sentencia is Funcion))
                 {
-                    rsNodo = ((Instruccion)sentencia).GetC3D(global);
-                }
-                else
-                {
-                    rsNodo = ((Expresion)sentencia).GetC3D(global);
-                }
+                    Result rsNodo;
+                    if (sentencia is Instruccion)
+                    {
+                        rsNodo = ((Instruccion)sentencia).GetC3D(global);
+                    }
+                    else
+                    {
+                        rsNodo = ((Expresion)sentencia).GetC3D(global);
+                    }
 
-                if(rsNodo != null)
-                    if(rsNodo.Codigo != null)
-                        result.Codigo += rsNodo.Codigo;
+                    if (rsNodo != null)
+                        if (rsNodo.Codigo != null)
+                            result.Codigo += rsNodo.Codigo;
+                }
             }
 
             global.Recorrer();
@@ -64,12 +78,15 @@ namespace Compilador.parser.Colette.ast
 
             }
 
-            codigo += "var stack[];\n";
-            codigo += "var heap[];\n";
-            codigo += "var P = 0;\n";
-            codigo += "var H = 0; \n\n";
+            if (!result.Codigo.Equals(String.Empty))
+            {
+                codigo += "var stack[];\n";
+                codigo += "var heap[];\n";
+                codigo += "var P = 0;\n";
+                codigo += "var H = 0; \n\n";
 
-            codigo += result.Codigo;
+                codigo += result.Codigo;
+            }
 
             return codigo;
         }

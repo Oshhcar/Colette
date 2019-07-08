@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Compilador.parser._3d.ast.entorno;
 
 namespace Compilador.parser._3d.ast.instrucion
@@ -16,6 +17,7 @@ namespace Compilador.parser._3d.ast.instrucion
 
         public string Id { get; set; }
 
+        public TextBox Output { get; set; }
         public override object Ejecutar(Entorno e)
         {
             Simbolo sim = e.GetSimbolo(Id);
@@ -31,6 +33,15 @@ namespace Compilador.parser._3d.ast.instrucion
                     {
                         if (!(bloque is Salto) && !(bloque is SaltoCond))
                         {
+                            if (bloque is Print)
+                            {
+                                ((Print)bloque).Output = Output;
+                            }
+                            else if (bloque is Call)
+                            {
+                                ((Call)bloque).Output = Output;
+                            }
+                            
                             bloque.Ejecutar(e);
                         }
                         else

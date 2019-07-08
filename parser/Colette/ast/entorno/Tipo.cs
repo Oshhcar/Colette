@@ -32,6 +32,27 @@ namespace Compilador.parser.Colette.ast.entorno
         public bool IsIndefinido() { return Tip == Type.INDEFINIDO; }
         public bool IsNumeric() { return Tip == Type.INT || Tip == Type.DOUBLE; }
 
+        public override string ToString()
+        {
+            switch (Tip)
+            {
+                case Type.INT:
+                    return "int";
+                case Type.DOUBLE:
+                    return "double";
+                case Type.STRING:
+                    return "string";
+                case Type.BOOLEAN:
+                    return "boolean";
+                case Type.OBJECT:
+                    return "object";
+                case Type.VOID:
+                    return "void";
+                default:
+                    return "indefinido";
+            }
+        }
+        
         public enum Type
         {
             INT,

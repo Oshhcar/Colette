@@ -63,6 +63,13 @@ namespace Compilador.parser.Collete
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;
                     return new Clase(hijos[1].Token.Text, (Bloque)GenerarArbol(hijos[3]), linea, columna);
+                case "FUNCDEF":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if(hijos.Count() == 8)
+                        return new Funcion((Tipo)GenerarArbol(hijos[1]), hijos[2].Token.Text,(LinkedList<Expresion>)GenerarArbol(hijos[4]), (Bloque)GenerarArbol(hijos[7]), linea, columna);
+                    else
+                        return new Funcion((Tipo)GenerarArbol(hijos[1]), hijos[2].Token.Text, null, (Bloque)GenerarArbol(hijos[6]), linea, columna);
                 case "BLOQUE":
                     return GenerarArbol(hijos[0]);
                 case "SENTENCIAS":
@@ -88,6 +95,8 @@ namespace Compilador.parser.Collete
                             return new Tipo(Tipo.Type.BOOLEAN);
                         case "identifier":
                             return new Tipo(hijos[0].Token.Text);
+                        case "void":
+                            return new Tipo(Tipo.Type.VOID);
                         case "dictionary":
                         case "list":
                         case "tup":
@@ -187,6 +196,8 @@ namespace Compilador.parser.Collete
                         }
                     }
                     return assignment_list;
+                case "EXPRESSION_STMT":
+                    return GenerarArbol(hijos[0]);
                 case "STARRED_LIST":
                     return GenerarArbol(hijos[0]);
                 case "STARRED_LIST_COMMA":
@@ -338,6 +349,16 @@ namespace Compilador.parser.Collete
                         return GenerarArbol(hijos[1]);
                     }
                     return null;//parenth vacíos
+                case "CALL":
+                    Expresion callPrimary = (Expresion)GenerarArbol(hijos[0]);
+                    if (callPrimary is Identificador)
+                    {
+                        if (hijos.Count() == 3)/*Sin parametros*/
+                        {
+                            return new Llamada(((Identificador)callPrimary).Id, null, linea, columna);
+                        }
+                    }
+                    return null;//no implementando
             }
 
             return null;

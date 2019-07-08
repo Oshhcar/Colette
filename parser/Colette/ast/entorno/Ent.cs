@@ -13,12 +13,21 @@ namespace Compilador.parser.Colette.ast.entorno
             Simbolos = new LinkedList<Sim>();
             Pos = -1;
             Ambito = ambito;
-            /*ptr Padre*/
+            Padre = null;
+        }
+
+        public Ent(string ambito, Ent padre)
+        {
+            Simbolos = new LinkedList<Sim>();
+            Pos = -1;
+            Ambito = ambito;
+            Padre = padre;
         }
 
         public LinkedList<Sim> Simbolos { get; set; }
         public int Pos { get; set; }
         public string Ambito { get; set; }
+        public Ent Padre { get; set; }
 
         public int GetPos() { return ++Pos; }
 
@@ -37,11 +46,32 @@ namespace Compilador.parser.Colette.ast.entorno
             return null;
         }
 
+        public Sim GetMetodo(string firma)
+        {
+            Ent actual = this;
+
+            while (actual != null)
+            {
+                LinkedList<Sim> simActual = actual.Simbolos;
+                foreach (Sim s in simActual)
+                {
+                    if (s.Rol == Rol.FUNCION)
+                    {
+                        if (s.Firma == firma)
+                            return s;
+                    }
+                }
+                actual = actual.Padre;
+            }
+            return null;
+        }
+
         public void Recorrer()
         {
             foreach (Sim s in Simbolos)
             {
-                Console.WriteLine(s.Id + ", " + s.Tipo.Tip + ", " + s.Rol + ", " + s.Tam + ", " + s.Pos+", "+s.Ambito);
+                Console.WriteLine(s.Id + ", " + s.Tipo.Tip + ", " + s.Rol + ", " + s.Tam + ", " 
+                    + s.Pos+", "+s.Ambito +", "+s.NumParam+", "+s.TipoParam);
             }
         }
     }

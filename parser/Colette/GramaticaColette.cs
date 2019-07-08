@@ -53,12 +53,13 @@ namespace Compilador.parser.Collete
                 true_ = ToTerm("true"),
                 false_ = ToTerm("false"),
                 True_ = ToTerm("True"),
-                False_ = ToTerm("False");
+                False_ = ToTerm("False"),
+                void_ = ToTerm("void");
 
             MarkReservedWords("class", "def", "lambda", "print", "or", "and", "not", "for",
                 "if", "elif", "else", "None", "break", "continue", "return", "pass", "global", "nonlocal",
                 "del", "int", "double", "String", "string", "boolean", "dictionary", "list", "tup", "while", "true", 
-                "false", "True", "False", "none");
+                "false", "True", "False", "none", "void");
 
             /* Relational operators */
             KeyTerm
@@ -254,7 +255,8 @@ namespace Compilador.parser.Collete
                             | EXPRESSION_STMT + Eos
                             ;
 
-            TYPE.Rule = int_ | double_ | string_ | String_ | boolean_ | identifier | dictionary_ | list_ | tup_;
+            TYPE.Rule = int_ | double_ | string_ | String_ | boolean_ | identifier | dictionary_ | list_ | tup_
+                        |void_;
 
             PRINT.Rule = print_ + leftPar + STARRED_EXPRESSION + rightPar; //CORR
 

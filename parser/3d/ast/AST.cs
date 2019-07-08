@@ -65,7 +65,10 @@ namespace Compilador.parser._3d.ast
                         {
                             ((Print)instruccion).Output = salida;
                         }
-
+                        else if (instruccion is Call)
+                        {
+                            ((Call)instruccion).Output = salida;
+                        }
                         instruccion.Ejecutar(global);
                         
                     }

@@ -28,5 +28,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public string Ambito { get; set; }
         public int NumParam { get; set; }
         public int TipoParam { get; set; }
+
+        public string Firma { get; set; }
     }
 }
