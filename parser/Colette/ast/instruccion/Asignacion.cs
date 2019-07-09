@@ -22,7 +22,7 @@ namespace Compilador.parser.Colette.ast.instruccion
         public LinkedList<LinkedList<Expresion>> Valor { get; set; }
         public Tipo Tipo { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
         {
             Result result = new Result();
 
@@ -30,7 +30,8 @@ namespace Compilador.parser.Colette.ast.instruccion
             {
                 if (Objetivo.Count() != valList.Count())
                 {
-                    errores.AddLast(new Error("Semántico", "La lista de ids debe ser simétrica", Linea, Columna));
+                    if(isDeclaracion)
+                        errores.AddLast(new Error("Semántico", "La lista de ids debe ser simétrica", Linea, Columna));
                     return null;
                 }
             }
@@ -62,7 +63,8 @@ namespace Compilador.parser.Colette.ast.instruccion
                         }
                         else
                         {
-                            errores.AddLast(new Error("Semántico", "No se pudo encontrar la variable: "+idObjetivo.Id+".", Linea, Columna));
+                            if(isDeclaracion)
+                                errores.AddLast(new Error("Semántico", "No se pudo encontrar la variable: "+idObjetivo.Id+".", Linea, Columna));
                             return null;
                         }
                     }
@@ -70,7 +72,8 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         if (!Tipo.IsIndefinido())
                         {
-                            errores.AddLast(new Error("Semántico", "Ya se declaró una variable con el id: "+ idObjetivo.Id+".", Linea, Columna));
+                            if(isDeclaracion)
+                                errores.AddLast(new Error("Semántico", "Ya se declaró una variable con el id: "+ idObjetivo.Id+".", Linea, Columna));
                             return null;
                         }
                     }
@@ -83,20 +86,23 @@ namespace Compilador.parser.Colette.ast.instruccion
 
                         if (j + 1 == Valor.Count())
                         {
-                            Result rsTemp = expI.GetC3D(e, funcion, ciclo, errores);
-                            if (rsTemp != null)
+                            if (!isDeclaracion)
                             {
-                                if (expI.GetTipo().Tip != idObjetivo.Tipo.Tip)
+                                Result rsTemp = expI.GetC3D(e, funcion, ciclo, errores);
+                                if (rsTemp != null)
                                 {
-                                    errores.AddLast(new Error("Semántico", "El valor a asignar no es del mismo tipo.", Linea, Columna));
+                                    if (expI.GetTipo().Tip != idObjetivo.Tipo.Tip)
+                                    {
+                                        errores.AddLast(new Error("Semántico", "El valor a asignar no es del mismo tipo.", Linea, Columna));
+                                        return null;
+                                    }
+                                    rsList.AddLast(rsTemp);
+                                }
+                                else
+                                {
+                                    errores.AddLast(new Error("Semántico", "El valor contiene errores.", Linea, Columna));
                                     return null;
                                 }
-                                rsList.AddLast(rsTemp);
-                            }
-                            else
-                            {
-                                errores.AddLast(new Error("Semántico", "El valor contiene errores.", Linea, Columna));
-                                return null;
                             }
                         }
                         else
@@ -122,7 +128,8 @@ namespace Compilador.parser.Colette.ast.instruccion
                                     }
                                     else
                                     {
-                                        errores.AddLast(new Error("Semántico", "El valor contiene errores.", Linea, Columna));
+                                        if(isDeclaracion)
+                                            errores.AddLast(new Error("Semántico", "El valor contiene errores.", Linea, Columna));
                                         return null;
                                     }
                                 }
@@ -130,7 +137,8 @@ namespace Compilador.parser.Colette.ast.instruccion
                                 {
                                     if (!Tipo.IsIndefinido())
                                     {
-                                        errores.AddLast(new Error("Semántico", "Ya se declaró una variable con el id: " + idObjetivo.Id + ".", Linea, Columna));
+                                        if(isDeclaracion)
+                                            errores.AddLast(new Error("Semántico", "Ya se declaró una variable con el id: " + idObjetivo.Id + ".", Linea, Columna));
                                         return null;
                                     }
                                 }
@@ -141,35 +149,37 @@ namespace Compilador.parser.Colette.ast.instruccion
                         }
                     }
 
-                    if (rsList.Count() == 1)
+                    if (!isDeclaracion)
                     {
-                        //rsObj.Tipo = rsList.ElementAt(0).Tipo;
-                        rsObj.Codigo += rsList.ElementAt(0).Codigo;
-                        rsObj.Codigo += rsObj.Valor + " = " + rsList.ElementAt(0).Valor + ";\n";
-                    }
-                    else
-                    {
-                        Result rsAnt = rsList.ElementAt(rsList.Count() - 1);
-
-                        for (int k = rsList.Count() - 2; k >= 0; k--)
+                        if (rsList.Count() == 1)
                         {
-                            Result rsAct = rsList.ElementAt(k);
-                            rsAct.Codigo += rsAnt.Codigo;
-                            rsAct.Codigo += rsAct.Valor + " = " + rsAnt.Valor + ";\n";
-
-                            /*Esto solo funciona con ids*/
-                            string ptrStack = NuevoTemporal();
-                            rsAct.Codigo += ptrStack + " = P + " + rsAct.PtrStack + ";\n";
-                            rsAct.Valor = NuevoTemporal();
-                            rsAct.Codigo += rsAct.Valor + " = stack[" + ptrStack + "];\n";
-
-                            rsAnt = rsAct;
+                            //rsObj.Tipo = rsList.ElementAt(0).Tipo;
+                            rsObj.Codigo += rsList.ElementAt(0).Codigo;
+                            rsObj.Codigo += rsObj.Valor + " = " + rsList.ElementAt(0).Valor + ";\n";
                         }
+                        else
+                        {
+                            Result rsAnt = rsList.ElementAt(rsList.Count() - 1);
 
-                        rsObj.Codigo += rsAnt.Codigo;
-                        rsObj.Codigo += rsObj.Valor + " = " + rsAnt.Valor + ";\n";
+                            for (int k = rsList.Count() - 2; k >= 0; k--)
+                            {
+                                Result rsAct = rsList.ElementAt(k);
+                                rsAct.Codigo += rsAnt.Codigo;
+                                rsAct.Codigo += rsAct.Valor + " = " + rsAnt.Valor + ";\n";
+
+                                /*Esto solo funciona con ids*/
+                                string ptrStack = NuevoTemporal();
+                                rsAct.Codigo += ptrStack + " = P + " + rsAct.PtrStack + ";\n";
+                                rsAct.Valor = NuevoTemporal();
+                                rsAct.Codigo += rsAct.Valor + " = stack[" + ptrStack + "];\n";
+
+                                rsAnt = rsAct;
+                            }
+
+                            rsObj.Codigo += rsAnt.Codigo;
+                            rsObj.Codigo += rsObj.Valor + " = " + rsAnt.Valor + ";\n";
+                        }
                     }
-
                     result.Codigo += rsObj.Codigo;
 
                 }

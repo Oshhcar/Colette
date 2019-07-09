@@ -16,7 +16,7 @@ namespace Compilador.parser.Colette.ast.instruccion.condicionales
 
         public LinkedList<SubIf> SubIfs { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
         {
             Result result = new Result();
             string etqSalida = NuevaEtiqueta();
@@ -24,7 +24,7 @@ namespace Compilador.parser.Colette.ast.instruccion.condicionales
             foreach (SubIf subif in SubIfs)
             {
                 subif.Salida = etqSalida;
-                result.Codigo += subif.GetC3D(e, funcion, ciclo, errores).Codigo;
+                result.Codigo += subif.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
             }
 
             result.Codigo += etqSalida + ":\n";

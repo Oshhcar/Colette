@@ -45,7 +45,7 @@ namespace Compilador.parser._3d.ast.entorno
 
             LinkedList<Simbolo> nuevo = new LinkedList<Simbolo>();
 
-            Regex rgx = new Regex("^t[1-9]+$");
+            Regex rgx = new Regex("^t[0-9]+$");
 
             foreach(Simbolo simbolo in Tabla)
             {

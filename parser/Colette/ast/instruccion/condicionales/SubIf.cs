@@ -22,7 +22,7 @@ namespace Compilador.parser.Colette.ast.instruccion.condicionales
 
         public string Salida { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
         {
             Result result = new Result();
 
@@ -55,13 +55,13 @@ namespace Compilador.parser.Colette.ast.instruccion.condicionales
 
                 result.Codigo += rsCondicion.Codigo;
                 result.Codigo += rsCondicion.EtiquetaV;
-                result.Codigo += Bloque.GetC3D(e, funcion, ciclo, errores).Codigo;
+                result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
                 result.Codigo += "goto " + Salida + ";\n";
                 result.Codigo += rsCondicion.EtiquetaF;
             }
             else
             {
-                result.Codigo += Bloque.GetC3D(e, funcion, ciclo, errores).Codigo;
+                result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
                 result.Codigo += "goto " + Salida + ";\n";
             }
 

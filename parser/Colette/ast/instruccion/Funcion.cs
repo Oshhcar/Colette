@@ -16,16 +16,14 @@ namespace Compilador.parser.Colette.ast.instruccion
             Id = id;
             Parametros = parametros;
             Bloque = bloque;
-            IsDeclaracion = true;
         }
 
         public Tipo Tipo { get; set; }
         public string Id { get; set; }
         public LinkedList<Identificador> Parametros { get; set; }
         public Bloque Bloque { get; set; }
-        public bool IsDeclaracion { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
         {
             Result result = new Result();
             string firma = Id;
@@ -40,7 +38,7 @@ namespace Compilador.parser.Colette.ast.instruccion
 
             Sim fun = e.GetMetodo(firma);
 
-            if (!IsDeclaracion)
+            if (!isDeclaracion)
             {
                 if (fun != null)
                 {
@@ -65,7 +63,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     local.EtiquetaSalida = NuevaEtiqueta();
 
                     result.Codigo += "proc " + firma + "() begin\n";
-                    result.Codigo += Bloque.GetC3D(local, true, false, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(local, true, false, false, errores).Codigo;
                     result.Codigo += local.EtiquetaSalida + ":\n";
                     result.Codigo += "end\n\n";
 
@@ -99,18 +97,17 @@ namespace Compilador.parser.Colette.ast.instruccion
                         {
                             if (sentencia is Asignacion)
                             {
-                                //((Asignacion)sentencia)
+                                ((Asignacion)sentencia).GetC3D(local, true, false, true, errores);
                             }
-                            //((Instruccion)sentencia).GetC3D(local, true, false, errores);
                         }
                         else
                         {
-                            //((Expresion)sentencia).GetC3D(local, true, false, errores);
+
                         }
                     }
                          
 
-                    fun = new Sim(firma, Tipo, Rol.FUNCION, local.Pos, -1, e.Ambito, parametros, -1);
+                    fun = new Sim(firma, Tipo, Rol.FUNCION, local.Pos+1, -1, e.Ambito, parametros, -1);
                     fun.Firma = firma;
                     fun.Entorno = local;
                     e.Add(fun);

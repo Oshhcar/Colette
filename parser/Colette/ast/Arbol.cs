@@ -34,8 +34,7 @@ namespace Compilador.parser.Colette.ast
                 if (sentencia is Funcion)
                 {
                     Funcion fun = ((Funcion)sentencia);
-                    fun.GetC3D(global, false, false, errores);
-                    fun.IsDeclaracion = false;
+                    fun.GetC3D(global, false, false, true, errores);
                 }
             }
 
@@ -47,7 +46,7 @@ namespace Compilador.parser.Colette.ast
                     Result rsNodo;
                     if (sentencia is Instruccion)
                     {
-                        rsNodo = ((Instruccion)sentencia).GetC3D(global, false, false, errores);
+                        rsNodo = ((Instruccion)sentencia).GetC3D(global, false, false, false, errores);
                     }
                     else
                     {
@@ -70,7 +69,7 @@ namespace Compilador.parser.Colette.ast
             {
                 if (sentencia is Funcion)
                 {
-                    Result rsNodo = ((Funcion)sentencia).GetC3D(global, false, false, errores);
+                    Result rsNodo = ((Funcion)sentencia).GetC3D(global, false, false, false, errores);
                     if (rsNodo != null)
                         if (rsNodo.Codigo != null)
                             result.Codigo += rsNodo.Codigo;

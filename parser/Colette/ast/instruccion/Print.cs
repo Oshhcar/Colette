@@ -17,7 +17,7 @@ namespace Compilador.parser.Colette.ast.instruccion
 
         public Expresion Expresion { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
         {
             Result result = new Result();
 
