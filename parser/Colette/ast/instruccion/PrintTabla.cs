@@ -31,7 +31,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                 cadena += "entorno" + i + "[ label =<\n";
                 cadena += "<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">\n";
                 cadena += "<TR>\n";
-                cadena += "<TD COLSPAN = \"5\"> Entorno " + i + " </TD>\n";
+                cadena += "<TD COLSPAN = \"8\"> Entorno " + i + " </TD>\n";
                 cadena += "</TR>\n";
                 cadena += "<TR>\n";
                 cadena += "<TD> Id </TD>\n";
