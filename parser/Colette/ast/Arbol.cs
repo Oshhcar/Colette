@@ -76,7 +76,7 @@ namespace Compilador.parser.Colette.ast
                 }
             }
 
-            global.Recorrer();
+            //global.Recorrer();
 
             string codigo = "";
 

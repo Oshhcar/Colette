@@ -113,6 +113,7 @@
     <Compile Include="parser\Colette\ast\instruccion\Funcion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Instruccion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Print.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\PrintTabla.cs" />
     <Compile Include="parser\Colette\ast\Nodo.cs" />
     <Compile Include="parser\Colette\GramaticaColette.cs" />
     <Compile Include="Program.cs" />

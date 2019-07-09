@@ -95,14 +95,11 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         if (sentencia is Instruccion)
                         {
-                            if (sentencia is Asignacion)
-                            {
-                                ((Asignacion)sentencia).GetC3D(local, true, false, true, errores);
-                            }
+                            ((Instruccion)sentencia).GetC3D(local, true, false, true, errores);
                         }
                         else
                         {
-
+                           //((Expresion)sentencia).GetC3D(local, true, false, errores); no genera espacios
                         }
                     }
                          

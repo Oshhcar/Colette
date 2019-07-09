@@ -54,12 +54,13 @@ namespace Compilador.parser.Collete
                 false_ = ToTerm("false"),
                 True_ = ToTerm("True"),
                 False_ = ToTerm("False"),
-                void_ = ToTerm("void");
+                void_ = ToTerm("void"),
+                printTabla_ = ToTerm("printTabla");
 
             MarkReservedWords("class", "def", "lambda", "print", "or", "and", "not", "for",
                 "if", "elif", "else", "None", "break", "continue", "return", "pass", "global", "nonlocal",
                 "del", "int", "double", "String", "string", "boolean", "dictionary", "list", "tup", "while", "true", 
-                "false", "True", "False", "none", "void");
+                "false", "True", "False", "none", "void", "printTabla");
 
             /* Relational operators */
             KeyTerm
@@ -128,6 +129,7 @@ namespace Compilador.parser.Collete
 
                 CLASEDEF = new NonTerminal("CLASEDEF"),
                 PRINT = new NonTerminal("PRINT"),
+                PRINTTABLA = new NonTerminal("PRINTTABLA"),
 
                 CLASE_BLOQUE = new NonTerminal("CLASE_BLOQUE"),
                 BLOQUE = new NonTerminal("BLOQUE"),
@@ -221,6 +223,7 @@ namespace Compilador.parser.Collete
             INSTRUCCION.Rule = CLASEDEF 
                             | FUNCDEF
                             | PRINT + Eos
+                            | PRINTTABLA + Eos
                             | IF_STMT
                             | WHILE_STMT
                             | FOR_STMT
@@ -241,6 +244,7 @@ namespace Compilador.parser.Collete
             SENTENCIAS.Rule = MakePlusRule(SENTENCIAS, SENTENCIA);
 
             SENTENCIA.Rule = PRINT + Eos
+                            | PRINTTABLA + Eos
                             | IF_STMT
                             | WHILE_STMT
                             | FOR_STMT
@@ -261,6 +265,8 @@ namespace Compilador.parser.Collete
                         |void_;
 
             PRINT.Rule = print_ + leftPar + STARRED_EXPRESSION + rightPar; //CORR
+
+            PRINTTABLA.Rule = printTabla_ + leftPar + rightPar;
 
             IF_STMT.Rule = IF_LIST + else_ + colon + Eos + BLOQUE //CORR
                     | IF_LIST;

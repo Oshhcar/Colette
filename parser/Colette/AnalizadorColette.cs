@@ -126,6 +126,10 @@ namespace Compilador.parser.Collete
                     linea = hijos[0].Token.Location.Line+1;
                     columna = hijos[0].Token.Location.Column+1;
                     return new Print((Expresion)GenerarArbol(hijos[2]), linea, columna);
+                case "PRINTTABLA":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new PrintTabla(linea, columna);
                 case "IF_STMT":
                     if (hijos.Count() == 1)
                         return new If((LinkedList<SubIf>)GenerarArbol(hijos[0]), 0, 0);

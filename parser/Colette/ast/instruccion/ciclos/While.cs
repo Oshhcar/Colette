@@ -26,62 +26,77 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
         {
             Result result = new Result();
 
-            if (Condicion is Relacional)
-                ((Relacional)Condicion).Cortocircuito = true;
-            else if (Condicion is Logica)
-                ((Logica)Condicion).Evaluar = true;
-
-            Result rsCondicion = Condicion.GetC3D(e, funcion, ciclo, errores);
-
-            if (Condicion is Literal)
+            if (!isDeclaracion)
             {
-                rsCondicion.EtiquetaV = NuevaEtiqueta();
-                rsCondicion.EtiquetaF = NuevaEtiqueta();
+                if (Condicion is Relacional)
+                    ((Relacional)Condicion).Cortocircuito = true;
+                else if (Condicion is Logica)
+                    ((Logica)Condicion).Evaluar = true;
 
-                rsCondicion.Codigo += "ifFalse (" + rsCondicion.Valor + " == 1) goto " + rsCondicion.EtiquetaV + ";\n";
-                rsCondicion.Codigo += "goto " + rsCondicion.EtiquetaF + ";\n";
-                rsCondicion.EtiquetaV += ":\n";
-                rsCondicion.EtiquetaF += ":\n";
-            }
+                Result rsCondicion = Condicion.GetC3D(e, funcion, ciclo, errores);
 
-            if (Condicion is Relacional || Condicion is Literal)
-            {
-                string copy = rsCondicion.EtiquetaF;
-                rsCondicion.EtiquetaF = rsCondicion.EtiquetaV;
-                rsCondicion.EtiquetaV = copy;
-            }
+                if (Condicion is Literal)
+                {
+                    rsCondicion.EtiquetaV = NuevaEtiqueta();
+                    rsCondicion.EtiquetaF = NuevaEtiqueta();
 
-            string etqCiclo = NuevaEtiqueta();
+                    rsCondicion.Codigo += "ifFalse (" + rsCondicion.Valor + " == 1) goto " + rsCondicion.EtiquetaV + ";\n";
+                    rsCondicion.Codigo += "goto " + rsCondicion.EtiquetaF + ";\n";
+                    rsCondicion.EtiquetaV += ":\n";
+                    rsCondicion.EtiquetaF += ":\n";
+                }
 
-            if (BloqueElse == null)
-            {
-                result.Codigo += etqCiclo + ":\n";
-                result.Codigo += rsCondicion.Codigo;
-                result.Codigo += rsCondicion.EtiquetaV;
-                result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
-                result.Codigo += "goto " + etqCiclo + ";\n";
-                result.Codigo += rsCondicion.EtiquetaF;
+                if (Condicion is Relacional || Condicion is Literal)
+                {
+                    string copy = rsCondicion.EtiquetaF;
+                    rsCondicion.EtiquetaF = rsCondicion.EtiquetaV;
+                    rsCondicion.EtiquetaV = copy;
+                }
+
+                string etqCiclo = NuevaEtiqueta();
+
+                if (BloqueElse == null)
+                {
+                    result.Codigo += etqCiclo + ":\n";
+                    result.Codigo += rsCondicion.Codigo;
+                    result.Codigo += rsCondicion.EtiquetaV;
+                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                    result.Codigo += "goto " + etqCiclo + ";\n";
+                    result.Codigo += rsCondicion.EtiquetaF;
+                }
+                else
+                {
+                    string bandera = NuevoTemporal();
+                    result.Codigo += bandera + " = 0;\n";
+                    result.Codigo += etqCiclo + ":\n";
+                    result.Codigo += rsCondicion.Codigo;
+                    result.Codigo += rsCondicion.EtiquetaV;
+                    result.Codigo += bandera + " = 1;\n";
+                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                    result.Codigo += "goto " + etqCiclo + ";\n";
+                    result.Codigo += rsCondicion.EtiquetaF;
+
+                    result.EtiquetaV = NuevaEtiqueta();
+                    result.EtiquetaF = NuevaEtiqueta();
+
+                    result.Codigo += "ifFalse (" + bandera + " == 0) goto " + result.EtiquetaV + ";\n";
+                    result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                    result.Codigo += result.EtiquetaF + ":\n";
+                    result.Codigo += BloqueElse.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                    result.Codigo += result.EtiquetaV + ":\n";
+                }
             }
             else
             {
-                string bandera = NuevoTemporal();
-                result.Codigo += bandera + " = 0;\n";
-                result.Codigo += etqCiclo + ":\n";
-                result.Codigo += rsCondicion.Codigo;
-                result.Codigo += rsCondicion.EtiquetaV;
-                result.Codigo += bandera + " = 1;\n";
-                result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
-                result.Codigo += "goto " + etqCiclo + ";\n";
-                result.Codigo += rsCondicion.EtiquetaF;
-
-                result.EtiquetaV = NuevaEtiqueta();
-                result.EtiquetaF = NuevaEtiqueta();
-
-                result.Codigo += "ifFalse (" + bandera + " == 0) goto " + result.EtiquetaV+";\n";
-                result.Codigo += "goto " + result.EtiquetaF + ";\n";
-                result.Codigo += result.EtiquetaF + ":\n";
-                result.Codigo += BloqueElse.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
-                result.Codigo += result.EtiquetaV + ":\n";
+                if (BloqueElse == null)
+                {
+                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                }
+                else
+                {
+                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                    result.Codigo += BloqueElse.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                }
             }
             return result;
         }
