@@ -16,12 +16,14 @@ namespace Compilador.parser.Colette.ast.instruccion
             Id = id;
             Parametros = parametros;
             Bloque = bloque;
+            IsDeclaracion = true;
         }
 
         public Tipo Tipo { get; set; }
         public string Id { get; set; }
         public LinkedList<Identificador> Parametros { get; set; }
         public Bloque Bloque { get; set; }
+        public bool IsDeclaracion { get; set; }
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
@@ -36,44 +38,91 @@ namespace Compilador.parser.Colette.ast.instruccion
                 }
             }
 
-            if (e.GetMetodo(firma) == null)
+            Sim fun = e.GetMetodo(firma);
+
+            if (!IsDeclaracion)
             {
-                Ent local = new Ent(firma, e);
-
-                /*Agrego return*/
-                local.Add(new Sim("return", Tipo, Rol.RETURN, 1, local.GetPos(), local.Ambito, -1, -1));
-
-                /*Agrego parametros*/
-                int parametros = 0;
-                if (Parametros != null)
+                if (fun != null)
                 {
-                    foreach (Identificador id in Parametros)
+                    Ent local = new Ent(firma, e);
+                    local.Size = fun.Tam;
+
+                    /*Agrego return*/
+                    local.Add(new Sim("return", Tipo, Rol.RETURN, 1, local.GetPos(), local.Ambito, -1, -1));
+
+                    /*Agrego parametros*/
+                    int parametros = 0;
+                    if (Parametros != null)
                     {
-                        local.Add(new Sim(id.Id, id.Tipo, Rol.PARAMETER, 1, local.GetPos(), local.Ambito, -1, 0));
-                        parametros++;
+                        foreach (Identificador id in Parametros)
+                        {
+                            local.Add(new Sim(id.Id, id.Tipo, Rol.PARAMETER, 1, local.GetPos(), local.Ambito, -1, 0));
+                            parametros++;
+                        }
                     }
+
+                    /*Agrego etiqueta salida*/
+                    local.EtiquetaSalida = NuevaEtiqueta();
+
+                    result.Codigo += "proc " + firma + "() begin\n";
+                    result.Codigo += Bloque.GetC3D(local, true, false, errores).Codigo;
+                    result.Codigo += local.EtiquetaSalida + ":\n";
+                    result.Codigo += "end\n\n";
+
+                    fun.Entorno = local;
                 }
-
-                /*Agrego etiqueta salida*/
-                local.EtiquetaSalida = NuevaEtiqueta();
-
-                result.Codigo += "proc " + firma + "() begin\n";
-                result.Codigo += Bloque.GetC3D(local, true, false, errores).Codigo;
-                result.Codigo += local.EtiquetaSalida + ":\n";
-                result.Codigo += "end\n\n";
-
-                Sim fun = new Sim(firma, Tipo, Rol.FUNCION, local.Pos, -1, e.Ambito, parametros, -1);
-                fun.Firma = firma;
-                fun.Entorno = local;
-                //local.Recorrer();
-
-                e.Add(fun);
-
             }
             else
             {
-                errores.AddLast(new Error("Semántico","Ya se definió una funcion con la misma firma: "+ Id,Linea, Columna));
+                if (fun == null)
+                {
+                    Ent local = new Ent(firma);
+
+                    //local.Pos++; /*Para self*/
+                    local.Add(new Sim("return", Tipo, Rol.RETURN, 1, local.GetPos(), local.Ambito, -1, -1));
+
+                    local.Pos++; /*Para return*/
+
+                    int parametros = 0;
+                    if (Parametros != null)
+                    {
+                        foreach (Identificador id in Parametros)
+                        {
+                            parametros++;
+                        }
+                    }
+
+                    /*Recorro declaraciones*/
+                    foreach (Nodo sentencia in Bloque.Sentencias)
+                    {
+                        if (sentencia is Instruccion)
+                        {
+                            if (sentencia is Asignacion)
+                            {
+                                //((Asignacion)sentencia)
+                            }
+                            //((Instruccion)sentencia).GetC3D(local, true, false, errores);
+                        }
+                        else
+                        {
+                            //((Expresion)sentencia).GetC3D(local, true, false, errores);
+                        }
+                    }
+                         
+
+                    fun = new Sim(firma, Tipo, Rol.FUNCION, local.Pos, -1, e.Ambito, parametros, -1);
+                    fun.Firma = firma;
+                    fun.Entorno = local;
+                    e.Add(fun);
+                }
+                else
+                {
+                    errores.AddLast(new Error("Semántico", "Ya se declaró una función con la misma firma: " + firma + ".", Linea, Columna));
+                }
             }
+
+            //local.Recorrer();
+
             return result;
         }
     }

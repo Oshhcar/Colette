@@ -31,6 +31,9 @@ namespace Compilador.parser.Colette.ast.instruccion
                 }
                 else
                 {
+                    if (sentencia is Llamada)
+                        ((Llamada)sentencia).ObtenerReturn = false;
+                    
                     rsNodo = ((Expresion)sentencia).GetC3D(e, funcion, ciclo, errores);
                 }
 

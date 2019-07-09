@@ -28,17 +28,18 @@ namespace Compilador.parser.Colette.ast
             Result result = new Result();
             result.Codigo = "";
 
+            /*Guardar Funciones*/
             foreach (Nodo sentencia in Sentencias)
             {
                 if (sentencia is Funcion)
                 {
-                    Result rsNodo = ((Funcion)sentencia).GetC3D(global, false, false, errores);
-                    if(rsNodo != null)
-                        if(rsNodo.Codigo != null)
-                            result.Codigo += rsNodo.Codigo;
+                    Funcion fun = ((Funcion)sentencia);
+                    fun.GetC3D(global, false, false, errores);
+                    fun.IsDeclaracion = false;
                 }
             }
 
+            /*Obtener C3D de Todo lo demás*/
             foreach(Nodo sentencia in Sentencias)
             {
                 if (!(sentencia is Funcion))
@@ -50,9 +51,26 @@ namespace Compilador.parser.Colette.ast
                     }
                     else
                     {
+                        if (sentencia is Llamada)
+                            ((Llamada)sentencia).ObtenerReturn = false;
+
                         rsNodo = ((Expresion)sentencia).GetC3D(global, false, false, errores);
                     }
 
+                    if (rsNodo != null)
+                        if (rsNodo.Codigo != null)
+                            result.Codigo += rsNodo.Codigo;
+                }
+            }
+
+            result.Codigo += "\n/*Metodos*/\n\n";
+
+            /*Obtener C3D Funciones*/
+            foreach (Nodo sentencia in Sentencias)
+            {
+                if (sentencia is Funcion)
+                {
+                    Result rsNodo = ((Funcion)sentencia).GetC3D(global, false, false, errores);
                     if (rsNodo != null)
                         if (rsNodo.Codigo != null)
                             result.Codigo += rsNodo.Codigo;

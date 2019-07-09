@@ -87,6 +87,8 @@ namespace Compilador.parser.Collete
                         parameter_list.AddLast(new Identificador(hijos[1].Token.Text, (Tipo)GenerarArbol(hijos[0]), linea, columna));
                         return parameter_list;
                     }
+                case "CLASE_BLOQUE":
+                    return GenerarArbol(hijos[0]); /*esto no retorna bloque OJO*/
                 case "BLOQUE":
                     return GenerarArbol(hijos[0]);
                 case "SENTENCIAS":

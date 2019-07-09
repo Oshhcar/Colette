@@ -14,12 +14,13 @@ namespace Compilador.parser.Colette.ast.expresion
             Id = id;
             Parametros = parametros;
             Tipo = new Tipo(Tipo.Type.INDEFINIDO);
+            ObtenerReturn = true;
         }
 
         public string Id { get; set; }
         public LinkedList<Expresion> Parametros { get; set; }
         public Tipo Tipo { get; set; }
-
+        public bool ObtenerReturn { get; set; }
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
@@ -51,22 +52,35 @@ namespace Compilador.parser.Colette.ast.expresion
                 Sim metodo = e.GetMetodo(firma);
                 if (metodo != null)
                 {
-                    result.Valor = NuevoTemporal();
-                    result.Codigo += result.Valor + " = P + " + e.Pos + ";\n"; //Cambio simulado
+                    Tipo = metodo.Tipo;
 
                     int pos = 2; /*inicia en dos por return y self*/
 
                     foreach (Result rsParametro in rsParametros)
                     {
-                        result.Codigo += rsParametro.Codigo;
+                        string ptrCambio = NuevoTemporal();
                         string tmp = NuevoTemporal();
-                        result.Codigo += tmp + " = " + result.Valor + " + " + pos++ + ";\n";
+                        result.Codigo += ptrCambio + " = P + " + e.Size + ";\n"; //Cambio simulado
+                        result.Codigo += tmp + " = " + ptrCambio + " + " + pos++ + ";\n";
+
+                        result.Codigo += rsParametro.Codigo;
+                        
                         result.Codigo += "stack[" + tmp + "] = " + rsParametro.Valor + ";\n";
                     }
 
-                    result.Codigo += "P = P + " + e.Pos + ";\n";
+                    result.Codigo += "P = P + " + e.Size + ";\n";
                     result.Codigo += "call " + firma + ";\n";
-                    result.Codigo += "P = P - " + e.Pos + ";\n";
+
+                    if (ObtenerReturn)/*Si se espera valor*/
+                    {
+                        string ptrReturn = NuevoTemporal();
+                        result.Valor = NuevoTemporal();
+
+                        result.Codigo += ptrReturn + " = P + 0;\n";
+                        result.Codigo += result.Valor + " = stack[" + ptrReturn + "];\n";
+
+                    }
+                    result.Codigo += "P = P - " + e.Size + ";\n";
 
                 }
                 else
@@ -81,9 +95,21 @@ namespace Compilador.parser.Colette.ast.expresion
 
                 if (metodo != null)
                 {
-                    result.Codigo += "P = P + " + metodo.Tam + ";\n";
+                    Tipo = metodo.Tipo;
+                    result.Codigo += "P = P + " + e.Size + ";\n";
                     result.Codigo += "call " + firma + ";\n";
-                    result.Codigo += "P = P - " + metodo.Tam + ";\n";
+
+                    if (ObtenerReturn)/*Si se espera valor*/
+                    {
+                        string ptrReturn = NuevoTemporal();
+                        result.Valor = NuevoTemporal();
+
+                        result.Codigo += ptrReturn + " = P + 0;\n";
+                        result.Codigo += result.Valor + " = stack[" + ptrReturn + "];\n";
+
+                    }
+
+                    result.Codigo += "P = P - " + e.Size + ";\n";
                 }
                 else
                 {

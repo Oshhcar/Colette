@@ -129,6 +129,7 @@ namespace Compilador.parser.Collete
                 CLASEDEF = new NonTerminal("CLASEDEF"),
                 PRINT = new NonTerminal("PRINT"),
 
+                CLASE_BLOQUE = new NonTerminal("CLASE_BLOQUE"),
                 BLOQUE = new NonTerminal("BLOQUE"),
                 SENTENCIAS = new NonTerminal("SENTENCIAS"),
                 SENTENCIA = new NonTerminal("SENTENCIA"),
@@ -231,7 +232,9 @@ namespace Compilador.parser.Collete
                             | EXPRESSION_STMT + Eos
                            ;
 
-            CLASEDEF.Rule = class_ + identifier + colon + Eos + BLOQUE;
+            CLASEDEF.Rule = class_ + identifier + colon + Eos + CLASE_BLOQUE;
+
+            CLASE_BLOQUE.Rule = Indent + INSTRUCCIONES + Dedent;
 
             BLOQUE.Rule = Indent + SENTENCIAS + Dedent;
 
@@ -245,7 +248,6 @@ namespace Compilador.parser.Collete
                             | BREAK_STMT + Eos
                             | CONTINUE_STMT + Eos
                             | PASS_STMT + Eos
-                            | FUNCDEF
                             | CLASEDEF
                             | GLOBAL_STMT + Eos
                             | NONLOCAL_STMT + Eos

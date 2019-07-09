@@ -29,9 +29,6 @@ namespace Compilador.parser.Colette.ast.expresion
                 {
                     if (!ret.Tipo.IsVoid())
                     {
-                        result.Valor = NuevoTemporal();
-                        result.Codigo += result.Valor + " = P + " + ret.Pos + ";\n";
-
                         Result rsValor = Valor.GetC3D(e, funcion, ciclo, errores);
 
                         if (!Valor.GetTipo().IsIndefinido())
@@ -40,6 +37,9 @@ namespace Compilador.parser.Colette.ast.expresion
                             {
                                 if (ret.Tipo.Tip == Valor.GetTipo().Tip)
                                 {
+                                    result.Valor = NuevoTemporal();
+                                    result.Codigo += result.Valor + " = P + " + ret.Pos + ";\n";
+
                                     result.Codigo += rsValor.Codigo;
                                     result.Codigo += "stack[" + result.Valor + "] = " + rsValor.Valor + ";\n";
                                 }
@@ -64,7 +64,6 @@ namespace Compilador.parser.Colette.ast.expresion
                     else
                     {
                         errores.AddLast(new Error("Semántico", "No se espera valor en return.", Linea, Columna));
-
                     }
                 }
                 else
@@ -75,7 +74,6 @@ namespace Compilador.parser.Colette.ast.expresion
                         return null;
                     }
                 }
-
 
                 result.Codigo += "goto " + e.EtiquetaSalida + ";\n";
 
