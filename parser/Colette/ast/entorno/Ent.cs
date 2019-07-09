@@ -44,7 +44,7 @@ namespace Compilador.parser.Colette.ast.entorno
         {
             foreach (Sim s in Simbolos)
             {
-                if (s.Rol != Rol.FUNCION)
+                if (s.Rol != Rol.FUNCION && s.Rol != Rol.CLASE)
                 {
                     if (s.Id.Equals(id))
                         return s;
@@ -61,7 +61,7 @@ namespace Compilador.parser.Colette.ast.entorno
             {
                 foreach (Sim s in actual.Simbolos)
                 {
-                    if (s.Rol != Rol.FUNCION)
+                    if (s.Rol != Rol.FUNCION && s.Rol != Rol.CLASE)
                     {
                         if (s.Id.Equals(id))
                             return s;
@@ -83,6 +83,25 @@ namespace Compilador.parser.Colette.ast.entorno
                     if (s.Rol == Rol.FUNCION)
                     {
                         if (s.Firma.Equals(firma))
+                            return s;
+                    }
+                }
+                actual = actual.Padre;
+            }
+            return null;
+        }
+
+        public Sim GetClase(string id)
+        {
+            Ent actual = this;
+
+            while (actual != null)
+            {
+                foreach (Sim s in actual.Simbolos)
+                {
+                    if (s.Rol == Rol.CLASE)
+                    {
+                        if (s.Id.Equals(id))
                             return s;
                     }
                 }

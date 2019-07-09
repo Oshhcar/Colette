@@ -26,7 +26,8 @@ namespace Compilador.parser.Colette.ast.instruccion
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
         {
             Result result = new Result();
-            string firma = Id;
+            /*Si esto da problemas dejar firma solo con Id*/
+            string firma = e.Ambito + "_" + Id;
 
             if(Parametros != null)
             {
@@ -79,7 +80,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     //local.Pos++; /*Para self*/
                     local.Add(new Sim("return", Tipo, Rol.RETURN, 1, local.GetPos(), local.Ambito, -1, -1));
 
-                    local.Pos++; /*Para return*/
+                    local.GetPos(); /*Para return*/
 
                     int parametros = 0;
                     if (Parametros != null)
@@ -87,6 +88,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                         foreach (Identificador id in Parametros)
                         {
                             parametros++;
+                            local.GetPos();
                         }
                     }
 
@@ -104,7 +106,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     }
                          
 
-                    fun = new Sim(firma, Tipo, Rol.FUNCION, local.Pos+1, -1, e.Ambito, parametros, -1);
+                    fun = new Sim(firma, Tipo, Rol.FUNCION, local.Pos-1, -1, e.Ambito, parametros, -1);
                     fun.Firma = firma;
                     fun.Entorno = local;
                     e.Add(fun);

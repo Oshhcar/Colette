@@ -28,6 +28,29 @@ namespace Compilador.parser.Colette.ast
             Result result = new Result();
             result.Codigo = "";
 
+            /*Reservo memoria*/
+            Ent local = new Ent("Global");
+            foreach (Nodo sentencia in Sentencias)
+            {
+                if (sentencia is Instruccion)
+                {
+                    if (!(sentencia is Funcion) && !(sentencia is Clase))
+                    {
+                        ((Instruccion)sentencia).GetC3D(local, false, false, true, errores);
+                    }
+                }
+            }
+            global.Size = local.Pos;
+
+            /*Guardo Clases*/
+            foreach (Nodo sentencia in Sentencias)
+            {
+                if (sentencia is Clase)
+                {
+                    ((Clase)sentencia).GetC3D(global, false, false, true, errores);
+                }
+            }
+
             /*Guardar Funciones*/
             foreach (Nodo sentencia in Sentencias)
             {
@@ -41,7 +64,7 @@ namespace Compilador.parser.Colette.ast
             /*Obtener C3D de Todo lo demás*/
             foreach(Nodo sentencia in Sentencias)
             {
-                if (!(sentencia is Funcion))
+                if (!(sentencia is Funcion) && !(sentencia is Clase))
                 {
                     Result rsNodo;
                     if (sentencia is Instruccion)
@@ -70,6 +93,18 @@ namespace Compilador.parser.Colette.ast
                 if (sentencia is Funcion)
                 {
                     Result rsNodo = ((Funcion)sentencia).GetC3D(global, false, false, false, errores);
+                    if (rsNodo != null)
+                        if (rsNodo.Codigo != null)
+                            result.Codigo += rsNodo.Codigo;
+                }
+            }
+
+            /*Obtener C3D Clases*/
+            foreach (Nodo sentencia in Sentencias)
+            {
+                if (sentencia is Clase)
+                {
+                    Result rsNodo = ((Clase)sentencia).GetC3D(global, false, false, false, errores);
                     if (rsNodo != null)
                         if (rsNodo.Codigo != null)
                             result.Codigo += rsNodo.Codigo;

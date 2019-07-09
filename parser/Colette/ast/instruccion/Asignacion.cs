@@ -57,9 +57,14 @@ namespace Compilador.parser.Colette.ast.instruccion
                             Sim s = new Sim(((Identificador)obj).Id, Tipo, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
                             e.Add(s);
 
-                            string ptrStack = NuevoTemporal();
-                            rsObj.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
-                            rsObj.Valor = "stack[" + ptrStack + "]";
+                            if (!isDeclaracion)
+                            {
+                                idObjetivo.PtrVariable = s.Pos+"";
+
+                                string ptrStack = NuevoTemporal();
+                                rsObj.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
+                                rsObj.Valor = "stack[" + ptrStack + "]";
+                            }
                         }
                         else
                         {
@@ -88,6 +93,9 @@ namespace Compilador.parser.Colette.ast.instruccion
                         {
                             if (!isDeclaracion)
                             {
+                                if (expI is Llamada)
+                                    ((Llamada)expI).PtrVariable = idObjetivo.PtrVariable;
+
                                 Result rsTemp = expI.GetC3D(e, funcion, ciclo, errores);
                                 if (rsTemp != null)
                                 {
@@ -121,10 +129,13 @@ namespace Compilador.parser.Colette.ast.instruccion
                                         Sim s = new Sim(((Identificador)expI).Id, Tipo, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
                                         e.Add(s);
 
-                                        string ptrStack = NuevoTemporal();
-                                        rsTemp.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
-                                        rsTemp.Valor = "stack[" + ptrStack + "]";
-                                        rsTemp.PtrStack = s.Pos;
+                                        if (!isDeclaracion)
+                                        {
+                                            string ptrStack = NuevoTemporal();
+                                            rsTemp.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
+                                            rsTemp.Valor = "stack[" + ptrStack + "]";
+                                            rsTemp.PtrStack = s.Pos;
+                                        }
                                     }
                                     else
                                     {

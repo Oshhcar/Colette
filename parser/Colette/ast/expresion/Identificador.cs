@@ -14,6 +14,7 @@ namespace Compilador.parser.Colette.ast.expresion
             Id = id;
             Acceso = true;
             Tipo = new Tipo(Tipo.Type.INDEFINIDO);
+            PtrVariable = null;
         }
 
         public Identificador(string id, Tipo tipo, int linea, int columna) : base(linea, columna)
@@ -21,12 +22,13 @@ namespace Compilador.parser.Colette.ast.expresion
             Id = id;
             Acceso = true;
             Tipo = tipo;
+            PtrVariable = null;
         }
 
         public string Id { get; set; }
         public bool Acceso { get; set; }
         public Tipo Tipo { get; set; }
-
+        public string PtrVariable { get; set; }
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
             Sim s = e.Get(Id);
@@ -37,6 +39,7 @@ namespace Compilador.parser.Colette.ast.expresion
                 Result result = new Result();
                 string ptrStack = NuevoTemporal();
                 result.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
+                PtrVariable = s.Pos+"";
 
                 if (Acceso)
                 {

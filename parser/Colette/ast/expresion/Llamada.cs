@@ -15,18 +15,25 @@ namespace Compilador.parser.Colette.ast.expresion
             Parametros = parametros;
             Tipo = new Tipo(Tipo.Type.INDEFINIDO);
             ObtenerReturn = true;
+            PtrVariable = null;
         }
 
         public string Id { get; set; }
         public LinkedList<Expresion> Parametros { get; set; }
         public Tipo Tipo { get; set; }
         public bool ObtenerReturn { get; set; }
+        public String PtrVariable { get; set; }
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
         {
             Result result = new Result();
 
-            string firma = Id;
+            string firma;
+            /*Si esto da problemas dejar la firma solo con Id*/
+            if (e.Padre == null)
+                firma = e.Ambito + "_" + Id;
+            else
+                firma = e.Padre.Ambito + "_" + Id;
 
             if (Parametros != null)
             {
@@ -85,6 +92,7 @@ namespace Compilador.parser.Colette.ast.expresion
                 }
                 else
                 {
+                    /**/
                     errores.AddLast(new Error("Semántico", "La función: " + Id + " no está declarada.", Linea, Columna));
                     return null;
                 }
@@ -113,8 +121,39 @@ namespace Compilador.parser.Colette.ast.expresion
                 }
                 else
                 {
-                    errores.AddLast(new Error("Semántico", "La función: " + Id + " no está declarada.", Linea, Columna));
-                    return null;
+                    /*Buscar si es posible clase*/
+                    Sim clase = e.GetClase(Id);
+
+                    if (clase != null)
+                    {
+                        if (ObtenerReturn)
+                        {
+                            if (PtrVariable != null)
+                            {
+                                string ptrCambio = NuevoTemporal();
+                                string tmp = NuevoTemporal();
+                                string ptrVariable = NuevoTemporal();
+                                result.Valor = NuevoTemporal();
+
+                                result.Codigo += ptrCambio + " = P + " + e.Size + ";\n"; //Cambio simulado
+                                result.Codigo += tmp + " = " + ptrCambio + " + 1;\n"; //Posicion slef
+                                result.Codigo += ptrVariable + " = P + " + PtrVariable + " ;\n";
+                                result.Codigo += "stack[" + tmp + "] = " + ptrVariable + ";\n";
+                                result.Codigo += result.Valor + " = H;\n";
+
+                                result.Codigo += "P = P + " + e.Size + ";\n";
+                                result.Codigo += "call " + Id + "_" + Id + ";\n";
+                                result.Codigo += "P = P - " + e.Size + ";\n";
+
+                                Tipo = new Tipo(clase.Id);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        errores.AddLast(new Error("Semántico", "La función: " + Id + " no está declarada.", Linea, Columna));
+                        return null;
+                    }
                 }
             }
 

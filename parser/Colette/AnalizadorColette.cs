@@ -62,7 +62,7 @@ namespace Compilador.parser.Collete
                 case "CLASEDEF":
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;
-                    return new Clase(hijos[1].Token.Text, (Bloque)GenerarArbol(hijos[3]), linea, columna);
+                    return new Clase(hijos[1].Token.Text, new Bloque(((Arbol)GenerarArbol(hijos[3])).Sentencias, 0,0), linea, columna);
                 case "FUNCDEF":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
