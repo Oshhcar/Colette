@@ -180,6 +180,10 @@ namespace Compilador.parser.Collete
                         return new Return(null, linea, columna);
                     }
                     return new Return((Expresion)GenerarArbol(hijos[1]), linea, columna);
+                case "CONTINUE_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Continue(linea, columna);
                 case "GLOBAL_STMT":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;

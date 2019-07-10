@@ -32,7 +32,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public Ent Padre { get; set; }
         public string EtiquetaSalida { get; set; }
         public int Size { get; set; }
-
+        public string EtiquetaCiclo { get; set; }
         public int GetPos() { return Pos++; }
 
         public void Add(Sim s)

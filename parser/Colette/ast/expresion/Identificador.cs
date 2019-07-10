@@ -35,7 +35,7 @@ namespace Compilador.parser.Colette.ast.expresion
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
-            Sim s = e.GetGlobal(Id);
+            Sim s = e.Get(Id);
 
             if (s != null)
             {

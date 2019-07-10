@@ -54,13 +54,14 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                 }
 
                 string etqCiclo = NuevaEtiqueta();
+                e.EtiquetaCiclo = etqCiclo;
 
                 if (BloqueElse == null)
                 {
                     result.Codigo += etqCiclo + ":\n";
                     result.Codigo += rsCondicion.Codigo;
                     result.Codigo += rsCondicion.EtiquetaV;
-                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(e, funcion, true, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += "goto " + etqCiclo + ";\n";
                     result.Codigo += rsCondicion.EtiquetaF;
                 }
@@ -72,13 +73,12 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                     result.Codigo += rsCondicion.Codigo;
                     result.Codigo += rsCondicion.EtiquetaV;
                     result.Codigo += bandera + " = 1;\n";
-                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(e, funcion, true, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += "goto " + etqCiclo + ";\n";
                     result.Codigo += rsCondicion.EtiquetaF;
 
                     result.EtiquetaV = NuevaEtiqueta();
                     result.EtiquetaF = NuevaEtiqueta();
-
                     result.Codigo += "ifFalse (" + bandera + " == 0) goto " + result.EtiquetaV + ";\n";
                     result.Codigo += "goto " + result.EtiquetaF + ";\n";
                     result.Codigo += result.EtiquetaF + ":\n";
