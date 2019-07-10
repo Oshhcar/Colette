@@ -22,7 +22,7 @@ namespace Compilador.parser.Colette.ast.instruccion
         public LinkedList<LinkedList<Expresion>> Valor { get; set; }
         public Tipo Tipo { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, bool isObjeto, LinkedList<Error> errores)
         {
             Result result = new Result();
 

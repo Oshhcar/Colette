@@ -23,7 +23,7 @@ namespace Compilador.parser.Colette.ast.instruccion
         public LinkedList<Identificador> Parametros { get; set; }
         public Bloque Bloque { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, bool isObjeto, LinkedList<Error> errores)
         {
             Result result = new Result();
             /*Si esto da problemas dejar firma solo con Id*/
@@ -64,7 +64,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     local.EtiquetaSalida = NuevaEtiqueta();
 
                     result.Codigo += "proc " + firma + "() begin\n";
-                    result.Codigo += Bloque.GetC3D(local, true, false, false, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(local, true, false, false, isObjeto, errores).Codigo;
                     result.Codigo += local.EtiquetaSalida + ":\n";
                     result.Codigo += "end\n\n";
 
@@ -97,7 +97,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         if (sentencia is Instruccion)
                         {
-                            ((Instruccion)sentencia).GetC3D(local, true, false, true, errores);
+                            ((Instruccion)sentencia).GetC3D(local, true, false, true, isObjeto, errores);
                         }
                         else
                         {

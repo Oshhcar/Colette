@@ -19,7 +19,7 @@ namespace Compilador.parser.Colette.ast.instruccion
         public string Id { get; set; }
         public Bloque Bloque { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, bool isObjeto, LinkedList<Error> errores)
         {
             Result result = new Result();
             Sim clase = e.GetClase(Id);
@@ -40,15 +40,29 @@ namespace Compilador.parser.Colette.ast.instruccion
                         if (sentencia is Funcion)
                         {
                             Funcion fun = ((Funcion)sentencia);
-                            fun.GetC3D(local, false, false, true, errores);
+                            fun.GetC3D(local, false, false, true, isObjeto, errores);
                         }
                     }
 
                     /*Buscar si hay constructor*/
+
                     /*Genero Constructor*/
                     result.Codigo += "proc " + Id + "_" + Id + "() begin\n";
                     /*Verificar si hay returns, error*/
-                    /*
+
+                    string tmp = NuevoTemporal();
+                    result.Codigo += tmp + " = P + 0;\n";
+                    result.Codigo += "stack[" + tmp + "] = H;\n";
+                    
+
+                    /*Guardo Posición self en 1*/
+                    string tmp2 = NuevoTemporal();
+                    result.Codigo += tmp2 + " = P + 1;\n";
+                    result.Codigo += "stack[" + tmp2 + "] = H;\n";
+
+                    result.Codigo += "H = H + " + local.Size + ";\n"; //reservo memoria
+
+                    /*Ejecuto sentencias que estan en la clase*/
                     foreach (Nodo sentencia in Bloque.Sentencias)
                     {
                         if (!(sentencia is Funcion) && !(sentencia is Clase))
@@ -56,7 +70,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                             Result rsNodo;
                             if (sentencia is Instruccion)
                             {
-                                rsNodo = ((Instruccion)sentencia).GetC3D(local, false, false, false, errores);
+                                rsNodo = ((Instruccion)sentencia).GetC3D(local, false, false, false, isObjeto, errores);
                             }
                             else
                             {
@@ -70,13 +84,11 @@ namespace Compilador.parser.Colette.ast.instruccion
                                 if (rsNodo.Codigo != null)
                                     result.Codigo += rsNodo.Codigo;
                         }
-                    }*/
-                    //Posicion 0 siempre vendra self
+                    }
+                    //reservo memoria
+                    //Posicion 1 siempre vendra self
 
-                    string tmp = NuevoTemporal();
-                    result.Codigo += tmp + " = P + 0;\n";
-                    result.Codigo += "stack[" + tmp + "] = H;\n";
-                    result.Codigo += "H = H + " + local.Size + ";\n"; //reservo memoria
+
                     result.Codigo += "end\n\n";
 
                     /*Obtener C3D Funciones*/
@@ -84,7 +96,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         if (sentencia is Funcion)
                         {
-                            Result rsNodo = ((Funcion)sentencia).GetC3D(local, false, false, false, errores);
+                            Result rsNodo = ((Funcion)sentencia).GetC3D(local, false, false, false, isObjeto, errores);
                             if (rsNodo != null)
                                 if (rsNodo.Codigo != null)
                                     result.Codigo += rsNodo.Codigo;
@@ -111,7 +123,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                         {
                             if (!(sentencia is Funcion) && !(sentencia is Clase))/*ojo*/
                             {
-                                ((Instruccion)sentencia).GetC3D(local, false, false, true, errores);
+                                ((Instruccion)sentencia).GetC3D(local, false, false, true, isObjeto, errores);
                             }
                         }
                     }

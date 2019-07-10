@@ -15,7 +15,7 @@ namespace Compilador.parser.Colette.ast.instruccion
         public PrintTabla(int linea, int columna) : base(linea, columna)
         { }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, bool isObjeto, LinkedList<Error> errores)
         {
             if (!isDeclaracion)
             {

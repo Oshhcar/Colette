@@ -22,7 +22,7 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
         public Bloque Bloque { get; set; }
         public Bloque BloqueElse { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, bool isObjeto, LinkedList<Error> errores)
         {
             Result result = new Result();
 
@@ -60,7 +60,7 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                     result.Codigo += etqCiclo + ":\n";
                     result.Codigo += rsCondicion.Codigo;
                     result.Codigo += rsCondicion.EtiquetaV;
-                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += "goto " + etqCiclo + ";\n";
                     result.Codigo += rsCondicion.EtiquetaF;
                 }
@@ -72,7 +72,7 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                     result.Codigo += rsCondicion.Codigo;
                     result.Codigo += rsCondicion.EtiquetaV;
                     result.Codigo += bandera + " = 1;\n";
-                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += "goto " + etqCiclo + ";\n";
                     result.Codigo += rsCondicion.EtiquetaF;
 
@@ -82,7 +82,7 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                     result.Codigo += "ifFalse (" + bandera + " == 0) goto " + result.EtiquetaV + ";\n";
                     result.Codigo += "goto " + result.EtiquetaF + ";\n";
                     result.Codigo += result.EtiquetaF + ":\n";
-                    result.Codigo += BloqueElse.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                    result.Codigo += BloqueElse.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += result.EtiquetaV + ":\n";
                 }
             }
@@ -90,12 +90,12 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
             {
                 if (BloqueElse == null)
                 {
-                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
                 }
                 else
                 {
-                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
-                    result.Codigo += BloqueElse.GetC3D(e, funcion, ciclo, isDeclaracion, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    result.Codigo += BloqueElse.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
                 }
             }
             return result;
