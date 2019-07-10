@@ -15,6 +15,7 @@ namespace Compilador.parser.Colette.ast.expresion
             Id = id;
             Tipo = new Tipo(Tipo.Type.INDEFINIDO);
             Acceso = true;
+            ObtenerValor = false;
         }
 
         public Expresion Expresion { get; set; }
@@ -22,7 +23,8 @@ namespace Compilador.parser.Colette.ast.expresion
         public Tipo Tipo { get; set; }
         public bool Acceso { get; set; }
         public Sim Simbolo { get; set; }
-
+        public string PtrVariable { get; set; }
+        public bool ObtenerValor { get; set; }
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
             Result result = new Result();
@@ -87,15 +89,41 @@ namespace Compilador.parser.Colette.ast.expresion
 
                 if (rsExpresion != null)
                 {
-                    result.Codigo += rsExpresion.Codigo;
-
                     Tipo = Expresion.GetTipo();
-
+                    result.Codigo += rsExpresion.Codigo;
+                    result.Valor = rsExpresion.Valor;
+                    
                     if (Expresion is Identificador)
                         Simbolo = ((Identificador)Expresion).Simbolo;
                     else if (Expresion is Referencia)
                         Simbolo = ((Referencia)Expresion).Simbolo;
 
+                    if (ObtenerValor)
+                    {
+                        if (Simbolo != null)
+                        {
+                            Sim clase = e.GetClase(Simbolo.Tipo.Objeto);
+                            if (clase != null)
+                            {
+                                Sim atributo = clase.Entorno.Get(Id);
+
+                                if (atributo != null)
+                                {
+                                    string valor = NuevoTemporal();
+                                    result.Codigo += valor + " = " + rsExpresion.Valor + ";\n";
+                                    string ptrHeap = NuevoTemporal();
+                                    result.Codigo += ptrHeap + " = " + valor + " + " + atributo.Pos + ";\n";
+
+                                    result.Valor = NuevoTemporal();
+                                    result.Valor = "heap[" + ptrHeap + "]";
+
+                                    PtrVariable = atributo.Pos + "";
+
+                                    Tipo = atributo.Tipo;
+                                }
+                            }
+                        }
+                    }
                 }
                 else
                 {

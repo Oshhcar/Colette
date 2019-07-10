@@ -39,14 +39,28 @@ namespace Compilador.parser.Colette.ast.instruccion
             for (int i = 0; i < Objetivo.Count(); i++)
             {
                 Expresion obj = Objetivo.ElementAt(i);
-                if (obj is Identificador) //verifico que sea id
+                if (obj is Identificador || obj is Referencia) //verifico que sea id o referencia a atributo
                 {
-                    Identificador idObjetivo = (Identificador)obj;
+                    Identificador idObjetivo = null;
+                    Referencia refObjetivo = null;
 
-                    idObjetivo.Acceso = false;
-                    Result rsObj = idObjetivo.GetC3D(e, funcion, ciclo, isObjeto, errores);
+                    Result rsObj = null;
+                    if (obj is Identificador)
+                    {
+                        idObjetivo = (Identificador)obj;
+                        idObjetivo.Acceso = false;
+                        rsObj = idObjetivo.GetC3D(e, funcion, ciclo, isObjeto, errores);
+                    }
 
-                    if (rsObj == null) //si no existe, creo la variable si viene con tipo
+                    if (obj is Referencia)
+                    {
+                        refObjetivo = (Referencia)obj;
+                        refObjetivo.Acceso = false;
+                        refObjetivo.ObtenerValor = true;
+                        rsObj = refObjetivo.GetC3D(e, funcion, ciclo, isObjeto, errores);
+                    }
+
+                    if (rsObj == null && obj is Identificador) //si no existe, creo la variable si viene con tipo
                     {
                         if (!Tipo.IsIndefinido())
                         {
@@ -92,7 +106,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     }
                     else
                     {
-                        if (!Tipo.IsIndefinido())
+                        if (!Tipo.IsIndefinido() && obj is Identificador)
                         {
                             if(isDeclaracion)
                                 errores.AddLast(new Error("Semántico", "Ya se declaró una variable con el id: "+ idObjetivo.Id+".", Linea, Columna));
@@ -116,10 +130,21 @@ namespace Compilador.parser.Colette.ast.instruccion
                                 Result rsTemp = expI.GetC3D(e, funcion, ciclo, isObjeto, errores);
                                 if (rsTemp != null)
                                 {
-                                    if (expI.GetTipo().Tip != idObjetivo.Tipo.Tip)
+                                    if (obj is Identificador)
                                     {
-                                        errores.AddLast(new Error("Semántico", "El valor a asignar no es del mismo tipo.", Linea, Columna));
-                                        return null;
+                                        if (expI.GetTipo().Tip != idObjetivo.Tipo.Tip)
+                                        {
+                                            errores.AddLast(new Error("Semántico", "El valor a asignar no es del mismo tipo.", Linea, Columna));
+                                            return null;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (expI.GetTipo().Tip != refObjetivo.Tipo.Tip)
+                                        {
+                                            errores.AddLast(new Error("Semántico", "El valor a asignar no es del mismo tipo.", Linea, Columna));
+                                            return null;
+                                        }
                                     }
                                     rsList.AddLast(rsTemp);
                                 }
