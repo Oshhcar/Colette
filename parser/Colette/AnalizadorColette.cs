@@ -62,7 +62,7 @@ namespace Compilador.parser.Collete
                 case "CLASEDEF":
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;
-                    return new Clase(hijos[1].Token.Text, new Bloque(((Arbol)GenerarArbol(hijos[3])).Sentencias, 0,0), linea, columna);
+                    return new Clase(hijos[1].Token.Text, new Bloque(((Arbol)GenerarArbol(hijos[3])).Sentencias, 0, 0), linea, columna);
                 case "FUNCDEF":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
@@ -123,8 +123,8 @@ namespace Compilador.parser.Collete
                             return new Tipo(Tipo.Type.INDEFINIDO);
                     }
                 case "PRINT":
-                    linea = hijos[0].Token.Location.Line+1;
-                    columna = hijos[0].Token.Location.Column+1;
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
                     return new Print((Expresion)GenerarArbol(hijos[2]), linea, columna);
                 case "PRINTTABLA":
                     linea = hijos[0].Token.Location.Line + 1;
@@ -137,7 +137,7 @@ namespace Compilador.parser.Collete
                     {
                         linea = hijos[1].Token.Location.Line + 1;
                         columna = hijos[1].Token.Location.Column + 1;
-                        LinkedList <SubIf> subifs= (LinkedList<SubIf>)GenerarArbol(hijos[0]);
+                        LinkedList<SubIf> subifs = (LinkedList<SubIf>)GenerarArbol(hijos[0]);
                         subifs.AddLast(new SubIf(null, (Bloque)GenerarArbol(hijos[3]), linea, columna));
                         return new If(subifs, 0, 0);
                     }
@@ -183,7 +183,7 @@ namespace Compilador.parser.Collete
                 case "GLOBAL_STMT":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
-                    return new Global((LinkedList<string>)GenerarArbol(hijos[2]),(Tipo)GenerarArbol(hijos[1]), linea, columna);
+                    return new Global((LinkedList<string>)GenerarArbol(hijos[2]), (Tipo)GenerarArbol(hijos[1]), linea, columna);
                 case "NONLOCAL_STMT":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
@@ -270,7 +270,14 @@ namespace Compilador.parser.Collete
                 case "EXPRESSION":
                     return GenerarArbol(hijos[0]);
                 case "CONDITIONAL_EXPRESSION":
-                    return GenerarArbol(hijos[0]);
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        return new Ternario((Expresion)GenerarArbol(hijos[2]), (Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[4]), linea, columna);
+                    }
                 case "OR_TEST":
                     if (hijos.Count() == 1)
                         return GenerarArbol(hijos[0]);
