@@ -44,11 +44,7 @@ namespace Compilador.parser.Colette.ast.expresion
             if (Expresion == null)
             {
                 string firma;
-                /*Si esto da problemas dejar la firma solo con Id*/
-                if (e.Padre == null)
-                    firma = e.Ambito + "_" + Id;
-                else
-                    firma = e.Padre.Ambito + "_" + Id;
+                firma = Id;
 
                 if (Parametros != null)
                 {
@@ -72,6 +68,7 @@ namespace Compilador.parser.Colette.ast.expresion
                     }
 
                     Sim metodo = e.GetMetodo(firma);
+                    
                     if (metodo != null)
                     {
                         Tipo = metodo.Tipo;
@@ -194,7 +191,7 @@ namespace Compilador.parser.Colette.ast.expresion
                                 //t.GetC3D(clase.Entorno, false, false, false, errores);
 
                                 string firma;
-                                firma = clase.Id + "_" + refExpresion.Id;
+                                firma = refExpresion.Id;
 
                                 if (Parametros != null)
                                 {

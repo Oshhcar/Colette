@@ -49,6 +49,8 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         idObjetivo = (Identificador)obj;
                         idObjetivo.Acceso = false;
+                        if (!Tipo.IsIndefinido())
+                            idObjetivo.GetLocal = true;
                         rsObj = idObjetivo.GetC3D(e, funcion, ciclo, isObjeto, errores);
                     }
 
@@ -162,6 +164,8 @@ namespace Compilador.parser.Colette.ast.instruccion
                         {
                             if (expI is Identificador)
                             {
+                                if (!Tipo.IsIndefinido())
+                                    ((Identificador)expI).GetLocal = true;
                                 ((Identificador)expI).Acceso = false;
                                 Result rsTemp = expI.GetC3D(e, funcion, ciclo, isObjeto, errores);
 

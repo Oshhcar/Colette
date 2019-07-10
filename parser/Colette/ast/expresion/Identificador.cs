@@ -16,6 +16,7 @@ namespace Compilador.parser.Colette.ast.expresion
             Tipo = new Tipo(Tipo.Type.INDEFINIDO);
             PtrVariable = null;
             Simbolo = null;
+            GetLocal = false;
         }
 
         public Identificador(string id, Tipo tipo, int linea, int columna) : base(linea, columna)
@@ -25,6 +26,7 @@ namespace Compilador.parser.Colette.ast.expresion
             Tipo = tipo;
             PtrVariable = null;
             Simbolo = null;
+            GetLocal = false;
         }
 
         public string Id { get; set; }
@@ -32,10 +34,16 @@ namespace Compilador.parser.Colette.ast.expresion
         public Tipo Tipo { get; set; }
         public string PtrVariable { get; set; }
         public Sim Simbolo { get; set; }
+        public bool GetLocal { get; set; }
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
-            Sim s = e.Get(Id);
+            Sim s = null;
+
+            if (GetLocal)
+                s = e.Get(Id);
+            else
+                s = e.GetGlobal(Id);
 
             if (s != null)
             {

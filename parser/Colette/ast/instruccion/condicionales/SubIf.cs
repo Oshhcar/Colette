@@ -54,24 +54,46 @@ namespace Compilador.parser.Colette.ast.instruccion.condicionales
                         rsCondicion.EtiquetaF = rsCondicion.EtiquetaV;
                         rsCondicion.EtiquetaV = copy;
                     }
+                    Ent local = new Ent(e.Ambito + "_if", e);
+                    local.EtiquetaCiclo = e.EtiquetaCiclo;
+                    local.EtiquetaSalida = e.EtiquetaSalida;
+                    local.Size = e.Size;
+                    local.Pos = e.Pos;
 
                     result.Codigo += rsCondicion.Codigo;
                     result.Codigo += rsCondicion.EtiquetaV;
-                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(local, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += "goto " + Salida + ";\n";
                     result.Codigo += rsCondicion.EtiquetaF;
+
+                    e.Pos = local.Pos;
                 }
                 else
                 {
-                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    Ent local = new Ent(e.Ambito + "_if", e);
+                    local.EtiquetaCiclo = e.EtiquetaCiclo;
+                    local.EtiquetaSalida = e.EtiquetaSalida;
+                    local.Size = e.Size;
+                    local.Pos = e.Pos;
+
+                    result.Codigo += Bloque.GetC3D(local, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += "goto " + Salida + ";\n";
+
+                    e.Pos = local.Pos;
                 }
             }
             else
             {
+                Ent local = new Ent(e.Ambito + "_else", e);
+                local.EtiquetaCiclo = e.EtiquetaCiclo;
+                local.EtiquetaSalida = e.EtiquetaSalida;
+                local.Size = e.Size;
+                local.Pos = e.Pos;
 
-                result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                result.Codigo += Bloque.GetC3D(local, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
                 result.Codigo += "goto " + Salida + ";\n";
+
+                e.Pos = local.Pos;
             }
 
             return result;

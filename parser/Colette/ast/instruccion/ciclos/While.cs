@@ -54,14 +54,19 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                 }
 
                 string etqCiclo = NuevaEtiqueta();
-                e.EtiquetaCiclo = etqCiclo;
+
+                Ent local = new Ent(e.Ambito + "_while", e);
+                local.EtiquetaCiclo = etqCiclo;
+                local.EtiquetaSalida = e.EtiquetaSalida;
+                local.Size = e.Size;
+                local.Pos = e.Pos;
 
                 if (BloqueElse == null)
                 {
                     result.Codigo += etqCiclo + ":\n";
                     result.Codigo += rsCondicion.Codigo;
                     result.Codigo += rsCondicion.EtiquetaV;
-                    result.Codigo += Bloque.GetC3D(e, funcion, true, isDeclaracion, isObjeto, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(local, funcion, true, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += "goto " + etqCiclo + ";\n";
                     result.Codigo += rsCondicion.EtiquetaF;
                 }
@@ -73,29 +78,48 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                     result.Codigo += rsCondicion.Codigo;
                     result.Codigo += rsCondicion.EtiquetaV;
                     result.Codigo += bandera + " = 1;\n";
-                    result.Codigo += Bloque.GetC3D(e, funcion, true, isDeclaracion, isObjeto, errores).Codigo;
+                    result.Codigo += Bloque.GetC3D(local, funcion, true, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += "goto " + etqCiclo + ";\n";
                     result.Codigo += rsCondicion.EtiquetaF;
+
+                    e.Pos = local.Pos;
+
+                    Ent local2 = new Ent(e.Ambito + "_else", e);
+                    local2.EtiquetaCiclo = e.EtiquetaCiclo;
+                    local2.EtiquetaSalida = e.EtiquetaSalida;
+                    local2.Size = e.Size;
+                    local2.Pos = e.Pos;
 
                     result.EtiquetaV = NuevaEtiqueta();
                     result.EtiquetaF = NuevaEtiqueta();
                     result.Codigo += "ifFalse (" + bandera + " == 0) goto " + result.EtiquetaV + ";\n";
                     result.Codigo += "goto " + result.EtiquetaF + ";\n";
                     result.Codigo += result.EtiquetaF + ":\n";
-                    result.Codigo += BloqueElse.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    result.Codigo += BloqueElse.GetC3D(local2, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += result.EtiquetaV + ":\n";
+
+                    e.Pos = local2.Pos;
                 }
             }
             else
             {
                 if (BloqueElse == null)
                 {
-                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    Ent local = new Ent(e.Ambito + "_while", e);
+                    local.Pos = e.Pos;
+                    result.Codigo += Bloque.GetC3D(local, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    e.Pos = local.Pos;
                 }
                 else
                 {
-                    result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
-                    result.Codigo += BloqueElse.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    Ent local = new Ent(e.Ambito + "_while", e);
+                    local.Pos = e.Pos;
+                    result.Codigo += Bloque.GetC3D(local, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    e.Pos = local.Pos;
+                    Ent local2 = new Ent(e.Ambito + "_else", e);
+                    local2.Pos = e.Pos;
+                    result.Codigo += BloqueElse.GetC3D(local2, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                    e.Pos = local.Pos;
                 }
             }
             return result;

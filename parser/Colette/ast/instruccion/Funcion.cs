@@ -27,7 +27,7 @@ namespace Compilador.parser.Colette.ast.instruccion
         {
             Result result = new Result();
             /*Si esto da problemas dejar firma solo con Id*/
-            string firma = e.Ambito + "_" + Id;
+            string firma = Id;
 
             if(Parametros != null)
             {

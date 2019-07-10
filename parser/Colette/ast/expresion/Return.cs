@@ -23,7 +23,7 @@ namespace Compilador.parser.Colette.ast.expresion
             if (funcion)
             {
                 Result result = new Result();
-                Sim ret = e.Get("return");
+                Sim ret = e.GetGlobal("return");
 
                 if (Valor != null)
                 {
