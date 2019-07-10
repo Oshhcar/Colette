@@ -35,7 +35,40 @@ namespace Compilador.parser.Colette.ast.expresion
 
                 if (rsExpresion != null)
                 {
+                    Sim var = null;
 
+                    if (Expresion is Identificador)
+                        var = ((Identificador)Expresion).Simbolo;
+                    else if (Expresion is Referencia)
+                        var = ((Referencia)Expresion).Simbolo;
+
+                    if (var != null)
+                    {
+                        Sim clase = e.GetClase(var.Tipo.Objeto);
+
+                        if (clase != null)
+                        {
+                            Sim atributo = clase.Entorno.Get(Id);
+
+                            if (atributo != null)
+                            {
+                                result.Codigo += rsExpresion.Codigo;
+
+                                string ptrHeap = NuevoTemporal();
+                                result.Codigo += ptrHeap + " = " + rsExpresion.Valor + " + " + atributo.Pos + ";\n";
+
+                                result.Valor = NuevoTemporal();
+                                result.Codigo += result.Valor + " = " + "heap[" + ptrHeap + "];\n";
+
+                                Tipo = atributo.Tipo;
+                            }
+                            else
+                            {
+                                errores.AddLast(new Error("Semántico", "El atributo: " + Id + " no está declarado.", Linea, Columna));
+                                return null;
+                            }
+                        }
+                    }
                 }
                 else
                 {
