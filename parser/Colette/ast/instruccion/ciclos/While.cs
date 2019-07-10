@@ -58,6 +58,7 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                 Ent local = new Ent(e.Ambito + "_while", e);
                 local.EtiquetaCiclo = etqCiclo;
                 local.EtiquetaSalida = e.EtiquetaSalida;
+                local.EtiquetaSalidaCiclo = NuevaEtiqueta();
                 local.Size = e.Size;
                 local.Pos = e.Pos;
 
@@ -69,6 +70,7 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                     result.Codigo += Bloque.GetC3D(local, funcion, true, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += "goto " + etqCiclo + ";\n";
                     result.Codigo += rsCondicion.EtiquetaF;
+                    result.Codigo += local.EtiquetaSalidaCiclo +":\n";
                 }
                 else
                 {
@@ -97,6 +99,8 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                     result.Codigo += result.EtiquetaF + ":\n";
                     result.Codigo += BloqueElse.GetC3D(local2, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
                     result.Codigo += result.EtiquetaV + ":\n";
+
+                    result.Codigo += local.EtiquetaSalidaCiclo + ":\n";
 
                     e.Pos = local2.Pos;
                 }

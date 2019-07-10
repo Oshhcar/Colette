@@ -193,6 +193,10 @@ namespace Compilador.parser.Collete
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     return new Continue(linea, columna);
+                case "BREAK_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Break(linea, columna);
                 case "PASS_STMT":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;

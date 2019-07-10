@@ -57,6 +57,8 @@ namespace Compilador.parser.Colette.ast.instruccion.condicionales
                     Ent local = new Ent(e.Ambito + "_if", e);
                     local.EtiquetaCiclo = e.EtiquetaCiclo;
                     local.EtiquetaSalida = e.EtiquetaSalida;
+                    local.EtiquetaSalidaCiclo = e.EtiquetaSalidaCiclo;
+
                     local.Size = e.Size;
                     local.Pos = e.Pos;
 
@@ -73,6 +75,7 @@ namespace Compilador.parser.Colette.ast.instruccion.condicionales
                     Ent local = new Ent(e.Ambito + "_if", e);
                     local.EtiquetaCiclo = e.EtiquetaCiclo;
                     local.EtiquetaSalida = e.EtiquetaSalida;
+                    local.EtiquetaSalidaCiclo = e.EtiquetaSalidaCiclo;
                     local.Size = e.Size;
                     local.Pos = e.Pos;
 
@@ -87,6 +90,7 @@ namespace Compilador.parser.Colette.ast.instruccion.condicionales
                 Ent local = new Ent(e.Ambito + "_else", e);
                 local.EtiquetaCiclo = e.EtiquetaCiclo;
                 local.EtiquetaSalida = e.EtiquetaSalida;
+                local.EtiquetaSalidaCiclo = e.EtiquetaSalidaCiclo;
                 local.Size = e.Size;
                 local.Pos = e.Pos;
 
