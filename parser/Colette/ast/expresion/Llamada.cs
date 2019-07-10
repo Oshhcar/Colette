@@ -37,7 +37,7 @@ namespace Compilador.parser.Colette.ast.expresion
         public bool ObtenerReturn { get; set; }
         public String PtrVariable { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
             Result result = new Result();
 
@@ -55,7 +55,7 @@ namespace Compilador.parser.Colette.ast.expresion
                     LinkedList<Result> rsParametros = new LinkedList<Result>();
                     foreach (Expresion parametro in Parametros)
                     {
-                        Result rsParametro = parametro.GetC3D(e, funcion, ciclo, errores);
+                        Result rsParametro = parametro.GetC3D(e, funcion, ciclo, isObjeto, errores);
                         if (rsParametro != null)
                         {
                             if (!parametro.GetTipo().IsIndefinido())
@@ -180,7 +180,7 @@ namespace Compilador.parser.Colette.ast.expresion
                     Referencia refExpresion = (Referencia)Expresion;
                     refExpresion.Acceso = false;
 
-                    Result rsExpresion = refExpresion.GetC3D(e, funcion, ciclo, errores);
+                    Result rsExpresion = refExpresion.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
                     if (rsExpresion != null)
                     {
@@ -202,7 +202,7 @@ namespace Compilador.parser.Colette.ast.expresion
                                     LinkedList<Result> rsParametros = new LinkedList<Result>();
                                     foreach (Expresion parametro in Parametros)
                                     {
-                                        Result rsParametro = parametro.GetC3D(e, funcion, ciclo, errores);
+                                        Result rsParametro = parametro.GetC3D(e, funcion, ciclo, isObjeto, errores);
                                         if (rsParametro != null)
                                         {
                                             if (!parametro.GetTipo().IsIndefinido())

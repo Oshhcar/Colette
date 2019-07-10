@@ -70,14 +70,14 @@ namespace Compilador.parser.Colette.ast.instruccion
                             Result rsNodo;
                             if (sentencia is Instruccion)
                             {
-                                rsNodo = ((Instruccion)sentencia).GetC3D(local, false, false, false, isObjeto, errores);
+                                rsNodo = ((Instruccion)sentencia).GetC3D(local, false, false, false, true, errores);
                             }
                             else
                             {
                                 if (sentencia is Llamada)
                                     ((Llamada)sentencia).ObtenerReturn = false;
 
-                                rsNodo = ((Expresion)sentencia).GetC3D(local, false, false, errores);
+                                rsNodo = ((Expresion)sentencia).GetC3D(local, false, false, true, errores);
                             }
 
                             if (rsNodo != null)

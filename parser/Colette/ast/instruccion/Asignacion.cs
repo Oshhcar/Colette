@@ -44,7 +44,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     Identificador idObjetivo = (Identificador)obj;
 
                     idObjetivo.Acceso = false;
-                    Result rsObj = idObjetivo.GetC3D(e, funcion, ciclo, errores);
+                    Result rsObj = idObjetivo.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
                     if (rsObj == null) //si no existe, creo la variable si viene con tipo
                     {
@@ -96,7 +96,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                                 if (expI is Llamada)
                                     ((Llamada)expI).PtrVariable = idObjetivo.PtrVariable;
 
-                                Result rsTemp = expI.GetC3D(e, funcion, ciclo, errores);
+                                Result rsTemp = expI.GetC3D(e, funcion, ciclo, isObjeto, errores);
                                 if (rsTemp != null)
                                 {
                                     if (expI.GetTipo().Tip != idObjetivo.Tipo.Tip)
@@ -118,7 +118,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                             if (expI is Identificador)
                             {
                                 ((Identificador)expI).Acceso = false;
-                                Result rsTemp = expI.GetC3D(e, funcion, ciclo, errores);
+                                Result rsTemp = expI.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
                                 if (rsTemp == null) //si no existe, creo la variable
                                 {

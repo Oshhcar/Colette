@@ -18,7 +18,7 @@ namespace Compilador.parser.Colette.ast.expresion
         public Expresion Valor { get; set; }
         public Tipo Tipo { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
             if (funcion)
             {
@@ -29,7 +29,7 @@ namespace Compilador.parser.Colette.ast.expresion
                 {
                     if (!ret.Tipo.IsVoid())
                     {
-                        Result rsValor = Valor.GetC3D(e, funcion, ciclo, errores);
+                        Result rsValor = Valor.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
                         if (!Valor.GetTipo().IsIndefinido())
                         {

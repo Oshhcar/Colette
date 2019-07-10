@@ -16,7 +16,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
         private Tipo Tipo { get; set; }
         public bool Evaluar { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
             Result result = new Result();
 
@@ -25,7 +25,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             else if (Op1 is Logica)
                 ((Logica)Op1).Evaluar = true;
 
-            Result rsOp1 = Op1.GetC3D(e, funcion, ciclo, errores);
+            Result rsOp1 = Op1.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
             if (Op2 != null)
             {
@@ -35,7 +35,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     ((Logica)Op2).Evaluar = true;
 
 
-                Result rsOp2 = Op2.GetC3D(e, funcion, ciclo, errores);
+                Result rsOp2 = Op2.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
                 TipoResultante(Op1.GetTipo(), Op2.GetTipo());
 

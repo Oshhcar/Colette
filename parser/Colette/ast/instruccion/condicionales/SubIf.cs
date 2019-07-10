@@ -35,7 +35,7 @@ namespace Compilador.parser.Colette.ast.instruccion.condicionales
                     else if (Condicion is Logica)
                         ((Logica)Condicion).Evaluar = true;
 
-                    Result rsCondicion = Condicion.GetC3D(e, funcion, ciclo, errores);
+                    Result rsCondicion = Condicion.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
                     if (Condicion is Literal)
                     {

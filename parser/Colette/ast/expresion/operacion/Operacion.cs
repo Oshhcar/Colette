@@ -20,7 +20,7 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
         public Expresion Op2 { get; set; }
         public Operador Op { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
             return new Result();
         }

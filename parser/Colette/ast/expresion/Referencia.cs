@@ -23,7 +23,7 @@ namespace Compilador.parser.Colette.ast.expresion
         public bool Acceso { get; set; }
         public Sim Simbolo { get; set; }
 
-        public override Result GetC3D(Ent e, bool funcion, bool ciclo, LinkedList<Error> errores)
+        public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
             Result result = new Result();
 
@@ -31,7 +31,7 @@ namespace Compilador.parser.Colette.ast.expresion
 
             if (Acceso)
             {
-                rsExpresion = Expresion.GetC3D(e, funcion, ciclo, errores);
+                rsExpresion = Expresion.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
                 if (rsExpresion != null)
                 {
@@ -50,7 +50,7 @@ namespace Compilador.parser.Colette.ast.expresion
                 else if (Expresion is Referencia)
                     ((Referencia)Expresion).Acceso = false;
 
-                rsExpresion = Expresion.GetC3D(e, funcion, ciclo, errores);
+                rsExpresion = Expresion.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
                 if (rsExpresion != null)
                 {

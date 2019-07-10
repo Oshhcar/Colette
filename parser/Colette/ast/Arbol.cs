@@ -100,7 +100,7 @@ namespace Compilador.parser.Colette.ast
                         if (sentencia is Llamada)
                             ((Llamada)sentencia).ObtenerReturn = false;
 
-                        rsNodo = ((Expresion)sentencia).GetC3D(global, false, false, errores);
+                        rsNodo = ((Expresion)sentencia).GetC3D(global, false, false, false, errores);
                     }
 
                     if (rsNodo != null)

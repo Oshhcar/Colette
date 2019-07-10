@@ -23,7 +23,7 @@ namespace Compilador.parser.Colette.ast.instruccion
 
             if (!isDeclaracion)
             {
-                Result rsExp = Expresion.GetC3D(e, funcion, ciclo, errores);
+                Result rsExp = Expresion.GetC3D(e, funcion, ciclo, isObjeto, errores);
                 Tipo tipoExp = Expresion.GetTipo();
 
                 if (!tipoExp.IsIndefinido())
