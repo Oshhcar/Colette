@@ -56,26 +56,53 @@ namespace Compilador.parser.Colette.ast.expresion
                 if (Acceso)
                 {
                     result.Valor = NuevoTemporal();
-                    if (s.Rol != Rol.GLOBAL)
+                    if (s.Rol == Rol.GLOBAL)
+                    {
+                        result.Codigo += result.Valor + " = heap[" + s.Pos + "];\n";
+                    }
+                    else if (s.IsAtributo)
+                    {
+                        string ptrStack = NuevoTemporal();
+                        string ptrHeap = NuevoTemporal();
+                        string valorHeap = NuevoTemporal();
+
+                        result.Codigo = ptrStack + " = P + 1;\n";
+                        result.Codigo += valorHeap + " = stack[" + ptrStack + "];\n";
+                        result.Codigo += ptrHeap + " = " + valorHeap + " + " + s.Pos + ";\n";
+                        result.Codigo += result.Valor + " = heap[" + ptrHeap + "]";
+                    }
+                    else
                     {
                         string ptrStack = NuevoTemporal();
                         result.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
                         result.Codigo += result.Valor + " = stack[" + ptrStack + "];\n";
                     }
-                    else
-                        result.Codigo += result.Valor + " = heap[" + s.Pos + "];\n";
+                        
                 }
                 else
                 {
                     result.PtrStack = s.Pos;
-                    if (s.Rol != Rol.GLOBAL)
+                    if (s.Rol == Rol.GLOBAL)
+                    {
+                        result.Valor = "heap[" + s.Pos + "]";
+                    }
+                    else if (s.IsAtributo)
+                    {
+                        string ptrStack = NuevoTemporal();
+                        string ptrHeap = NuevoTemporal();
+                        string valorHeap = NuevoTemporal();
+
+                        result.Codigo = ptrStack + " = P + 1;\n";
+                        result.Codigo += valorHeap + " = stack[" + ptrStack + "];\n";
+                        result.Codigo += ptrHeap + " = " + valorHeap + " + " + s.Pos + ";\n";
+                        result.Valor = "heap[" + ptrHeap + "]";
+                    }
+                    else
                     {
                         string ptrStack = NuevoTemporal();
                         result.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
                         result.Valor = "stack[" + ptrStack + "]";
-                    }
-                    else
-                        result.Valor = "heap[" + s.Pos + "]";
+                    }   
                 }
                 return result;
             }
