@@ -67,17 +67,11 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         if (!(sentencia is Funcion) && !(sentencia is Clase))
                         {
-                            Result rsNodo;
+                            Result rsNodo = null;
                             if (sentencia is Instruccion)
                             {
-                                rsNodo = ((Instruccion)sentencia).GetC3D(local, false, false, false, true, errores);
-                            }
-                            else
-                            {
-                                if (sentencia is Llamada)
-                                    ((Llamada)sentencia).ObtenerReturn = false;
-
-                                rsNodo = ((Expresion)sentencia).GetC3D(local, false, false, true, errores);
+                                if(sentencia is Asignacion) //Solo sentencias de asignación
+                                    rsNodo = ((Instruccion)sentencia).GetC3D(local, false, false, false, true, errores);
                             }
 
                             if (rsNodo != null)
@@ -87,7 +81,6 @@ namespace Compilador.parser.Colette.ast.instruccion
                     }
                     //reservo memoria
                     //Posicion 1 siempre vendra self
-
 
                     result.Codigo += "end\n\n";
 

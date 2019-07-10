@@ -41,8 +41,10 @@ namespace Compilador.parser.Colette.ast.expresion
             {
                 Tipo = s.Tipo;
                 Result result = new Result();
+
                 string ptrStack = NuevoTemporal();
                 result.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
+
                 PtrVariable = s.Pos+"";
                 Simbolo = s;
 

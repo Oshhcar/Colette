@@ -55,6 +55,10 @@ namespace Compilador.parser.Colette.ast.instruccion
                             rsObj = new Result();
 
                             Sim s = new Sim(((Identificador)obj).Id, Tipo, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
+
+                            if (isObjeto)
+                                s.IsAtributo = true;
+
                             e.Add(s);
 
                             if (!isDeclaracion)
@@ -62,8 +66,21 @@ namespace Compilador.parser.Colette.ast.instruccion
                                 idObjetivo.PtrVariable = s.Pos+"";
 
                                 string ptrStack = NuevoTemporal();
-                                rsObj.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
-                                rsObj.Valor = "stack[" + ptrStack + "]";
+                                if (!isObjeto)
+                                {
+                                    rsObj.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
+                                    rsObj.Valor = "stack[" + ptrStack + "]";
+                                }
+                                else
+                                {
+                                    string ptrHeap = NuevoTemporal();
+                                    string valorHeap = NuevoTemporal();
+
+                                    rsObj.Codigo = ptrStack + " = P + " + 1 + ";\n";
+                                    rsObj.Codigo += valorHeap + " = stack[" + ptrStack + "];\n";
+                                    rsObj.Codigo += ptrHeap + " = " + valorHeap + " + " + s.Pos + ";\n";
+                                    rsObj.Valor = "heap[" + ptrHeap + "]";
+                                }
                             }
                         }
                         else
@@ -127,14 +144,33 @@ namespace Compilador.parser.Colette.ast.instruccion
                                         rsTemp = new Result();
 
                                         Sim s = new Sim(((Identificador)expI).Id, Tipo, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
+
+                                        if (isObjeto)
+                                            s.IsAtributo = true;
+
                                         e.Add(s);
 
                                         if (!isDeclaracion)
                                         {
                                             string ptrStack = NuevoTemporal();
-                                            rsTemp.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
-                                            rsTemp.Valor = "stack[" + ptrStack + "]";
+                                            if (!isObjeto)
+                                            {
+                                                rsTemp.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
+                                                rsTemp.Valor = "stack[" + ptrStack + "]";
+                                            }
+                                            else
+                                            {
+                                                string ptrHeap = NuevoTemporal();
+                                                string valorHeap = NuevoTemporal();
+
+                                                rsTemp.Codigo = ptrStack + " = P + " + 1 + ";\n";
+                                                rsTemp.Codigo += valorHeap + " = stack[" + ptrStack + "];\n";
+                                                rsTemp.Codigo += ptrHeap + " = " + valorHeap + " + " + s.Pos + ";\n";
+                                                rsTemp.Valor = "heap[" + ptrHeap + "]";
+                                            }
+
                                             rsTemp.PtrStack = s.Pos;
+                                            
                                         }
                                     }
                                     else
