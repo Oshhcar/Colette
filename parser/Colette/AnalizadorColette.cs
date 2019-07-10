@@ -335,6 +335,10 @@ namespace Compilador.parser.Collete
                     }
                 case "PRIMARY":
                     return GenerarArbol(hijos[0]);
+                case "ATTRIBUTEREF":
+                    linea = hijos[1].Token.Location.Line + 1;
+                    columna = hijos[1].Token.Location.Column + 1;
+                    return new Referencia((Expresion)GenerarArbol(hijos[0]), hijos[2].Token.Text, linea, columna);
                 case "ATOM":
                     if (hijos[0].Term.Name.Equals("identifier"))
                     {
@@ -396,10 +400,20 @@ namespace Compilador.parser.Collete
                         }
                         else
                         {
-                            return new Llamada(((Identificador)callPrimary).Id,(LinkedList<Expresion>)GenerarArbol(hijos[2]), linea, columna);
+                            return new Llamada(((Identificador)callPrimary).Id, (LinkedList<Expresion>)GenerarArbol(hijos[2]), linea, columna);
                         }
                     }
-                    return null;//no implementando
+                    else
+                    {
+                        if (hijos.Count() == 3)/*Sin parametros*/
+                        {
+                            return new Llamada(callPrimary, null, linea, columna);
+                        }
+                        else
+                        {
+                            return new Llamada(callPrimary, (LinkedList<Expresion>)GenerarArbol(hijos[2]), linea, columna);
+                        }
+                    }
                 case "ARGUMENT_LIST": //para parametros
                     return GenerarArbol(hijos[0]);
                 case "POSITIONAL_ARGUMENTS":

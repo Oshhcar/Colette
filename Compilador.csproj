@@ -103,6 +103,7 @@
     <Compile Include="parser\Colette\ast\expresion\operacion\Logica.cs" />
     <Compile Include="parser\Colette\ast\expresion\operacion\Operacion.cs" />
     <Compile Include="parser\Colette\ast\expresion\operacion\Relacional.cs" />
+    <Compile Include="parser\Colette\ast\expresion\Referencia.cs" />
     <Compile Include="parser\Colette\ast\expresion\Return.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Asignacion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Bloque.cs" />

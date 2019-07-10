@@ -51,6 +51,18 @@ namespace Compilador.parser.Colette.ast
                 }
             }
 
+            /*Obtener C3D Clases*/
+            foreach (Nodo sentencia in Sentencias)
+            {
+                if (sentencia is Clase)
+                {
+                    Result rsNodo = ((Clase)sentencia).GetC3D(global, false, false, false, errores);
+                    if (rsNodo != null)
+                        if (rsNodo.Codigo != null)
+                            result.Codigo += rsNodo.Codigo;
+                }
+            }
+
             /*Guardar Funciones*/
             foreach (Nodo sentencia in Sentencias)
             {
@@ -61,8 +73,20 @@ namespace Compilador.parser.Colette.ast
                 }
             }
 
+            /*Obtener C3D Funciones*/
+            foreach (Nodo sentencia in Sentencias)
+            {
+                if (sentencia is Funcion)
+                {
+                    Result rsNodo = ((Funcion)sentencia).GetC3D(global, false, false, false, errores);
+                    if (rsNodo != null)
+                        if (rsNodo.Codigo != null)
+                            result.Codigo += rsNodo.Codigo;
+                }
+            }
+
             /*Obtener C3D de Todo lo demás*/
-            foreach(Nodo sentencia in Sentencias)
+            foreach (Nodo sentencia in Sentencias)
             {
                 if (!(sentencia is Funcion) && !(sentencia is Clase))
                 {
@@ -79,32 +103,6 @@ namespace Compilador.parser.Colette.ast
                         rsNodo = ((Expresion)sentencia).GetC3D(global, false, false, errores);
                     }
 
-                    if (rsNodo != null)
-                        if (rsNodo.Codigo != null)
-                            result.Codigo += rsNodo.Codigo;
-                }
-            }
-
-            result.Codigo += "\n/*Metodos*/\n\n";
-
-            /*Obtener C3D Funciones*/
-            foreach (Nodo sentencia in Sentencias)
-            {
-                if (sentencia is Funcion)
-                {
-                    Result rsNodo = ((Funcion)sentencia).GetC3D(global, false, false, false, errores);
-                    if (rsNodo != null)
-                        if (rsNodo.Codigo != null)
-                            result.Codigo += rsNodo.Codigo;
-                }
-            }
-
-            /*Obtener C3D Clases*/
-            foreach (Nodo sentencia in Sentencias)
-            {
-                if (sentencia is Clase)
-                {
-                    Result rsNodo = ((Clase)sentencia).GetC3D(global, false, false, false, errores);
                     if (rsNodo != null)
                         if (rsNodo.Codigo != null)
                             result.Codigo += rsNodo.Codigo;

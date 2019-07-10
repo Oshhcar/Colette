@@ -28,10 +28,11 @@ namespace Compilador.parser.Colette.ast.instruccion
             {
                 if (clase != null)
                 {
-                    Ent local = new Ent(Id, e);
+                    Ent local = new Ent(Id, e); /*Verificar*/
                     local.Size = clase.Tam;
 
                     /*Guardo Clases*/
+
 
                     /*Guardar Funciones*/
                     foreach (Nodo sentencia in Bloque.Sentencias)
@@ -90,16 +91,19 @@ namespace Compilador.parser.Colette.ast.instruccion
                         }
                     }
 
-                    PrintTabla t = new PrintTabla(0,0);
-                    //t.GetC3D(local, false, false, false, errores);
-
+                    //PrintTabla t = new PrintTabla(0,0);
+                    //t.GetC3D(clase.Entorno, false, false, false, errores);
+                    foreach (Sim s in local.Simbolos)
+                    {
+                        clase.Entorno.Add(s);
+                    }
                 }
             }
             else
             {
                 if (clase == null)
                 {
-                    Ent local = new Ent(Id);
+                    Ent local = new Ent(Id, e);
 
                     foreach (Nodo sentencia in Bloque.Sentencias)
                     {
