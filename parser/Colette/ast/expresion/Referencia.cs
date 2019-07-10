@@ -43,10 +43,13 @@ namespace Compilador.parser.Colette.ast.expresion
                         Sim atributo = clase.Entorno.Get(Id);
                         if (atributo != null)
                         {
-                            result.Valor = NuevoTemporal();
-                            result.Codigo += result.Valor + " = " + "heap[" + atributo.Pos + "];\n";
-                            Tipo = atributo.Tipo;
-                            return result;
+                            if (atributo.Rol == Rol.GLOBAL)
+                            {
+                                result.Valor = NuevoTemporal();
+                                result.Codigo += result.Valor + " = " + "heap[" + atributo.Pos + "];\n";
+                                Tipo = atributo.Tipo;
+                                return result;
+                            }
                         }
                     }
                 }
@@ -107,10 +110,13 @@ namespace Compilador.parser.Colette.ast.expresion
                         Sim atributo = clase.Entorno.Get(Id);
                         if (atributo != null)
                         {
-                            result.Valor = NuevoTemporal();
-                            result.Valor = "heap[" + atributo.Pos + "]";
-                            Tipo = atributo.Tipo;
-                            return result;
+                            if (atributo.Rol == Rol.GLOBAL)
+                            {
+                                result.Valor = NuevoTemporal();
+                                result.Valor = "heap[" + atributo.Pos + "]";
+                                Tipo = atributo.Tipo;
+                                return result;
+                            }
                         }
                     }
                 }
