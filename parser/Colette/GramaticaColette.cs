@@ -131,7 +131,10 @@ namespace Compilador.parser.Collete
                 PRINT = new NonTerminal("PRINT"),
                 PRINTTABLA = new NonTerminal("PRINTTABLA"),
 
-                CLASE_BLOQUE = new NonTerminal("CLASE_BLOQUE"),
+                BLOQUE_SUP = new NonTerminal("BLOQUE_SUP"),
+                INSTRUCCIONES_SUP = new NonTerminal("INSTRUCCIONES_SUP"),
+                INSTRUCCION_SUP = new NonTerminal("INSTRUCCION_SUP"),
+
                 BLOQUE = new NonTerminal("BLOQUE"),
                 SENTENCIAS = new NonTerminal("SENTENCIAS"),
                 SENTENCIA = new NonTerminal("SENTENCIA"),
@@ -235,9 +238,27 @@ namespace Compilador.parser.Collete
                             | EXPRESSION_STMT + Eos
                            ;
 
-            CLASEDEF.Rule = class_ + identifier + colon + Eos + CLASE_BLOQUE;
+            CLASEDEF.Rule = class_ + identifier + colon + Eos + BLOQUE_SUP;
 
-            CLASE_BLOQUE.Rule = Indent + INSTRUCCIONES + Dedent;
+            BLOQUE_SUP.Rule = Indent + INSTRUCCIONES_SUP + Dedent;
+
+            INSTRUCCIONES_SUP.Rule = MakePlusRule(INSTRUCCIONES_SUP, INSTRUCCION_SUP);
+
+            INSTRUCCION_SUP.Rule = CLASEDEF
+                            | FUNCDEF
+                            | PRINT + Eos
+                            | PRINTTABLA + Eos
+                            | IF_STMT
+                            | WHILE_STMT
+                            | FOR_STMT
+                            | PASS_STMT + Eos
+                            | GLOBAL_STMT + Eos
+                            | NONLOCAL_STMT + Eos
+                            | DEL_STMT + Eos
+                            | ASSIGNMENT_STMT + Eos
+                            | AUGMENTED_ASSIGNMENT_STMT + Eos
+                            | EXPRESSION_STMT + Eos
+                           ;
 
             BLOQUE.Rule = Indent + SENTENCIAS + Dedent;
 
@@ -252,7 +273,7 @@ namespace Compilador.parser.Collete
                             | BREAK_STMT + Eos
                             | CONTINUE_STMT + Eos
                             | PASS_STMT + Eos
-                            | CLASEDEF
+                            //| CLASEDEF
                             | GLOBAL_STMT + Eos
                             | NONLOCAL_STMT + Eos
                             | DEL_STMT + Eos
@@ -288,7 +309,7 @@ namespace Compilador.parser.Collete
 
             PASS_STMT.Rule = pass_; //CORR
 
-            FUNCDEF.Rule = def_ + TYPE + identifier + leftPar + PARAMETER_LIST + rightPar + colon + Eos + BLOQUE //CORR
+            FUNCDEF.Rule = def_ + TYPE + identifier + leftPar + PARAMETER_LIST + rightPar + colon + Eos + BLOQUE //CORR bloque clase
                         | def_ + TYPE + identifier + leftPar + rightPar + colon + Eos + BLOQUE;
 
             PARAMETER_LIST.Rule = PARAMETER_LIST + comma + TYPE + identifier

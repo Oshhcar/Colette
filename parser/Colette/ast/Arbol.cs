@@ -52,6 +52,16 @@ namespace Compilador.parser.Colette.ast
                 }
             }
 
+            /*Guardar Funciones*/
+            foreach (Nodo sentencia in Sentencias)
+            {
+                if (sentencia is Funcion)
+                {
+                    Funcion fun = ((Funcion)sentencia);
+                    fun.GetC3D(global, false, false, true, false, errores);
+                }
+            }
+
             /*Obtener C3D Clases*/
             foreach (Nodo sentencia in Sentencias)
             {
@@ -61,16 +71,6 @@ namespace Compilador.parser.Colette.ast
                     if (rsNodo != null)
                         if (rsNodo.Codigo != null)
                             result.Codigo += rsNodo.Codigo;
-                }
-            }
-
-            /*Guardar Funciones*/
-            foreach (Nodo sentencia in Sentencias)
-            {
-                if (sentencia is Funcion)
-                {
-                    Funcion fun = ((Funcion)sentencia);
-                    fun.GetC3D(global, false, false, true, false, errores);
                 }
             }
 

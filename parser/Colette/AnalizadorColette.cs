@@ -62,7 +62,7 @@ namespace Compilador.parser.Collete
                 case "CLASEDEF":
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;
-                    return new Clase(hijos[1].Token.Text, new Bloque(((Arbol)GenerarArbol(hijos[3])).Sentencias, 0, 0), linea, columna);
+                    return new Clase(hijos[1].Token.Text,(Bloque)GenerarArbol(hijos[3]), linea, columna);
                 case "FUNCDEF":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
@@ -87,8 +87,17 @@ namespace Compilador.parser.Collete
                         parameter_list.AddLast(new Identificador(hijos[1].Token.Text, (Tipo)GenerarArbol(hijos[0]), linea, columna));
                         return parameter_list;
                     }
-                case "CLASE_BLOQUE":
-                    return GenerarArbol(hijos[0]); /*esto no retorna bloque OJO*/
+                case "BLOQUE_SUP":
+                    return GenerarArbol(hijos[0]);
+                case "INSTRUCCIONES_SUP":
+                    LinkedList<Nodo> inst_sup = new LinkedList<Nodo>();
+                    foreach (ParseTreeNode hijo in hijos)
+                    {
+                        inst_sup.AddLast((Nodo)GenerarArbol(hijo));
+                    }
+                    return new Bloque(inst_sup, 0, 0);
+                case "INSTRUCCION_SUP":
+                    return GenerarArbol(hijos[0]);
                 case "BLOQUE":
                     return GenerarArbol(hijos[0]);
                 case "SENTENCIAS":
@@ -184,6 +193,10 @@ namespace Compilador.parser.Collete
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     return new Continue(linea, columna);
+                case "PASS_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Pass(linea, columna);
                 case "GLOBAL_STMT":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
