@@ -109,6 +109,10 @@ namespace Compilador.parser.Collete
                     return new Bloque(sent, 0, 0);
                 case "SENTENCIA":
                     return GenerarArbol(hijos[0]);
+                case "IMPORT_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Import(hijos[1].Token.Text, linea, columna);
                 case "TYPE":
                     switch (hijos[0].Term.Name)
                     {

@@ -55,7 +55,8 @@ namespace Compilador.parser.Collete
                 True_ = ToTerm("True"),
                 False_ = ToTerm("False"),
                 void_ = ToTerm("void"),
-                printTabla_ = ToTerm("printTabla");
+                printTabla_ = ToTerm("printTabla"),
+                import_ = ToTerm("import");
 
             MarkReservedWords("class", "def", "lambda", "print", "or", "and", "not", "for",
                 "if", "elif", "else", "None", "break", "continue", "return", "pass", "global", "nonlocal",
@@ -138,6 +139,8 @@ namespace Compilador.parser.Collete
                 BLOQUE = new NonTerminal("BLOQUE"),
                 SENTENCIAS = new NonTerminal("SENTENCIAS"),
                 SENTENCIA = new NonTerminal("SENTENCIA"),
+
+                IMPORT_STMT = new NonTerminal("IMPORT_STMT"),
 
                 TYPE = new NonTerminal("TYPE"),
                 EXPRESSION_STMT = new NonTerminal("EXPRESSION_STMT"),
@@ -225,6 +228,7 @@ namespace Compilador.parser.Collete
 
             INSTRUCCION.Rule = CLASEDEF 
                             | FUNCDEF
+                            | IMPORT_STMT + Eos
                             | PRINT + Eos
                             | PRINTTABLA + Eos
                             | IF_STMT
@@ -281,6 +285,9 @@ namespace Compilador.parser.Collete
                             | AUGMENTED_ASSIGNMENT_STMT + Eos
                             | EXPRESSION_STMT + Eos
                             ;
+
+            IMPORT_STMT.Rule = import_ + stringliteral
+                             | import_ + stringliteral2;
 
             TYPE.Rule = int_ | double_ | string_ | String_ | boolean_ | identifier | dictionary_ | list_ | tup_
                         |void_;

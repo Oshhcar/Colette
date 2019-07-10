@@ -116,6 +116,7 @@
     <Compile Include="parser\Colette\ast\instruccion\condicionales\SubIf.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Funcion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Global.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\Import.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Instruccion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\NonLocal.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Pass.cs" />

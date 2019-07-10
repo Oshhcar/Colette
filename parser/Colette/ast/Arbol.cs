@@ -17,6 +17,7 @@ namespace Compilador.parser.Colette.ast
         }
 
         public LinkedList<Nodo> Sentencias { get; set; }
+        public string DirActual { get; set; }
 
         public String GenerarC3D(LinkedList<Error> errores)
         {
@@ -29,13 +30,38 @@ namespace Compilador.parser.Colette.ast
             Result result = new Result();
             result.Codigo = "";
 
+
+            /*Realizo los imports*/
+            LinkedList<Import> imports = new LinkedList<Import>();
+            foreach (Nodo sentencia in Sentencias)
+            {
+                if (sentencia is Import import)
+                {
+                    import.DirActual = DirActual;
+                    import.GetC3D(global, false, false, false, false, errores);
+                    imports.AddLast(import);
+                }
+            }
+
+            foreach (Import import in imports)
+            {
+                if (import.Sentencias != null)
+                {
+                    foreach (Nodo n in import.Sentencias)
+                    {
+                        Sentencias.AddLast(n);
+                    }
+                }
+            }
+
+
             /*Reservo memoria*/
             Ent local = new Ent("Global");
             foreach (Nodo sentencia in Sentencias)
             {
                 if (sentencia is Instruccion)
                 {
-                    if (!(sentencia is Funcion) && !(sentencia is Clase))
+                    if (!(sentencia is Funcion) && !(sentencia is Clase) && !(sentencia is Import))
                     {
                         ((Instruccion)sentencia).GetC3D(local, false, false, true, false, errores);
                     }
@@ -89,7 +115,7 @@ namespace Compilador.parser.Colette.ast
             /*Obtener C3D de Todo lo demás*/
             foreach (Nodo sentencia in Sentencias)
             {
-                if (!(sentencia is Funcion) && !(sentencia is Clase))
+                if (!(sentencia is Funcion) && !(sentencia is Clase) && !(sentencia is Import))
                 {
                     Result rsNodo;
                     if (sentencia is Instruccion)

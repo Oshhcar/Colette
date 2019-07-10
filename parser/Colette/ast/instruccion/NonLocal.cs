@@ -20,7 +20,9 @@ namespace Compilador.parser.Colette.ast.instruccion
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, bool isObjeto, LinkedList<Error> errores)
         {
-            throw new NotImplementedException();
+            Result result = new Result();
+
+            return result;
         }
     }
 }

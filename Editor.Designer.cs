@@ -70,6 +70,9 @@
             this.lbLinea = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.ejecutarOptimizadoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optimizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.grafoDependenciasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuPrincipal.SuspendLayout();
             this.pageErrores.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridErrors)).BeginInit();
@@ -170,35 +173,35 @@
             // deshacerToolStripMenuItem
             // 
             this.deshacerToolStripMenuItem.Name = "deshacerToolStripMenuItem";
-            this.deshacerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deshacerToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.deshacerToolStripMenuItem.Text = "Deshacer";
             this.deshacerToolStripMenuItem.Click += new System.EventHandler(this.DeshacerToolStripMenuItem_Click);
             // 
             // cortarToolStripMenuItem
             // 
             this.cortarToolStripMenuItem.Name = "cortarToolStripMenuItem";
-            this.cortarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cortarToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.cortarToolStripMenuItem.Text = "Cortar";
             this.cortarToolStripMenuItem.Click += new System.EventHandler(this.CortarToolStripMenuItem_Click);
             // 
             // copiarToolStripMenuItem
             // 
             this.copiarToolStripMenuItem.Name = "copiarToolStripMenuItem";
-            this.copiarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copiarToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.copiarToolStripMenuItem.Text = "Copiar";
             this.copiarToolStripMenuItem.Click += new System.EventHandler(this.CopiarToolStripMenuItem_Click);
             // 
             // pegarToolStripMenuItem
             // 
             this.pegarToolStripMenuItem.Name = "pegarToolStripMenuItem";
-            this.pegarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pegarToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.pegarToolStripMenuItem.Text = "Pegar";
             this.pegarToolStripMenuItem.Click += new System.EventHandler(this.PegarToolStripMenuItem_Click);
             // 
             // seleccionarTodoToolStripMenuItem
             // 
             this.seleccionarTodoToolStripMenuItem.Name = "seleccionarTodoToolStripMenuItem";
-            this.seleccionarTodoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.seleccionarTodoToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.seleccionarTodoToolStripMenuItem.Text = "Seleccionar Todo";
             this.seleccionarTodoToolStripMenuItem.Click += new System.EventHandler(this.SeleccionarTodoToolStripMenuItem_Click);
             // 
@@ -206,7 +209,8 @@
             // 
             this.coletteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.traducirToolStripMenuItem,
-            this.graficarASTToolStripMenuItem});
+            this.graficarASTToolStripMenuItem,
+            this.grafoDependenciasToolStripMenuItem});
             this.coletteToolStripMenuItem.Name = "coletteToolStripMenuItem";
             this.coletteToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
             this.coletteToolStripMenuItem.Text = "Colette";
@@ -229,6 +233,8 @@
             // 
             this.c3DToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ejecutarToolStripMenuItem,
+            this.optimizarToolStripMenuItem,
+            this.ejecutarOptimizadoToolStripMenuItem,
             this.traducirToolStripMenuItem1});
             this.c3DToolStripMenuItem.Name = "c3DToolStripMenuItem";
             this.c3DToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
@@ -237,14 +243,14 @@
             // ejecutarToolStripMenuItem
             // 
             this.ejecutarToolStripMenuItem.Name = "ejecutarToolStripMenuItem";
-            this.ejecutarToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.ejecutarToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.ejecutarToolStripMenuItem.Text = "Ejecutar";
             this.ejecutarToolStripMenuItem.Click += new System.EventHandler(this.EjecutarToolStripMenuItem_Click);
             // 
             // traducirToolStripMenuItem1
             // 
             this.traducirToolStripMenuItem1.Name = "traducirToolStripMenuItem1";
-            this.traducirToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.traducirToolStripMenuItem1.Size = new System.Drawing.Size(181, 22);
             this.traducirToolStripMenuItem1.Text = "Traducir";
             // 
             // ayudaToolStripMenuItem
@@ -258,7 +264,7 @@
             // acercaDeToolStripMenuItem
             // 
             this.acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
-            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.acercaDeToolStripMenuItem.Text = "Acerca de";
             this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.AcercaDeToolStripMenuItem_Click);
             // 
@@ -422,6 +428,24 @@
             this.openFileDialog1.Tag = "collete, txt";
             this.openFileDialog1.Title = "Abrir Archivo";
             // 
+            // ejecutarOptimizadoToolStripMenuItem
+            // 
+            this.ejecutarOptimizadoToolStripMenuItem.Name = "ejecutarOptimizadoToolStripMenuItem";
+            this.ejecutarOptimizadoToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.ejecutarOptimizadoToolStripMenuItem.Text = "Ejecutar Optimizado";
+            // 
+            // optimizarToolStripMenuItem
+            // 
+            this.optimizarToolStripMenuItem.Name = "optimizarToolStripMenuItem";
+            this.optimizarToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.optimizarToolStripMenuItem.Text = "Optimizar";
+            // 
+            // grafoDependenciasToolStripMenuItem
+            // 
+            this.grafoDependenciasToolStripMenuItem.Name = "grafoDependenciasToolStripMenuItem";
+            this.grafoDependenciasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.grafoDependenciasToolStripMenuItem.Text = "Grafo dependencias";
+            // 
             // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -487,5 +511,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.ToolStripMenuItem graficarASTToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem traducirToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem ejecutarOptimizadoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem grafoDependenciasToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem optimizarToolStripMenuItem;
     }
 }

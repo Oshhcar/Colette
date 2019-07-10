@@ -140,14 +140,21 @@ namespace Compilador
             ctb3D.BorderStyle = BorderStyle.Fixed3D;
             ctb3D.AutoScrollMinSize = new Size(25,15);
             ctb3D.Dock = DockStyle.Fill;
-            ctb3D.Language = Language.Custom;
+            ctb3D.Language = Language.CSharp;
             ctb3D.SelectionChanged += ColoredTextBox_SelectionChanged;
             c3d.Controls.Add(ctb3D);
             tab.Controls.Add(c3d);
 
-            TabPage AST = new TabPage();
-            AST.Text = "AST";
-            tab.Controls.Add(AST);
+            TabPage c3dOptimizado = new TabPage();
+            c3dOptimizado.Text = "Código 3d Optimizado";
+            FastColoredTextBox ctb3DOptimizado = new FastColoredTextBox();
+            ctb3DOptimizado.BorderStyle = BorderStyle.Fixed3D;
+            ctb3DOptimizado.AutoScrollMinSize = new Size(25, 15);
+            ctb3DOptimizado.Dock = DockStyle.Fill;
+            ctb3DOptimizado.Language = Language.CSharp;
+            ctb3DOptimizado.SelectionChanged += ColoredTextBox_SelectionChanged;
+            c3dOptimizado.Controls.Add(ctb3DOptimizado);
+            tab.Controls.Add(c3dOptimizado);
            
 
             TabPage ASM = new TabPage();
@@ -544,7 +551,17 @@ namespace Compilador
                         ReporteErrores(analizador.Raiz);
 
                         Arbol arbol = (Arbol)analizador.GenerarArbol(analizador.Raiz.Root);
-                        
+
+                        if (ctbArchivo.Name.Equals(""))
+                        {
+                            arbol.DirActual = Directory.GetCurrentDirectory() + "\\";
+                        }
+                        else
+                        {
+                            string archivo = ctbArchivo.Name;
+                            arbol.DirActual = Directory.GetParent(archivo) +"\\";
+                        }
+
                         if (arbol != null)
                         {
                             //MessageBox.Show("todo bien");
