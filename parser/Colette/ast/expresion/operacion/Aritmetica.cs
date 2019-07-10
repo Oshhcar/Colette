@@ -376,6 +376,19 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     rsOp.Valor = tmpOp2;
                 }
 
+                /*verificar si el número es 0*/
+                string cero = NuevoTemporal();
+                result.Codigo += cero + " = 0;\n";
+                result.Codigo += "if (" + rsOp.Valor + " != 0) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+                result.Codigo += cero + " = 1;\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+
+
                 /*Verificar si el número es negativo*/
                 string negativo = NuevoTemporal();
                 string factor = NuevoTemporal();
@@ -415,6 +428,16 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                 result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
                 result.Codigo += rsOp.EtiquetaF + ":\n";
                 result.Codigo += "heap[H] = 45;\n";
+                result.Codigo += "H = H + 1;\n";
+                result.Codigo += rsOp.EtiquetaV + ":\n";
+
+                /*Coloco el (0) si es cero*/
+                rsOp.EtiquetaV = NuevaEtiqueta();
+                rsOp.EtiquetaF = NuevaEtiqueta();
+                result.Codigo += "if (" + cero + " == 0) goto " + rsOp.EtiquetaV + ";\n";
+                result.Codigo += "goto " + rsOp.EtiquetaF + ";\n";
+                result.Codigo += rsOp.EtiquetaF + ":\n";
+                result.Codigo += "heap[H] = 48;\n";
                 result.Codigo += "H = H + 1;\n";
                 result.Codigo += rsOp.EtiquetaV + ":\n";
 
