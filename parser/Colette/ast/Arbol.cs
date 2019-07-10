@@ -22,6 +22,7 @@ namespace Compilador.parser.Colette.ast
         {
             Nodo.Etiquetas = 0;
             Nodo.Temporales = 0;
+            Nodo.H = 0;
 
             Ent global = new Ent("Global");
 
@@ -133,7 +134,7 @@ namespace Compilador.parser.Colette.ast
                 codigo += "var stack[];\n";
                 codigo += "var heap[];\n";
                 codigo += "var P = 0;\n";
-                codigo += "var H = 0; \n\n";
+                codigo += "var H = " + Nodo.H + "; \n\n";
 
                 codigo += result.Codigo;
             }

@@ -73,6 +73,7 @@ namespace Compilador.parser.Colette.ast.entorno
         FUNCION,
         RETURN,
         PARAMETER,
-        LOCAL
+        LOCAL,
+        GLOBAL
     }
 }

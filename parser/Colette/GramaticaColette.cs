@@ -298,7 +298,8 @@ namespace Compilador.parser.Collete
 
             NONLOCAL_STMT.Rule = nonlocal_ + TYPE + ID_LIST; //CORR
 
-            ID_LIST.Rule = MakePlusRule(ID_LIST, comma, identifier); //CORR
+            ID_LIST.Rule = ID_LIST + comma + identifier //CORR
+                        | identifier;
 
             DEL_STMT.Rule = del_ + TARGET_LIST; //CORR
 

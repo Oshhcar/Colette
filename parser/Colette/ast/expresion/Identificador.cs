@@ -35,15 +35,12 @@ namespace Compilador.parser.Colette.ast.expresion
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
-            Sim s = e.Get(Id);
+            Sim s = e.GetGlobal(Id);
 
             if (s != null)
             {
                 Tipo = s.Tipo;
                 Result result = new Result();
-
-                string ptrStack = NuevoTemporal();
-                result.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
 
                 PtrVariable = s.Pos+"";
                 Simbolo = s;
@@ -51,12 +48,26 @@ namespace Compilador.parser.Colette.ast.expresion
                 if (Acceso)
                 {
                     result.Valor = NuevoTemporal();
-                    result.Codigo += result.Valor + " = stack[" + ptrStack + "];\n";
+                    if (s.Rol != Rol.GLOBAL)
+                    {
+                        string ptrStack = NuevoTemporal();
+                        result.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
+                        result.Codigo += result.Valor + " = stack[" + ptrStack + "];\n";
+                    }
+                    else
+                        result.Codigo += result.Valor + " = heap[" + s.Pos + "];\n";
                 }
                 else
                 {
                     result.PtrStack = s.Pos;
-                    result.Valor = "stack[" + ptrStack + "]";
+                    if (s.Rol != Rol.GLOBAL)
+                    {
+                        string ptrStack = NuevoTemporal();
+                        result.Codigo = ptrStack + " = P + " + s.Pos + ";\n";
+                        result.Valor = "stack[" + ptrStack + "]";
+                    }
+                    else
+                        result.Valor = "heap[" + s.Pos + "]";
                 }
                 return result;
             }

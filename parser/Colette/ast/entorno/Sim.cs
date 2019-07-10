@@ -20,7 +20,6 @@ namespace Compilador.parser.Colette.ast.entorno
             TipoParam = tipoParam;
             Entorno = null;
             IsAtributo = false;
-            IsGlobal = false;
         }
 
         public string Id { get; set; }
@@ -34,6 +33,5 @@ namespace Compilador.parser.Colette.ast.entorno
         public Ent Entorno { get; set; } //para funciones y clases
         public string Firma { get; set; }
         public bool IsAtributo { get; set; }
-        public bool IsGlobal { get; set; }
     }
 }

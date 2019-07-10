@@ -72,6 +72,9 @@ namespace Compilador.parser.Colette.ast.instruccion
                             {
                                 if(sentencia is Asignacion) //Solo sentencias de asignación
                                     rsNodo = ((Instruccion)sentencia).GetC3D(local, false, false, false, true, errores);
+
+                                if (sentencia is Global)
+                                    ((Global)sentencia).GetC3D(local, false, false, false, true, errores);
                             }
 
                             if (rsNodo != null)

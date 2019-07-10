@@ -112,7 +112,9 @@
     <Compile Include="parser\Colette\ast\instruccion\condicionales\If.cs" />
     <Compile Include="parser\Colette\ast\instruccion\condicionales\SubIf.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Funcion.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\Global.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Instruccion.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\NonLocal.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Print.cs" />
     <Compile Include="parser\Colette\ast\instruccion\PrintTabla.cs" />
     <Compile Include="parser\Colette\ast\Nodo.cs" />

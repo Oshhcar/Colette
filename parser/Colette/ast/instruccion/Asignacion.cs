@@ -57,7 +57,10 @@ namespace Compilador.parser.Colette.ast.instruccion
                         refObjetivo = (Referencia)obj;
                         refObjetivo.Acceso = false;
                         refObjetivo.ObtenerValor = true;
-                        rsObj = refObjetivo.GetC3D(e, funcion, ciclo, isObjeto, errores);
+                        if (!isDeclaracion)
+                            rsObj = refObjetivo.GetC3D(e, funcion, ciclo, isObjeto, errores);
+                        else
+                            rsObj = null;
                     }
 
                     if (rsObj == null && obj is Identificador) //si no existe, creo la variable si viene con tipo
@@ -99,7 +102,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                         }
                         else
                         {
-                            if(isDeclaracion)
+                            if(!isDeclaracion)
                                 errores.AddLast(new Error("Semántico", "No se pudo encontrar la variable: "+idObjetivo.Id+".", Linea, Columna));
                             return null;
                         }
@@ -108,7 +111,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         if (!Tipo.IsIndefinido() && obj is Identificador)
                         {
-                            if(isDeclaracion)
+                            if(!isDeclaracion)
                                 errores.AddLast(new Error("Semántico", "Ya se declaró una variable con el id: "+ idObjetivo.Id+".", Linea, Columna));
                             return null;
                         }
@@ -200,7 +203,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                                     }
                                     else
                                     {
-                                        if(isDeclaracion)
+                                        if(!isDeclaracion)
                                             errores.AddLast(new Error("Semántico", "El valor contiene errores.", Linea, Columna));
                                         return null;
                                     }
@@ -209,7 +212,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                                 {
                                     if (!Tipo.IsIndefinido())
                                     {
-                                        if(isDeclaracion)
+                                        if(!isDeclaracion)
                                             errores.AddLast(new Error("Semántico", "Ya se declaró una variable con el id: " + idObjetivo.Id + ".", Linea, Columna));
                                         return null;
                                     }
@@ -252,7 +255,8 @@ namespace Compilador.parser.Colette.ast.instruccion
                             rsObj.Codigo += rsObj.Valor + " = " + rsAnt.Valor + ";\n";
                         }
                     }
-                    result.Codigo += rsObj.Codigo;
+                    if(rsObj != null)
+                        result.Codigo += rsObj.Codigo;
 
                 }
             }

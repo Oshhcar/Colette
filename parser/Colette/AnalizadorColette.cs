@@ -180,6 +180,27 @@ namespace Compilador.parser.Collete
                         return new Return(null, linea, columna);
                     }
                     return new Return((Expresion)GenerarArbol(hijos[1]), linea, columna);
+                case "GLOBAL_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Global((LinkedList<string>)GenerarArbol(hijos[2]),(Tipo)GenerarArbol(hijos[1]), linea, columna);
+                case "NONLOCAL_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new NonLocal((LinkedList<string>)GenerarArbol(hijos[1]), (Tipo)GenerarArbol(hijos[1]), linea, columna);
+                case "ID_LIST":
+                    if (hijos.Count() == 3)
+                    {
+                        LinkedList<string> id_list = (LinkedList<string>)GenerarArbol(hijos[0]);
+                        id_list.AddLast(hijos[2].Token.Text);
+                        return id_list;
+                    }
+                    else
+                    {
+                        LinkedList<string> id_list = new LinkedList<string>();
+                        id_list.AddLast(hijos[0].Token.Text);
+                        return id_list;
+                    }
                 case "ASSIGNMENT_STMT":
                     //LinkedList<LinkedList<Expresion>> assignmet_list = ;
                     if (hijos.Count() == 3)

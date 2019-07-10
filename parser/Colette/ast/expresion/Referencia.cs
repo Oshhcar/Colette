@@ -25,6 +25,7 @@ namespace Compilador.parser.Colette.ast.expresion
         public Sim Simbolo { get; set; }
         public string PtrVariable { get; set; }
         public bool ObtenerValor { get; set; }
+
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
             Result result = new Result();
@@ -33,6 +34,23 @@ namespace Compilador.parser.Colette.ast.expresion
 
             if (Acceso)
             {
+                /*Puede que sea global*/
+                if (Expresion is Identificador)
+                {
+                    Sim clase = e.GetClase(((Identificador)Expresion).Id);
+                    if (clase != null)
+                    {
+                        Sim atributo = clase.Entorno.Get(Id);
+                        if (atributo != null)
+                        {
+                            result.Valor = NuevoTemporal();
+                            result.Codigo += result.Valor + " = " + "heap[" + atributo.Pos + "];\n";
+                            Tipo = atributo.Tipo;
+                            return result;
+                        }
+                    }
+                }
+
                 rsExpresion = Expresion.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
                 if (rsExpresion != null)
@@ -80,6 +98,23 @@ namespace Compilador.parser.Colette.ast.expresion
             }
             else
             {
+                /*Puede que sea global*/
+                if (Expresion is Identificador)
+                {
+                    Sim clase = e.GetClase(((Identificador)Expresion).Id);
+                    if (clase != null)
+                    {
+                        Sim atributo = clase.Entorno.Get(Id);
+                        if (atributo != null)
+                        {
+                            result.Valor = NuevoTemporal();
+                            result.Valor = "heap[" + atributo.Pos + "]";
+                            Tipo = atributo.Tipo;
+                            return result;
+                        }
+                    }
+                }
+
                 if (Expresion is Identificador)
                     ((Identificador)Expresion).Acceso = false;
                 else if (Expresion is Referencia)
