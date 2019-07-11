@@ -148,7 +148,7 @@ namespace Compilador.parser.Collete
                 ASSIGNMENT_LIST = new NonTerminal("ASSIGNMENT_LIST"),
                 AUGMENTED_ASSIGNMENT_STMT = new NonTerminal("AUGMENTED_ASSIGNMENT_STMT"),
                 AUGTARGET = new NonTerminal("AUGTARGET"),
-                AUG_OPERATOR = new NonTerminal("ASSI_OPERATOR"),
+                AUG_OPERATOR = new NonTerminal("AUG_OPERATOR"),
                 TARGET_LIST = new NonTerminal("TARGET_LIST"),
                 TARGET = new NonTerminal("TARGET"),
                 IF_STMT = new NonTerminal("IF_STMT"),

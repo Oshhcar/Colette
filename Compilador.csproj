@@ -97,6 +97,7 @@
     <Compile Include="parser\Colette\ast\entorno\Result.cs" />
     <Compile Include="parser\Colette\ast\entorno\Sim.cs" />
     <Compile Include="parser\Colette\ast\entorno\Tipo.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\AugAsignacion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Break.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Continue.cs" />
     <Compile Include="parser\Colette\ast\expresion\Expresion.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="parser\Colette\ast\instruccion\Clase.cs" />
     <Compile Include="parser\Colette\ast\instruccion\condicionales\If.cs" />
     <Compile Include="parser\Colette\ast\instruccion\condicionales\SubIf.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\Del.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Funcion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Global.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Import.cs" />

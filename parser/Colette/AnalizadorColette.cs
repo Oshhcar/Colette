@@ -213,6 +213,10 @@ namespace Compilador.parser.Collete
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     return new NonLocal((LinkedList<string>)GenerarArbol(hijos[1]), (Tipo)GenerarArbol(hijos[1]), linea, columna);
+                case "DEL_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Del((LinkedList<Expresion>)GenerarArbol(hijos[1]), linea, columna);
                 case "ID_LIST":
                     if (hijos.Count() == 3)
                     {
@@ -273,6 +277,20 @@ namespace Compilador.parser.Collete
                         }
                     }
                     return assignment_list;
+                case "AUGMENTED_ASSIGNMENT_STMT":
+                    Expresion aug_objetivo = (Expresion)GenerarArbol(hijos[0]);
+                    return new AugAsignacion(aug_objetivo, (Expresion)GenerarArbol(hijos[2]), (Operador)GenerarArbol(hijos[1]),aug_objetivo.Linea, aug_objetivo.Columna);
+                case "AUGTARGET":
+                    if (hijos[0].Term.Name.Equals("identifier"))
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new Identificador(hijos[0].Token.Text, linea, columna);
+
+                    }
+                    return GenerarArbol(hijos[0]);
+                case "AUG_OPERATOR":
+                    return GetAugOperador(hijos[0]);
                 case "EXPRESSION_STMT":
                     return GenerarArbol(hijos[0]);
                 case "EXPRESSION_LIST":
@@ -485,6 +503,28 @@ namespace Compilador.parser.Collete
             }
 
             return null;
+        }
+
+        public Operador GetAugOperador(ParseTreeNode raiz)
+        {
+            switch (raiz.Token.Text)
+            {
+                case "+=":
+                    return Operador.SUMA;
+                case "-=":
+                    return Operador.RESTA;
+                case "*=":
+                    return Operador.MULTIPLICACION;
+                case "/=":
+                    return Operador.DIVISION;
+                case "%=":
+                    return Operador.MODULO;
+                case "//=":
+                    return Operador.FLOOR;
+                case "**=":
+                    return Operador.POTENCIA;
+            }
+            return Operador.INDEFINIDO;
         }
 
         private Operador GetOperador(ParseTreeNode raiz)
