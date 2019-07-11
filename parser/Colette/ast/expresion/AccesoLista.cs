@@ -14,11 +14,14 @@ namespace Compilador.parser.Colette.ast.expresion
             Objetivo = objetivo;
             Posicion = posicion;
             Tipo = new Tipo(Tipo.Type.INDEFINIDO);
+            Acceso = true;
         }
 
         public Expresion Objetivo { get; set; }
         public Expresion Posicion { get; set; }
         public Tipo Tipo { get; set; }
+        public bool Acceso { get; set; }
+
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isObjeto, LinkedList<Error> errores)
         {
@@ -48,7 +51,11 @@ namespace Compilador.parser.Colette.ast.expresion
                             result.Codigo += ptrValor + " = " + ptr + "+ 1;\n";
 
                             result.Valor = NuevoTemporal();
-                            result.Codigo += result.Valor + " = heap[" + ptrValor + "];\n";
+
+                            if (Acceso)
+                                result.Codigo += result.Valor + " = heap[" + ptrValor + "];\n";
+                            else
+                                result.Valor = "heap[" + ptrValor + "]";
 
 
                             result.EtiquetaV = NuevaEtiqueta();
@@ -62,7 +69,12 @@ namespace Compilador.parser.Colette.ast.expresion
                             result.Codigo += "goto " + result.EtiquetaF + ";\n";
                             result.Codigo += result.EtiquetaF + ":\n";
                             result.Codigo += ptrValor + " = " + ptrValor + "+ 2;\n";
-                            result.Codigo += result.Valor + " = heap[" + ptrValor + "];\n";
+
+                            if (Acceso)
+                                result.Codigo += result.Valor + " = heap[" + ptrValor + "];\n";
+                            else
+                                result.Valor = "heap[" + ptrValor + "]";
+
                             result.Codigo += tmpCiclo + " = " + tmpCiclo + " + 1;\n";
                             result.Codigo += "goto " + etqCiclo + ";\n";
                             result.Codigo += result.EtiquetaV + ":\n";
@@ -79,11 +91,10 @@ namespace Compilador.parser.Colette.ast.expresion
                 }
                 else
                 {
-                    errores.AddLast(new Error("Semántico","No es una lista.", Linea, Columna));
+                    errores.AddLast(new Error("Semántico", "No es una lista.", Linea, Columna));
                     return null;
                 }
             }
-
             return result;
         }
 

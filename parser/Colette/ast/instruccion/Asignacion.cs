@@ -39,12 +39,14 @@ namespace Compilador.parser.Colette.ast.instruccion
             for (int i = 0; i < Objetivo.Count(); i++)
             {
                 Expresion obj = Objetivo.ElementAt(i);
-                if (obj is Identificador || obj is Referencia) //verifico que sea id o referencia a atributo
+                if (obj is Identificador || obj is Referencia || obj is AccesoLista) //verifico que sea id o referencia a atributo
                 {
                     Identificador idObjetivo = null;
                     Referencia refObjetivo = null;
+                    AccesoLista listObjetivo = null;
 
                     Result rsObj = null;
+
                     if (obj is Identificador)
                     {
                         idObjetivo = (Identificador)obj;
@@ -63,6 +65,17 @@ namespace Compilador.parser.Colette.ast.instruccion
                         refObjetivo.ObtenerValor = true;
                         if (!isDeclaracion)
                             rsObj = refObjetivo.GetC3D(e, funcion, ciclo, isObjeto, errores);
+                        else
+                            rsObj = null;
+                    }
+
+                    if (obj is AccesoLista)
+                    {
+                        listObjetivo = (AccesoLista)obj;
+                        listObjetivo.Acceso = false;
+                        //listObjetivo.IsDeclaracion = isDeclaracion;
+                        if (!isDeclaracion)
+                            rsObj = listObjetivo.GetC3D(e, funcion, ciclo, isObjeto, errores);
                         else
                             rsObj = null;
                     }
@@ -146,9 +159,17 @@ namespace Compilador.parser.Colette.ast.instruccion
                                             return null;
                                         }
                                     }
-                                    else
+                                    else if (obj is Referencia)
                                     {
                                         if (expI.GetTipo().Tip != refObjetivo.Tipo.Tip)
+                                        {
+                                            errores.AddLast(new Error("Semántico", "El valor a asignar no es del mismo tipo.", Linea, Columna));
+                                            return null;
+                                        }
+                                    }
+                                    else if (obj is AccesoLista)
+                                    {
+                                        if (expI.GetTipo().Tip != listObjetivo.Tipo.Tip)
                                         {
                                             errores.AddLast(new Error("Semántico", "El valor a asignar no es del mismo tipo.", Linea, Columna));
                                             return null;
