@@ -55,6 +55,7 @@ namespace Compilador.parser.Colette.ast.expresion
 
                 PtrVariable = s.Pos+"";
                 Simbolo = s;
+                result.Simbolo = s;
 
                 if (!IsDeclaracion)
                 {

@@ -118,6 +118,8 @@ namespace Compilador.parser.Colette.ast.entorno
             {
                 Console.WriteLine(s.Id + ", " + s.Tipo.Tip + ", " + s.Rol + ", " + s.Tam + ", " 
                     + s.Pos+", "+s.Ambito +", "+s.NumParam+", "+s.TipoParam);
+                if (s.Tipo.SubTip != Tipo.Type.INDEFINIDO)
+                    Console.WriteLine("subtipo: " + s.Tipo.SubTip);
 
                 if (s.Entorno != null)
                 {

@@ -43,6 +43,7 @@ namespace Compilador.parser.Colette.ast.expresion
                         Sim atributo = clase.Entorno.Get(Id);
                         if (atributo != null)
                         {
+                            result.Simbolo =  atributo;
                             if (atributo.Rol == Rol.GLOBAL)
                             {
                                 result.Valor = NuevoTemporal();
@@ -75,6 +76,7 @@ namespace Compilador.parser.Colette.ast.expresion
 
                             if (atributo != null)
                             {
+                                result.Simbolo = atributo;
                                 result.Codigo += rsExpresion.Codigo;
 
                                 string ptrHeap = NuevoTemporal();
@@ -112,6 +114,7 @@ namespace Compilador.parser.Colette.ast.expresion
                         {
                             if (atributo.Rol == Rol.GLOBAL)
                             {
+                                result.Simbolo = atributo;
                                 result.Valor = NuevoTemporal();
                                 result.Valor = "heap[" + atributo.Pos + "]";
                                 Tipo = atributo.Tipo;
@@ -150,6 +153,7 @@ namespace Compilador.parser.Colette.ast.expresion
 
                                 if (atributo != null)
                                 {
+                                    result.Simbolo = atributo;
                                     string valor = NuevoTemporal();
                                     result.Codigo += valor + " = " + rsExpresion.Valor + ";\n";
                                     string ptrHeap = NuevoTemporal();

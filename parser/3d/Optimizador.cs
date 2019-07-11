@@ -101,7 +101,7 @@ namespace Compilador.parser._3d
                         string op1 = opDer[0].Replace(" ", "");
                         string op2 = opDer[1].Split(';')[0].Replace(" ", "");
 
-                        if (op1.Equals("0"))
+                        /*if (op1.Equals("0"))
                         {
                             if (opIz.Equals(op2))
                             {
@@ -114,7 +114,8 @@ namespace Compilador.parser._3d
                                 Optimizado.AddLast(new Optimizado(j, i, 13));
                             }
                         }
-                        else if (op2.Equals("0"))
+                        else */
+                        if (op2.Equals("0"))
                         {
                             if (opIz.Equals(op1))
                             {
@@ -176,12 +177,12 @@ namespace Compilador.parser._3d
                         }
                         else if (op1.Equals("0"))
                         {
-                            linea = opIz + " = " + op2 + ";";
+                            linea = opIz + " = 0;";
                             Optimizado.AddLast(new Optimizado(j, i, 17));
                         }
                         else if (op2.Equals("0"))
                         {
-                            linea = opIz + " = " + op1 + ";";
+                            linea = opIz + " = 0;";
                             Optimizado.AddLast(new Optimizado(j, i, 17));
                         }
 
@@ -196,6 +197,7 @@ namespace Compilador.parser._3d
                         string op1 = opDer[0].Replace(" ", "");
                         string op2 = opDer[1].Split(';')[0].Replace(" ", "");
 
+                        /*
                         if (op1.Equals("1"))
                         {
                             if (opIz.Equals(op2))
@@ -209,7 +211,8 @@ namespace Compilador.parser._3d
                                 Optimizado.AddLast(new Optimizado(j, i, 15));
                             }
                         }
-                        else if (op2.Equals("1"))
+                        else */
+                        if (op2.Equals("1"))
                         {
                             if (opIz.Equals(op1))
                             {

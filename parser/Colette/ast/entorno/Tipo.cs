@@ -11,6 +11,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public Tipo(Type tip)
         {
             Tip = tip;
+            SubTip = Type.INDEFINIDO;
         }
 
         public Tipo(string objeto)
@@ -21,6 +22,7 @@ namespace Compilador.parser.Colette.ast.entorno
 
         public Type Tip { get; set; }
         public string Objeto { get; set; }
+        public Type SubTip { get; set;}
 
         public bool IsInt() { return Tip == Type.INT; }
         public bool IsDouble() { return Tip == Type.DOUBLE; }
@@ -28,6 +30,7 @@ namespace Compilador.parser.Colette.ast.entorno
         public bool IsBoolean() { return Tip == Type.BOOLEAN; }
         public bool IsVoid() { return Tip == Type.VOID; }
         public bool IsObject() { return Tip == Type.OBJECT; }
+        public bool IsList() { return Tip == Type.LIST; }
         public bool IsNone() { return Tip == Type.NONE; }
         public bool IsIndefinido() { return Tip == Type.INDEFINIDO; }
         public bool IsNumeric() { return Tip == Type.INT || Tip == Type.DOUBLE; }
@@ -48,6 +51,8 @@ namespace Compilador.parser.Colette.ast.entorno
                     return "object";
                 case Type.VOID:
                     return "void";
+                case Type.LIST:
+                    return "list";
                 default:
                     return "indefinido";
             }
@@ -60,6 +65,7 @@ namespace Compilador.parser.Colette.ast.entorno
             STRING,
             BOOLEAN,
             VOID,
+            LIST,
             OBJECT,
             NONE,
             INDEFINIDO /*error*/

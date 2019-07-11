@@ -76,6 +76,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                             rsObj = new Result();
 
                             Sim s = new Sim(((Identificador)obj).Id, Tipo, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
+                            rsObj.Simbolo = s;
 
                             if (isObjeto)
                                 s.IsAtributo = true;
@@ -178,6 +179,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                                         rsTemp = new Result();
 
                                         Sim s = new Sim(((Identificador)expI).Id, Tipo, Rol.LOCAL, 1, e.GetPos(), e.Ambito, -1, -1);
+                                        rsTemp.Simbolo = s;
 
                                         if (isObjeto)
                                             s.IsAtributo = true;
@@ -234,6 +236,16 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         if (rsList.Count() == 1)
                         {
+                            if (rsObj.Simbolo != null)
+                            {
+                                if (rsObj.Simbolo.Tipo.IsList())
+                                {
+                                    if (rsList.ElementAt(0).Tipo != null)
+                                    {
+                                        rsObj.Simbolo.Tipo = rsList.ElementAt(0).Tipo;
+                                    }
+                                }
+                            }
                             //rsObj.Tipo = rsList.ElementAt(0).Tipo;
                             rsObj.Codigo += rsList.ElementAt(0).Codigo;
                             rsObj.Codigo += rsObj.Valor + " = " + rsList.ElementAt(0).Valor + ";\n";
@@ -255,6 +267,17 @@ namespace Compilador.parser.Colette.ast.instruccion
                                 rsAct.Codigo += rsAct.Valor + " = stack[" + ptrStack + "];\n";
 
                                 rsAnt = rsAct;
+                            }
+
+                            if (rsObj.Simbolo != null)
+                            {
+                                if (rsObj.Simbolo.Tipo.IsList())
+                                {
+                                    if (rsAnt.Tipo != null)
+                                    {
+                                        rsObj.Simbolo.Tipo = rsAnt.Tipo;
+                                    }
+                                }
                             }
 
                             rsObj.Codigo += rsAnt.Codigo;

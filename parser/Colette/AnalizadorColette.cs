@@ -129,8 +129,9 @@ namespace Compilador.parser.Collete
                             return new Tipo(hijos[0].Token.Text);
                         case "void":
                             return new Tipo(Tipo.Type.VOID);
-                        case "dictionary":
                         case "list":
+                            return new Tipo(Tipo.Type.LIST);
+                        case "dictionary":
                         case "tup":
                         default:
                             return new Tipo(Tipo.Type.INDEFINIDO);
@@ -406,6 +407,10 @@ namespace Compilador.parser.Collete
                     }
                 case "PRIMARY":
                     return GenerarArbol(hijos[0]);
+                case "SUBSCRIPTION":
+                    linea = hijos[1].Token.Location.Line + 1;
+                    columna = hijos[1].Token.Location.Column + 1;
+                    return new AccesoLista((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), linea, columna);
                 case "ATTRIBUTEREF":
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;
@@ -453,6 +458,12 @@ namespace Compilador.parser.Collete
                     }
                 case "ENCLOSURE":
                     return GenerarArbol(hijos[0]);
+                case "LIST_DISPLAY":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 3)
+                        return new Lista((LinkedList<Expresion>)GenerarArbol(hijos[1]), linea, columna);
+                    return new Lista(null, linea, columna);
                 case "PARENTH_FORM":
                     if (hijos.Count() == 3)
                     {

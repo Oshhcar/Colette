@@ -406,7 +406,7 @@ namespace Compilador.parser.Collete
             PARENTH_FORM.Rule = leftPar + STARRED_EXPRESSION + rightPar //TUPLAS CORR
                                | leftPar + rightPar;
 
-            LIST_DISPLAY.Rule = leftCor + (STARRED_LIST | COMPREHENSION) + rightCor //CORR
+            LIST_DISPLAY.Rule = leftCor + (STARRED_LIST /*| COMPREHENSION*/) + rightCor //CORR
                                |leftCor + rightCor;
 
             /*x for x in 'abracadabra' if x not in 'abc'*/
@@ -432,11 +432,11 @@ namespace Compilador.parser.Collete
 
             DICT_COMPREHENSION.Rule = EXPRESSION + colon + EXPRESSION + COMP_FOR; //CORR
 
-            EXPRESSION_LIST.Rule = EXPRESSION_LIST_COMMA + comma //CORR
-                                | EXPRESSION_LIST_COMMA;
+            EXPRESSION_LIST.Rule =/* EXPRESSION_LIST_COMMA + comma //CORR
+                                |*/ EXPRESSION_LIST_COMMA;
 
-            EXPRESSION_LIST_COMMA.Rule = EXPRESSION_LIST_COMMA + comma + EXPRESSION
-                                        |EXPRESSION; //CORR
+            EXPRESSION_LIST_COMMA.Rule = /*EXPRESSION_LIST_COMMA + comma + EXPRESSION
+                                        |*/EXPRESSION; //CORR
 
             STARRED_LIST.Rule = STARRED_LIST_COMMA + comma //CORR
                             | STARRED_LIST_COMMA;
@@ -446,7 +446,7 @@ namespace Compilador.parser.Collete
             STARRED_EXPRESSION.Rule = EXPRESSION | STARRED_LIST; //CORR
 
             STARRED_ITEM.Rule = EXPRESSION //CORR
-                               | por + OR_EXPR;
+                               /*| por + OR_EXPR*/;
 
             //GENERATOR_EXPRESSION.Rule = leftPar + EXPRESSION + COMP_FOR + rightPar;
 
