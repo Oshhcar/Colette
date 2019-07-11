@@ -89,6 +89,8 @@
     <Compile Include="parser\3d\ast\instrucion\SaltoCond.cs" />
     <Compile Include="parser\3d\ast\NodoAST.cs" />
     <Compile Include="parser\3d\Gramatica.cs" />
+    <Compile Include="parser\3d\Optimizado.cs" />
+    <Compile Include="parser\3d\Optimizador.cs" />
     <Compile Include="parser\Colette\AnalizadorColette.cs" />
     <Compile Include="parser\Colette\ast\Arbol.cs" />
     <Compile Include="parser\Colette\ast\entorno\Ent.cs" />

@@ -49,6 +49,8 @@ namespace Compilador.parser.Colette.ast.instruccion
                     {
                         idObjetivo = (Identificador)obj;
                         idObjetivo.Acceso = false;
+                        idObjetivo.IsDeclaracion = isDeclaracion;
+
                         if (!Tipo.IsIndefinido())
                             idObjetivo.GetLocal = true;
                         rsObj = idObjetivo.GetC3D(e, funcion, ciclo, isObjeto, errores);

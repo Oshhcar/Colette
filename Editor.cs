@@ -40,7 +40,6 @@ namespace Compilador
             AbrirArchivo();
         }
 
-
         private void GuardarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GuardarArchivo();
@@ -99,6 +98,16 @@ namespace Compilador
         private void TraducirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TraducirColette();
+        }
+
+        private void OptimizarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Optimizar3D();
+        }
+
+        private void EjecutarOptimizadoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Ejecutar3DOptimizado();
         }
 
         private void NuevoArchivo()
@@ -568,6 +577,7 @@ namespace Compilador
                             LinkedList<Error> errores = new LinkedList<Error>();
                             string c3d = arbol.GenerarC3D(errores);
                             ctb3D.Text = c3d;
+                            tControl.SelectedTab = sPage3d;
 
                             if (errores.Count() > 0)
                             {
@@ -612,6 +622,89 @@ namespace Compilador
                     if (analizador.AnalizarEntrada(entrada))
                     {
                         MessageBox.Show("Archivo sin errores.");
+                        ReporteErrores(analizador.Raiz);
+                        tabSalida.SelectedTab = pageSalida;
+                        AST ast = (AST)analizador.GenerarAST(analizador.Raiz.Root);
+                        ast.ejecutar(this.txtOutput);
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("El archivo tiene errores.");
+                        tabSalida.SelectedTab = pageErrores;
+                        ReporteErrores(analizador.Raiz);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No ha traducido un archivo colette.", "Error");
+            }
+        }
+
+        private void Optimizar3D()
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                TabControl tControl = (TabControl)sPage.Controls[2];
+
+                TabPage sPage3d = tControl.TabPages[0];
+                FastColoredTextBox ctb3D = (FastColoredTextBox)sPage3d.Controls[0];
+
+                TabPage sPage3dOptimizar = tControl.TabPages[1];
+                FastColoredTextBox ctb3DOptimizar = (FastColoredTextBox)sPage3dOptimizar.Controls[0];
+
+                if (!ctb3D.Text.Equals(string.Empty))
+                {
+                    gridOptimizador.Rows.Clear();
+
+                    Optimizador optimizador = new Optimizador(ctb3D.Text);
+
+                    if (optimizarTodo.Checked)
+                    {
+                        optimizador.OptimizarTodo = true;
+                    }
+
+                    ctb3DOptimizar.Text = optimizador.Optimizar();
+                    tControl.SelectedTab = sPage3dOptimizar;
+                    tabSalida.SelectedTab = pageOptimizacion;
+
+                    foreach (Optimizado opt in optimizador.Optimizado)
+                    {
+                        gridOptimizador.Rows.Add(opt.Ocurrencia, opt.Codigo, opt.Regla);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No ha traducido un archivo colette.", "Error");
+            }
+        }
+
+        private void Ejecutar3DOptimizado()
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                TabControl tControl = (TabControl)sPage.Controls[2];
+
+                TabPage sPage3d = tControl.TabPages[0];
+                FastColoredTextBox ctb3D = (FastColoredTextBox)sPage3d.Controls[0];
+
+                TabPage sPage3dOptimizar = tControl.TabPages[1];
+                FastColoredTextBox ctb3DOptimizar = (FastColoredTextBox)sPage3dOptimizar.Controls[0];
+
+                if (!ctb3DOptimizar.Text.Equals(string.Empty))
+                {
+                    Analizador analizador = new Analizador();
+                    string entrada = ctb3DOptimizar.Text;//.Replace("\\", "\\\\");
+
+                    txtOutput.Clear();
+
+                    if (analizador.AnalizarEntrada(entrada))
+                    {
+                        //MessageBox.Show("Archivo sin errores.");
                         ReporteErrores(analizador.Raiz);
                         tabSalida.SelectedTab = pageSalida;
                         AST ast = (AST)analizador.GenerarAST(analizador.Raiz.Root);
@@ -760,6 +853,5 @@ namespace Compilador
 
             return nodoString;
         }
-
     }
 }

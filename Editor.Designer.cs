@@ -51,8 +51,11 @@
             this.coletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.traducirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.graficarASTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.grafoDependenciasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.c3DToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ejecutarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optimizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ejecutarOptimizadoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.traducirToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,17 +70,22 @@
             this.pageSalida = new System.Windows.Forms.TabPage();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.tabSalida = new System.Windows.Forms.TabControl();
+            this.pageOptimizacion = new System.Windows.Forms.TabPage();
+            this.gridOptimizador = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lbLinea = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.ejecutarOptimizadoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optimizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.grafoDependenciasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optimizarTodo = new System.Windows.Forms.CheckBox();
             this.menuPrincipal.SuspendLayout();
             this.pageErrores.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridErrors)).BeginInit();
             this.pageSalida.SuspendLayout();
             this.tabSalida.SuspendLayout();
+            this.pageOptimizacion.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridOptimizador)).BeginInit();
             this.SuspendLayout();
             // 
             // menuPrincipal
@@ -218,16 +226,22 @@
             // traducirToolStripMenuItem
             // 
             this.traducirToolStripMenuItem.Name = "traducirToolStripMenuItem";
-            this.traducirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.traducirToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.traducirToolStripMenuItem.Text = "Traducir";
             this.traducirToolStripMenuItem.Click += new System.EventHandler(this.TraducirToolStripMenuItem_Click);
             // 
             // graficarASTToolStripMenuItem
             // 
             this.graficarASTToolStripMenuItem.Name = "graficarASTToolStripMenuItem";
-            this.graficarASTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.graficarASTToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.graficarASTToolStripMenuItem.Text = "Graficar AST";
             this.graficarASTToolStripMenuItem.Click += new System.EventHandler(this.GraficarASTToolStripMenuItem_Click);
+            // 
+            // grafoDependenciasToolStripMenuItem
+            // 
+            this.grafoDependenciasToolStripMenuItem.Name = "grafoDependenciasToolStripMenuItem";
+            this.grafoDependenciasToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.grafoDependenciasToolStripMenuItem.Text = "Grafo dependencias";
             // 
             // c3DToolStripMenuItem
             // 
@@ -247,6 +261,20 @@
             this.ejecutarToolStripMenuItem.Text = "Ejecutar";
             this.ejecutarToolStripMenuItem.Click += new System.EventHandler(this.EjecutarToolStripMenuItem_Click);
             // 
+            // optimizarToolStripMenuItem
+            // 
+            this.optimizarToolStripMenuItem.Name = "optimizarToolStripMenuItem";
+            this.optimizarToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.optimizarToolStripMenuItem.Text = "Optimizar";
+            this.optimizarToolStripMenuItem.Click += new System.EventHandler(this.OptimizarToolStripMenuItem_Click);
+            // 
+            // ejecutarOptimizadoToolStripMenuItem
+            // 
+            this.ejecutarOptimizadoToolStripMenuItem.Name = "ejecutarOptimizadoToolStripMenuItem";
+            this.ejecutarOptimizadoToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.ejecutarOptimizadoToolStripMenuItem.Text = "Ejecutar Optimizado";
+            this.ejecutarOptimizadoToolStripMenuItem.Click += new System.EventHandler(this.EjecutarOptimizadoToolStripMenuItem_Click);
+            // 
             // traducirToolStripMenuItem1
             // 
             this.traducirToolStripMenuItem1.Name = "traducirToolStripMenuItem1";
@@ -264,7 +292,7 @@
             // acercaDeToolStripMenuItem
             // 
             this.acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
-            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.acercaDeToolStripMenuItem.Text = "Acerca de";
             this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.AcercaDeToolStripMenuItem_Click);
             // 
@@ -403,6 +431,7 @@
             // 
             this.tabSalida.Controls.Add(this.pageSalida);
             this.tabSalida.Controls.Add(this.pageErrores);
+            this.tabSalida.Controls.Add(this.pageOptimizacion);
             this.tabSalida.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tabSalida.Location = new System.Drawing.Point(0, 416);
             this.tabSalida.Name = "tabSalida";
@@ -410,14 +439,66 @@
             this.tabSalida.Size = new System.Drawing.Size(1022, 187);
             this.tabSalida.TabIndex = 23;
             // 
+            // pageOptimizacion
+            // 
+            this.pageOptimizacion.Controls.Add(this.gridOptimizador);
+            this.pageOptimizacion.Location = new System.Drawing.Point(4, 22);
+            this.pageOptimizacion.Name = "pageOptimizacion";
+            this.pageOptimizacion.Padding = new System.Windows.Forms.Padding(3);
+            this.pageOptimizacion.Size = new System.Drawing.Size(1014, 161);
+            this.pageOptimizacion.TabIndex = 5;
+            this.pageOptimizacion.Text = "Optimización 3D";
+            this.pageOptimizacion.UseVisualStyleBackColor = true;
+            // 
+            // gridOptimizador
+            // 
+            this.gridOptimizador.AllowUserToAddRows = false;
+            this.gridOptimizador.AllowUserToDeleteRows = false;
+            this.gridOptimizador.ColumnHeadersHeight = 24;
+            this.gridOptimizador.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.gridOptimizador.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3});
+            this.gridOptimizador.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridOptimizador.Location = new System.Drawing.Point(3, 3);
+            this.gridOptimizador.MultiSelect = false;
+            this.gridOptimizador.Name = "gridOptimizador";
+            this.gridOptimizador.ReadOnly = true;
+            this.gridOptimizador.RowHeadersVisible = false;
+            this.gridOptimizador.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.gridOptimizador.Size = new System.Drawing.Size(1008, 155);
+            this.gridOptimizador.TabIndex = 0;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Columna Ocurrencia";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Width = 200;
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Columna de Código Optimizado";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            this.Column2.Width = 200;
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Número de regla aplicada";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            this.Column3.Width = 200;
+            // 
             // lbLinea
             // 
             this.lbLinea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbLinea.BackColor = System.Drawing.SystemColors.Control;
-            this.lbLinea.Location = new System.Drawing.Point(281, 0);
+            this.lbLinea.Location = new System.Drawing.Point(286, 0);
             this.lbLinea.Name = "lbLinea";
-            this.lbLinea.Size = new System.Drawing.Size(734, 22);
+            this.lbLinea.Size = new System.Drawing.Size(729, 22);
             this.lbLinea.TabIndex = 26;
             this.lbLinea.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
@@ -428,29 +509,23 @@
             this.openFileDialog1.Tag = "collete, txt";
             this.openFileDialog1.Title = "Abrir Archivo";
             // 
-            // ejecutarOptimizadoToolStripMenuItem
+            // optimizarTodo
             // 
-            this.ejecutarOptimizadoToolStripMenuItem.Name = "ejecutarOptimizadoToolStripMenuItem";
-            this.ejecutarOptimizadoToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.ejecutarOptimizadoToolStripMenuItem.Text = "Ejecutar Optimizado";
-            // 
-            // optimizarToolStripMenuItem
-            // 
-            this.optimizarToolStripMenuItem.Name = "optimizarToolStripMenuItem";
-            this.optimizarToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.optimizarToolStripMenuItem.Text = "Optimizar";
-            // 
-            // grafoDependenciasToolStripMenuItem
-            // 
-            this.grafoDependenciasToolStripMenuItem.Name = "grafoDependenciasToolStripMenuItem";
-            this.grafoDependenciasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.grafoDependenciasToolStripMenuItem.Text = "Grafo dependencias";
+            this.optimizarTodo.AutoSize = true;
+            this.optimizarTodo.Checked = true;
+            this.optimizarTodo.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.optimizarTodo.Location = new System.Drawing.Point(265, 1);
+            this.optimizarTodo.Name = "optimizarTodo";
+            this.optimizarTodo.Size = new System.Drawing.Size(15, 14);
+            this.optimizarTodo.TabIndex = 27;
+            this.optimizarTodo.UseVisualStyleBackColor = true;
             // 
             // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1022, 603);
+            this.Controls.Add(this.optimizarTodo);
             this.Controls.Add(this.lbLinea);
             this.Controls.Add(this.tabArchivo);
             this.Controls.Add(this.splitBottom);
@@ -468,6 +543,8 @@
             this.pageSalida.ResumeLayout(false);
             this.pageSalida.PerformLayout();
             this.tabSalida.ResumeLayout(false);
+            this.pageOptimizacion.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridOptimizador)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -514,5 +591,11 @@
         private System.Windows.Forms.ToolStripMenuItem ejecutarOptimizadoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem grafoDependenciasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optimizarToolStripMenuItem;
+        private System.Windows.Forms.TabPage pageOptimizacion;
+        private System.Windows.Forms.DataGridView gridOptimizador;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.CheckBox optimizarTodo;
     }
 }
