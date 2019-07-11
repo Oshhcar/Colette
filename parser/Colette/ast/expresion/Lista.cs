@@ -24,7 +24,7 @@ namespace Compilador.parser.Colette.ast.expresion
 
             result.Valor = NuevoTemporal();
             result.Codigo = result.Valor + " = H;\n";
-            result.Codigo += "H = H + 1;\n";
+            //result.Codigo += "H = H + 1;\n";
 
             if (List != null)
             {
@@ -54,10 +54,10 @@ namespace Compilador.parser.Colette.ast.expresion
                                     string ptr = NuevoTemporal();
                                     result.Codigo += ptr + " = H;\n";
                                     result.Codigo += "H = H + 1;\n";
-                                    if(i != List.Count())
+                                    if (i != List.Count())
                                         result.Codigo += "heap[" + ptr + "] = H;\n";
                                     else
-                                        result.Codigo += "heap[" + ptr + "] = 0;\n";
+                                        result.Codigo += "heap[" + ptr + "] = 0 - 1;\n";
 
                                     i++;
                                     continue;
@@ -73,6 +73,7 @@ namespace Compilador.parser.Colette.ast.expresion
             }
             else
             {
+                result.Codigo += "H = H + 1;\n";
                 result.Codigo += "heap[" + result.Valor + "] = 0 - 1;\n";
             }
             result.Tipo = Tipo;

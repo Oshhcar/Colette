@@ -38,24 +38,24 @@ namespace Compilador.parser.Colette.ast.expresion
                     {
                         if (Posicion.GetTipo().IsInt())
                         {
-                            result.Codigo = rsObjetivo.Codigo;
-                            string ptr = NuevoTemporal();
-                            result.Codigo += ptr + "= heap[" + rsObjetivo.Valor + "];\n";
-
+                            //Codigo de la posicion
                             result.Codigo += rsPosicion.Codigo;
                             string pos = NuevoTemporal();
                             result.Codigo += pos + " = " + rsPosicion.Valor + ";\n";
 
+
+                            result.Codigo += rsObjetivo.Codigo;
+
                             /*Verificar lista vacía -1*/
-                            string ptrValor = NuevoTemporal();
-                            result.Codigo += ptrValor + " = " + ptr + "+ 1;\n";
+                            string ptr = NuevoTemporal();
+                            result.Codigo += ptr + " = " + rsObjetivo.Valor + ";\n";
 
                             result.Valor = NuevoTemporal();
 
                             if (Acceso)
-                                result.Codigo += result.Valor + " = heap[" + ptrValor + "];\n";
+                                result.Codigo += result.Valor + " = heap[" + rsObjetivo.Valor + "];\n";
                             else
-                                result.Valor = "heap[" + ptrValor + "]";
+                                result.Valor = "heap[" + rsObjetivo.Valor + "]";
 
 
                             result.EtiquetaV = NuevaEtiqueta();
@@ -68,12 +68,16 @@ namespace Compilador.parser.Colette.ast.expresion
                             result.Codigo += "if (" + tmpCiclo + " == " + pos + ") goto " + result.EtiquetaV + ";\n";
                             result.Codigo += "goto " + result.EtiquetaF + ";\n";
                             result.Codigo += result.EtiquetaF + ":\n";
-                            result.Codigo += ptrValor + " = " + ptrValor + "+ 2;\n";
+
+                            result.Codigo += ptr + " = " + ptr + " + 1;\n";
+                            result.Codigo += ptr + " = heap[" + ptr + "];\n";
+
+                            result.Codigo += "if (" + ptr + " < 0) goto " + result.EtiquetaV + ";\n";
 
                             if (Acceso)
-                                result.Codigo += result.Valor + " = heap[" + ptrValor + "];\n";
+                                result.Codigo += result.Valor + " = heap[" + ptr + "];\n";
                             else
-                                result.Valor = "heap[" + ptrValor + "]";
+                                result.Valor = "heap[" + ptr + "]";
 
                             result.Codigo += tmpCiclo + " = " + tmpCiclo + " + 1;\n";
                             result.Codigo += "goto " + etqCiclo + ";\n";

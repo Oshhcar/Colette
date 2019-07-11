@@ -101,6 +101,7 @@
     <Compile Include="parser\Colette\ast\expresion\Lista.cs" />
     <Compile Include="parser\Colette\ast\instruccion\AugAsignacion.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Break.cs" />
+    <Compile Include="parser\Colette\ast\instruccion\ciclos\For.cs" />
     <Compile Include="parser\Colette\ast\instruccion\Continue.cs" />
     <Compile Include="parser\Colette\ast\expresion\Expresion.cs" />
     <Compile Include="parser\Colette\ast\expresion\Identificador.cs" />

@@ -186,6 +186,18 @@ namespace Compilador.parser.Collete
                         return new While((Expresion)GenerarArbol(hijos[1]), (Bloque)GenerarArbol(hijos[3]), (Bloque)GenerarArbol(hijos[6]), linea, columna);
 
                     }
+                case "FOR_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 6)
+                    {
+                        return new For((LinkedList<Expresion>)GenerarArbol(hijos[1]), (Expresion)GenerarArbol(hijos[3]), (Bloque)GenerarArbol(hijos[5]), null, linea, columna);
+
+                    }
+                    else
+                    {
+                        return new For((LinkedList<Expresion>)GenerarArbol(hijos[1]), (Expresion)GenerarArbol(hijos[3]), (Bloque)GenerarArbol(hijos[5]), (Bloque)GenerarArbol(hijos[8]), linea, columna);
+                    }
                 case "RETURN_STMT":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
