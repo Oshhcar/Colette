@@ -27,6 +27,11 @@ namespace Compilador.parser.Colette.ast.expresion
             {
                 result.Valor = Valor.ToString();
             }
+            else if (Tipo.IsNone())
+            {
+                result.Valor = NuevoTemporal();
+                result.Codigo += result.Valor + " = 0 - 1;\n";
+            }
             else if (Tipo.IsString())
             {
                 /*
@@ -51,7 +56,7 @@ namespace Compilador.parser.Colette.ast.expresion
                 result.Codigo += result.Valor + " = H;\n";
 
                 foreach (char c in Valor.ToString().Substring(1, Valor.ToString().Length - 2))
-                { 
+                {
                     result.Codigo += "heap[H] = " + (int)c + ";\n";
                     result.Codigo += "H = H + 1;\n";
 
