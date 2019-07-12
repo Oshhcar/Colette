@@ -172,9 +172,8 @@ namespace Compilador.parser.Colette.ast.expresion
             else
             {
                 /*acceso a objetos o atributos*/
-                if (Expresion is Referencia)
+                if (Expresion is Referencia refExpresion)
                 {
-                    Referencia refExpresion = (Referencia)Expresion;
                     refExpresion.Acceso = false;
 
                     Result rsExpresion = refExpresion.GetC3D(e, funcion, ciclo, isObjeto, errores);
@@ -183,131 +182,211 @@ namespace Compilador.parser.Colette.ast.expresion
                     {
                         if (refExpresion.Simbolo != null)
                         {
-                            Sim clase = e.GetClase(refExpresion.Simbolo.Tipo.Objeto);
-
-                            if (clase != null)
+                            switch (refExpresion.Id)
                             {
-                                //PrintTabla t = new PrintTabla(0, 0);
-                                //t.GetC3D(clase.Entorno, false, false, false, errores);
-
-                                string firma;
-                                firma = refExpresion.Id;
-
-                                if (Parametros != null)
-                                {
-                                    /*con parametros*/
-                                    LinkedList<Result> rsParametros = new LinkedList<Result>();
-                                    foreach (Expresion parametro in Parametros)
+                                case "append":
+                                    if (Parametros != null)
                                     {
-                                        Result rsParametro = parametro.GetC3D(e, funcion, ciclo, isObjeto, errores);
-                                        if (rsParametro != null)
+                                        if (Parametros.Count() > 0)
                                         {
-                                            if (!parametro.GetTipo().IsIndefinido())
+                                            if (refExpresion.Simbolo.Tipo.IsList())
                                             {
-                                                rsParametros.AddLast(rsParametro);
-                                                firma += "_" + parametro.GetTipo().ToString();
-                                                continue;
+                                                Expresion valor = Parametros.ElementAt(0);
+                                                Result rsValor = valor.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                                                if (rsValor != null)
+                                                {
+                                                    if (!valor.GetTipo().IsIndefinido())
+                                                    {
+                                                        if (valor.GetTipo().Tip == refExpresion.Simbolo.Tipo.SubTip)
+                                                        {
+                                                            result.Codigo = rsValor.Codigo;
+
+                                                            string ptrStack = NuevoTemporal();
+                                                            result.Codigo += ptrStack + " = P + " + refExpresion.Simbolo.Pos + ";\n";
+
+                                                            string ptrHeap = NuevoTemporal();
+                                                            result.Codigo += ptrHeap + " = stack[" + ptrStack + "];\n";
+
+                                                            string ptr = NuevoTemporal();
+                                                            result.Codigo += ptr + " = stack[" + ptrStack + "];\n";
+
+                                                            result.EtiquetaF = NuevaEtiqueta();
+                                                            result.EtiquetaV = NuevaEtiqueta();
+                                                            string etqCiclo = NuevaEtiqueta();
+
+                                                            result.Valor = NuevoTemporal();
+                                                            result.Codigo += result.Valor + " = heap[" + ptr + "];\n";
+
+                                                            result.Codigo += etqCiclo + ":\n";
+                                                            result.Codigo += "ifFalse (" + ptr + " >= 0 ) goto " + result.EtiquetaF + ";\n";
+                                                            result.Codigo += "goto " + result.EtiquetaV + ";\n";
+                                                            result.Codigo += result.EtiquetaV + ":\n";
+
+                                                            result.Codigo += result.Valor + " = heap[" + ptr + "];\n";
+                                                            result.Codigo += ptrHeap + " = " + ptr + " + 1;\n";
+                                                            result.Codigo += ptr + " = heap[" + ptrHeap + "];\n";
+
+                                                            result.Codigo += "goto " + etqCiclo + ";\n";
+                                                            result.Codigo += result.EtiquetaF + ":\n";
+
+
+                                                            result.Codigo += "heap[" + ptrHeap + "] = H;\n";
+                                                            result.Codigo += "heap[H] = " + rsValor.Valor + ";\n";
+                                                            result.Codigo += "H = H + 1;\n";
+                                                            result.Codigo += "heap[H] = 0 - 1;\n";
+                                                            result.Codigo += "H = H + 1;\n";
+
+                                                        }
+                                                        else
+                                                        {
+                                                            errores.AddLast(new Error("Semántico", "El valor a agregar no es del mismo tipo.", Linea, Columna));
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        errores.AddLast(new Error("Semántico", "Error en valor.", Linea, Columna));
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    errores.AddLast(new Error("Semántico", "Error en valor.", Linea, Columna));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                errores.AddLast(new Error("Semántico", "La variable no es una lista.", Linea, Columna));
                                             }
                                         }
-                                        errores.AddLast(new Error("Semántico", "El parámetro contiene error.", Linea, Columna));
-                                        return null;
                                     }
-
-                                    Sim metodo = clase.Entorno.GetMetodo(firma);
-
-                                    if (metodo != null)
+                                    break;
+                                default:
+                                    Sim clase = e.GetClase(refExpresion.Simbolo.Tipo.Objeto);
+                                    if (clase != null)
                                     {
-                                        Tipo = metodo.Tipo;
+                                        //PrintTabla t = new PrintTabla(0, 0);
+                                        //t.GetC3D(clase.Entorno, false, false, false, errores);
 
-                                        /*Paso de parametro self(h)*/
-                                        string ptrCambioSelf = NuevoTemporal();
-                                        string tmpSelf = NuevoTemporal();
-                                        result.Codigo += ptrCambioSelf + " = P + " + e.Size + ";\n"; //Cambio simulado
-                                        result.Codigo += tmpSelf + " = " + ptrCambioSelf + " + " + 1 + ";\n";
+                                        string firma;
+                                        firma = refExpresion.Id;
 
-                                        string ptrStackSelf = NuevoTemporal();
-                                        string valorSelf = NuevoTemporal();
-                                        result.Codigo += ptrStackSelf + " = P + " + refExpresion.Simbolo.Pos + ";\n";
-                                        result.Codigo += valorSelf + " = stack[" + ptrStackSelf + "];\n";
-                                        result.Codigo += "stack[" + tmpSelf + "] = " + valorSelf + ";\n";
-
-                                        int pos = 2; /*inicia en dos por return y self*/
-                                        foreach (Result rsParametro in rsParametros)
+                                        if (Parametros != null)
                                         {
-                                            string ptrCambio = NuevoTemporal();
-                                            string tmp = NuevoTemporal();
-                                            result.Codigo += ptrCambio + " = P + " + e.Size + ";\n"; //Cambio simulado
-                                            result.Codigo += tmp + " = " + ptrCambio + " + " + pos++ + ";\n";
+                                            /*con parametros*/
+                                            LinkedList<Result> rsParametros = new LinkedList<Result>();
+                                            foreach (Expresion parametro in Parametros)
+                                            {
+                                                Result rsParametro = parametro.GetC3D(e, funcion, ciclo, isObjeto, errores);
+                                                if (rsParametro != null)
+                                                {
+                                                    if (!parametro.GetTipo().IsIndefinido())
+                                                    {
+                                                        rsParametros.AddLast(rsParametro);
+                                                        firma += "_" + parametro.GetTipo().ToString();
+                                                        continue;
+                                                    }
+                                                }
+                                                errores.AddLast(new Error("Semántico", "El parámetro contiene error.", Linea, Columna));
+                                                return null;
+                                            }
 
-                                            result.Codigo += rsParametro.Codigo;
+                                            Sim metodo = clase.Entorno.GetMetodo(firma);
 
-                                            result.Codigo += "stack[" + tmp + "] = " + rsParametro.Valor + ";\n";
-                                        }
+                                            if (metodo != null)
+                                            {
+                                                Tipo = metodo.Tipo;
 
-                                        result.Codigo += "P = P + " + e.Size + ";\n";
-                                        result.Codigo += "call " + firma + ";\n";
+                                                /*Paso de parametro self(h)*/
+                                                string ptrCambioSelf = NuevoTemporal();
+                                                string tmpSelf = NuevoTemporal();
+                                                result.Codigo += ptrCambioSelf + " = P + " + e.Size + ";\n"; //Cambio simulado
+                                                result.Codigo += tmpSelf + " = " + ptrCambioSelf + " + " + 1 + ";\n";
 
-                                        if (ObtenerReturn)/*Si se espera valor*/
-                                        {
-                                            string ptrReturn = NuevoTemporal();
-                                            result.Valor = NuevoTemporal();
+                                                string ptrStackSelf = NuevoTemporal();
+                                                string valorSelf = NuevoTemporal();
+                                                result.Codigo += ptrStackSelf + " = P + " + refExpresion.Simbolo.Pos + ";\n";
+                                                result.Codigo += valorSelf + " = stack[" + ptrStackSelf + "];\n";
+                                                result.Codigo += "stack[" + tmpSelf + "] = " + valorSelf + ";\n";
 
-                                            result.Codigo += ptrReturn + " = P + 0;\n";
-                                            result.Codigo += result.Valor + " = stack[" + ptrReturn + "];\n";
+                                                int pos = 2; /*inicia en dos por return y self*/
+                                                foreach (Result rsParametro in rsParametros)
+                                                {
+                                                    string ptrCambio = NuevoTemporal();
+                                                    string tmp = NuevoTemporal();
+                                                    result.Codigo += ptrCambio + " = P + " + e.Size + ";\n"; //Cambio simulado
+                                                    result.Codigo += tmp + " = " + ptrCambio + " + " + pos++ + ";\n";
 
-                                        }
-                                        result.Codigo += "P = P - " + e.Size + ";\n";
+                                                    result.Codigo += rsParametro.Codigo;
 
-                                    }
-                                    else
-                                    {
-                                        errores.AddLast(new Error("Semántico", "La función: " + refExpresion.Id + " no está declarada.", Linea, Columna));
-                                        return null;
-                                    }
+                                                    result.Codigo += "stack[" + tmp + "] = " + rsParametro.Valor + ";\n";
+                                                }
 
-                                }
-                                else
-                                {
-                                    Sim metodo = clase.Entorno.GetMetodo(firma);
+                                                result.Codigo += "P = P + " + e.Size + ";\n";
+                                                result.Codigo += "call " + firma + ";\n";
 
-                                    if (metodo != null)
-                                    {
-                                        Tipo = metodo.Tipo;
+                                                if (ObtenerReturn)/*Si se espera valor*/
+                                                {
+                                                    string ptrReturn = NuevoTemporal();
+                                                    result.Valor = NuevoTemporal();
 
-                                        /*Paso de parametro self(h)*/
-                                        string ptrCambioSelf = NuevoTemporal();
-                                        string tmpSelf = NuevoTemporal();
-                                        result.Codigo += ptrCambioSelf + " = P + " + e.Size + ";\n"; //Cambio simulado
-                                        result.Codigo += tmpSelf + " = " + ptrCambioSelf + " + " + 1 + ";\n";
+                                                    result.Codigo += ptrReturn + " = P + 0;\n";
+                                                    result.Codigo += result.Valor + " = stack[" + ptrReturn + "];\n";
 
-                                        string ptrStackSelf = NuevoTemporal();
-                                        string valorSelf = NuevoTemporal();
-                                        result.Codigo += ptrStackSelf + " = P + " + refExpresion.Simbolo.Pos + ";\n";
-                                        result.Codigo += valorSelf + " = stack[" + ptrStackSelf + "];\n";
-                                        result.Codigo += "stack[" + tmpSelf + "] = " + valorSelf + ";\n";
+                                                }
+                                                result.Codigo += "P = P - " + e.Size + ";\n";
 
-                                        result.Codigo += "P = P + " + e.Size + ";\n";
-                                        result.Codigo += "call " + firma + ";\n";
-
-                                        if (ObtenerReturn)/*Si se espera valor*/
-                                        {
-                                            string ptrReturn = NuevoTemporal();
-                                            result.Valor = NuevoTemporal();
-
-                                            result.Codigo += ptrReturn + " = P + 0;\n";
-                                            result.Codigo += result.Valor + " = stack[" + ptrReturn + "];\n";
+                                            }
+                                            else
+                                            {
+                                                errores.AddLast(new Error("Semántico", "La función: " + refExpresion.Id + " no está declarada.", Linea, Columna));
+                                                return null;
+                                            }
 
                                         }
+                                        else
+                                        {
+                                            Sim metodo = clase.Entorno.GetMetodo(firma);
 
-                                        result.Codigo += "P = P - " + e.Size + ";\n";
+                                            if (metodo != null)
+                                            {
+                                                Tipo = metodo.Tipo;
+
+                                                /*Paso de parametro self(h)*/
+                                                string ptrCambioSelf = NuevoTemporal();
+                                                string tmpSelf = NuevoTemporal();
+                                                result.Codigo += ptrCambioSelf + " = P + " + e.Size + ";\n"; //Cambio simulado
+                                                result.Codigo += tmpSelf + " = " + ptrCambioSelf + " + " + 1 + ";\n";
+
+                                                string ptrStackSelf = NuevoTemporal();
+                                                string valorSelf = NuevoTemporal();
+                                                result.Codigo += ptrStackSelf + " = P + " + refExpresion.Simbolo.Pos + ";\n";
+                                                result.Codigo += valorSelf + " = stack[" + ptrStackSelf + "];\n";
+                                                result.Codigo += "stack[" + tmpSelf + "] = " + valorSelf + ";\n";
+
+                                                result.Codigo += "P = P + " + e.Size + ";\n";
+                                                result.Codigo += "call " + firma + ";\n";
+
+                                                if (ObtenerReturn)/*Si se espera valor*/
+                                                {
+                                                    string ptrReturn = NuevoTemporal();
+                                                    result.Valor = NuevoTemporal();
+
+                                                    result.Codigo += ptrReturn + " = P + 0;\n";
+                                                    result.Codigo += result.Valor + " = stack[" + ptrReturn + "];\n";
+
+                                                }
+
+                                                result.Codigo += "P = P - " + e.Size + ";\n";
+                                            }
+                                            else
+                                            {
+                                                errores.AddLast(new Error("Semántico", "La función: " + refExpresion.Id + " no está declarada.", Linea, Columna));
+                                                return null;
+                                            }
+                                        }
                                     }
-                                    else
-                                    {
-                                        errores.AddLast(new Error("Semántico", "La función: " + refExpresion.Id + " no está declarada.", Linea, Columna));
-                                        return null;
-                                    }
-                                }
-                            }
+                                    break;
+                            }      
                         }
                     }
 
