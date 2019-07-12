@@ -490,6 +490,207 @@ namespace Compilador.parser.Colette.ast.expresion
                             errores.AddLast(new Error("Semántico", "La funcion len necesita argumentos.", Linea, Columna));
                         }
                         break;
+                    case "range":
+                        if (Parametros != null)
+                        {
+                            if (Parametros.Count() > 0)
+                            {
+                                if (Parametros.Count() == 1)
+                                {
+                                    Expresion valor = Parametros.ElementAt(0);
+                                    Result rsValor = valor.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                                    if (rsValor != null)
+                                    {
+                                        if (valor.GetTipo().IsInt())
+                                        {
+                                            result.Codigo += rsValor.Codigo;
+
+                                            result.Valor = NuevoTemporal();
+                                            result.Codigo += result.Valor + " = H;\n";
+
+                                            string contador = NuevoTemporal();
+
+                                            result.EtiquetaV = NuevaEtiqueta();
+                                            result.EtiquetaF = NuevaEtiqueta();
+                                            string etqCiclo = NuevaEtiqueta();
+
+                                            string tmp = NuevoTemporal();
+                                            string ptr = NuevoTemporal();
+
+                                            result.Codigo += contador + " = 0;\n";
+
+                                            result.Codigo += "ifFalse (" + rsValor.Valor + " <= 0) goto " + etqCiclo + ";\n";
+                                            result.Codigo += "heap[" + result.Valor + "] = 0;\n";
+                                            result.Codigo += "H = H + 1;\n";
+                                            result.Codigo += ptr + " = H;\n";
+                                            result.Codigo += "H = H + 1;\n";
+
+                                            result.Codigo += "goto " + result.EtiquetaV + ";\n";
+
+                                            result.Codigo += etqCiclo + ":\n";
+                                            result.Codigo += "if (" + contador + " == " + rsValor.Valor + ") goto " + result.EtiquetaV + ";\n";
+                                            result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                            result.Codigo += result.EtiquetaF + ":\n";
+
+                                            result.Codigo += tmp + " = H;\n";
+                                            result.Codigo += "H = H + 1;\n";
+                                            result.Codigo += "heap[" + tmp + "] = " + contador + ";\n";
+
+                                            result.Codigo += ptr + " = H;\n";
+                                            result.Codigo += "H = H + 1;\n";
+                                            result.Codigo += "heap[" + ptr + "] = H;\n";
+
+                                            result.Codigo += contador + " = " + contador + " + 1;\n";
+                                            result.Codigo += "goto " + etqCiclo + ";\n";
+                                            result.Codigo += result.EtiquetaV + ":\n";
+
+                                            result.Codigo += ptr + " = H - 1;\n";
+                                            result.Codigo += "heap[" + ptr + "] = 0 - 1;\n";
+
+
+                                            Tipo.Tip = Tipo.Type.LIST;
+                                            Tipo.SubTip = Tipo.Type.INT;
+                                        }
+                                        else
+                                        {
+                                            errores.AddLast(new Error("Semántico", "El argumento debe ser entero.", Linea, Columna));
+                                        }
+                                    }
+                                }
+                                else if (Parametros.Count() == 2)
+                                {
+                                    Expresion valor = Parametros.ElementAt(0);
+                                    Result rsValor = valor.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                                    Expresion valor2 = Parametros.ElementAt(1);
+                                    Result rsValor2 = valor2.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                                    if (rsValor != null && rsValor2 != null)
+                                    {
+                                        if (valor.GetTipo().IsInt() && valor2.GetTipo().IsInt())
+                                        {
+                                            result.Codigo = rsValor.Codigo;
+                                            result.Codigo += rsValor2.Codigo;
+
+                                            result.Valor = NuevoTemporal();
+                                            result.Codigo += result.Valor + " = H;\n";
+
+                                            string contador = NuevoTemporal();
+
+                                            result.EtiquetaV = NuevaEtiqueta();
+                                            result.EtiquetaF = NuevaEtiqueta();
+                                            string etqCiclo = NuevaEtiqueta();
+
+                                            string tmp = NuevoTemporal();
+                                            string ptr = NuevoTemporal();
+
+                                            result.Codigo += contador + " = " + rsValor.Valor + ";\n";
+
+                                            result.Codigo += etqCiclo + ":\n";
+                                            result.Codigo += "if (" + contador + " == " + rsValor2.Valor + ") goto " + result.EtiquetaV + ";\n";
+                                            result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                            result.Codigo += result.EtiquetaF + ":\n";
+
+                                            result.Codigo += tmp + " = H;\n";
+                                            result.Codigo += "H = H + 1;\n";
+                                            result.Codigo += "heap[" + tmp + "] = " + contador + ";\n";
+
+                                            result.Codigo += ptr + " = H;\n";
+                                            result.Codigo += "H = H + 1;\n";
+                                            result.Codigo += "heap[" + ptr + "] = H;\n";
+
+                                            result.Codigo += contador + " = " + contador + " + 1;\n";
+                                            result.Codigo += "goto " + etqCiclo + ";\n";
+                                            result.Codigo += result.EtiquetaV + ":\n";
+
+                                            result.Codigo += ptr + " = H - 1;\n";
+                                            result.Codigo += "heap[" + ptr + "] = 0 - 1;\n";
+
+
+                                            Tipo.Tip = Tipo.Type.LIST;
+                                            Tipo.SubTip = Tipo.Type.INT;
+                                        }
+                                        else
+                                        {
+                                            errores.AddLast(new Error("Semántico", "El argumento debe ser entero.", Linea, Columna));
+                                        }
+                                    }
+                                }
+                                else if (Parametros.Count() == 3)
+                                {
+                                    Expresion valor = Parametros.ElementAt(0);
+                                    Result rsValor = valor.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                                    Expresion valor2 = Parametros.ElementAt(1);
+                                    Result rsValor2 = valor2.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                                    Expresion valor3 = Parametros.ElementAt(2);
+                                    Result rsValor3 = valor3.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                                    if (rsValor != null && rsValor2 != null && rsValor3 != null)
+                                    {
+                                        if (valor.GetTipo().IsInt() && valor2.GetTipo().IsInt() && valor3.GetTipo().IsInt())
+                                        {
+                                            result.Codigo = rsValor.Codigo;
+                                            result.Codigo += rsValor2.Codigo;
+                                            result.Codigo += rsValor3.Codigo;
+
+                                            result.Valor = NuevoTemporal();
+                                            result.Codigo += result.Valor + " = H;\n";
+
+                                            string contador = NuevoTemporal();
+
+                                            result.EtiquetaV = NuevaEtiqueta();
+                                            result.EtiquetaF = NuevaEtiqueta();
+                                            string etqCiclo = NuevaEtiqueta();
+
+                                            string tmp = NuevoTemporal();
+                                            string ptr = NuevoTemporal();
+
+                                            result.Codigo += contador + " = " + rsValor.Valor + ";\n";
+
+                                            result.Codigo += etqCiclo + ":\n";
+                                            result.Codigo += "if (" + contador + " == " + rsValor2.Valor + ") goto " + result.EtiquetaV + ";\n";
+                                            result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                            result.Codigo += result.EtiquetaF + ":\n";
+
+                                            result.Codigo += tmp + " = H;\n";
+                                            result.Codigo += "H = H + 1;\n";
+                                            result.Codigo += "heap[" + tmp + "] = " + contador + ";\n";
+
+                                            result.Codigo += ptr + " = H;\n";
+                                            result.Codigo += "H = H + 1;\n";
+                                            result.Codigo += "heap[" + ptr + "] = H;\n";
+
+                                            result.Codigo += contador + " = " + contador + " + " + rsValor3.Valor + ";\n";
+                                            result.Codigo += "goto " + etqCiclo + ";\n";
+                                            result.Codigo += result.EtiquetaV + ":\n";
+
+                                            result.Codigo += ptr + " = H - 1;\n";
+                                            result.Codigo += "heap[" + ptr + "] = 0 - 1;\n";
+
+
+                                            Tipo.Tip = Tipo.Type.LIST;
+                                            Tipo.SubTip = Tipo.Type.INT;
+                                        }
+                                        else
+                                        {
+                                            errores.AddLast(new Error("Semántico", "El argumento debe ser entero.", Linea, Columna));
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    errores.AddLast(new Error("Semántico", "Error en el argumento.", Linea, Columna));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            errores.AddLast(new Error("Semántico", "La funcion range necesita argumentos.", Linea, Columna));
+                        }
+                        break;
                     default:
                         string firma;
                         firma = Id;

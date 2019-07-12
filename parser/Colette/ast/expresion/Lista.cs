@@ -73,8 +73,10 @@ namespace Compilador.parser.Colette.ast.expresion
             }
             else
             {
+                result.Codigo += "heap[" + result.Valor + "] = 0;\n";
                 result.Codigo += "H = H + 1;\n";
-                result.Codigo += "heap[" + result.Valor + "] = 0 - 1;\n";
+                result.Codigo += "heap[H] = 0 - 1;\n";
+                result.Codigo += "H = H + 1;\n";
             }
             result.Tipo = Tipo;
 
