@@ -31,6 +31,14 @@ namespace Compilador.parser.Colette.ast.expresion
                 int i = 1;
                 foreach (Expresion valor in List)
                 {
+                    string tmp = NuevoTemporal();
+                    result.Codigo += tmp + " = H;\n";
+                    result.Codigo += "H = H + 1;\n";
+
+                    string ptr = NuevoTemporal();
+                    result.Codigo += ptr + " = H;\n";
+                    result.Codigo += "H = H + 1;\n";
+
                     Result rsValor = valor.GetC3D(e, funcion, ciclo, isObjeto, errores);
 
                     if (!valor.GetTipo().IsIndefinido())
@@ -44,21 +52,13 @@ namespace Compilador.parser.Colette.ast.expresion
                             {
                                 if (Tipo.SubTip == valor.GetTipo().Tip)
                                 {
-                                    string tmp = NuevoTemporal();
-                                    result.Codigo += tmp + " = H;\n";
-                                    result.Codigo += "H = H + 1;\n";
                                     result.Codigo += rsValor.Codigo;
                                     result.Codigo += "heap[" + tmp + "] = " + rsValor.Valor + ";\n";
 
-                                    
-                                    string ptr = NuevoTemporal();
-                                    result.Codigo += ptr + " = H;\n";
-                                    result.Codigo += "H = H + 1;\n";
                                     if (i != List.Count())
                                         result.Codigo += "heap[" + ptr + "] = H;\n";
                                     else
                                         result.Codigo += "heap[" + ptr + "] = 0 - 1;\n";
-
                                     i++;
                                     continue;
                                 }
