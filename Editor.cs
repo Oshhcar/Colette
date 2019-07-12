@@ -22,11 +22,12 @@ namespace Compilador
     public partial class Editor : Form
     {
         public int Archivo { get; set; }
-
+        public bool Debugger { get; set; }
         public Editor()
         {
             InitializeComponent();
             Archivo = 0;
+            Debugger = false;
         }
 
         private void NuevoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -97,12 +98,58 @@ namespace Compilador
 
         private void TraducirToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Debugger = false;
             TraducirColette();
         }
 
         private void OptimizarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Optimizar3D();
+        }
+        private void DebuggerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Debugger = true;
+            TraducirColette();
+        }
+
+        private void GrafoDependenciasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tabArchivo.SelectedIndex != -1)
+            {
+                TabPage sPage = tabArchivo.SelectedTab;
+                FastColoredTextBox ctbArchivo = (FastColoredTextBox)sPage.Controls[0];
+
+                TabControl tControl = (TabControl)sPage.Controls[2];
+
+                TabPage sPage3d = tControl.TabPages[0];
+                FastColoredTextBox ctb3D = (FastColoredTextBox)sPage3d.Controls[0];
+
+                if (!ctbArchivo.Text.Equals(string.Empty))
+                {
+                    AnalizadorColette analizador = new AnalizadorColette();
+                    string entrada = ctbArchivo.Text;
+                    ctb3D.Clear();
+                    txtOutput.Clear();
+
+                    if (analizador.AnalizarEntrada(entrada))
+                    {
+                        MessageBox.Show("Archivo sin errores.");
+                        ReporteErrores(analizador.Raiz);
+                        GraficarGrafo(analizador.Raiz.Root);
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("El archivo tiene errores.");
+                        tabSalida.SelectedTab = pageErrores;
+                        ReporteErrores(analizador.Raiz);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No ha abierto un archivo colette.", "Error");
+            }
         }
 
         private void EjecutarOptimizadoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -571,6 +618,8 @@ namespace Compilador
                             arbol.DirActual = Directory.GetParent(archivo) +"\\";
                         }
 
+                        arbol.Debug = Debugger;
+
                         if (arbol != null)
                         {
                             //MessageBox.Show("todo bien");
@@ -853,5 +902,73 @@ namespace Compilador
 
             return nodoString;
         }
+
+        public void GraficarGrafo(ParseTreeNode raiz)
+        {
+            string archivo = "grafo.dot";
+
+            StreamWriter writer = null;
+
+            try
+            {
+                //FileStream stream = new FileStream(archivo, FileMode.OpenOrCreate, FileAccess.Write);
+                //StreamWriter writer = new StreamWriter(stream);
+                writer = new StreamWriter(archivo);
+
+                string grafica = "digraph G {node[shape=box, style=filled, color=blanchedalmond]; edge[color=chocolate3, dir = none];rankdir=UD \n";
+                grafica += GraficarNodo(raiz) + "\n";
+                grafica += "edge[color = red, dir = forward, style = dashed];\n";
+                grafica += GraficarNodoGrafo(raiz) + "\n";
+                grafica += "\n}";
+
+                writer.Write(grafica);
+                writer.Close();
+
+                var command = string.Format("dot -Tpng grafo.dot  -o grafo.png");
+                var procStartInfo = new System.Diagnostics.ProcessStartInfo("cmd", "/C " + command);
+                var proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStartInfo;
+                proc.Start();
+                proc.WaitForExit();
+
+                //var appname = "Microsoft.Photos.exe";
+                // Process.Start(appname, "arbol.jpg");
+                if (proc.ExitCode == 1)
+                {
+                    MessageBox.Show("Error al graficar", "Graphviz");
+                }
+                else
+                {
+                    Process.Start("grafo.png");
+                }
+
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show("Error en graficar! \n" + x);
+            }
+        }
+
+        public string GraficarNodoGrafo(ParseTreeNode raiz)
+        {
+            string nodoString = "";
+            //MessageBox.Show("label = "+raiz.ToString());
+            string label = raiz.ToString().Replace("\"", "\\\""); //caracteres especiales
+
+            nodoString = "nodo" + raiz.GetHashCode() + "[label=\"" + label + " \", fillcolor=\"blanchedalmond\", style =\"filled\", shape=\"box\"]; \n";
+            if (raiz.ChildNodes.Count > 0)
+            {
+                ParseTreeNode[] hijos = raiz.ChildNodes.ToArray();
+                for (int i = 0; i < raiz.ChildNodes.Count; i++)
+                {
+                    nodoString += GraficarNodoGrafo(hijos[i]);
+                    nodoString += "\"nodo" + hijos[i].GetHashCode()+ "\"-> \"nodo" + raiz.GetHashCode() + "\" \n";
+                }
+            }
+
+            return nodoString;
+        }
+
+
     }
 }

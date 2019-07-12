@@ -14,16 +14,18 @@ namespace Compilador.parser.Colette.ast
         public Arbol(LinkedList<Nodo> sentencias)
         {
             Sentencias = sentencias;
+            Debug = false;
         }
 
         public LinkedList<Nodo> Sentencias { get; set; }
         public string DirActual { get; set; }
-
+        public bool Debug { get; set; }
         public String GenerarC3D(LinkedList<Error> errores)
         {
             Nodo.Etiquetas = 0;
             Nodo.Temporales = 0;
             Nodo.H = 0;
+            Nodo.Debug = Debug;
 
             Ent global = new Ent("Global");
 

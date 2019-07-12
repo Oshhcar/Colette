@@ -24,6 +24,9 @@ namespace Compilador.parser.Colette.ast.instruccion.condicionales
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, bool isObjeto, LinkedList<Error> errores)
         {
+            if (!isDeclaracion)
+                Debugger(e, "If");
+
             Result result = new Result();
 
             if (Condicion != null)

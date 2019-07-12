@@ -24,6 +24,8 @@ namespace Compilador.parser.Colette.ast.instruccion
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, bool isObjeto, LinkedList<Error> errores)
         {
+            if(!isDeclaracion)
+                Debugger(e, "Import");
 
             string archivo = DirActual + Direccion.Substring(1, Direccion.Length - 2);
 

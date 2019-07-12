@@ -20,6 +20,8 @@ namespace Compilador.parser.Colette.ast.instruccion
 
         public override Result GetC3D(Ent e, bool funcion, bool ciclo, bool isDeclaracion, bool isObjeto, LinkedList<Error> errores)
         {
+            if(!isDeclaracion)
+                Debugger(e, "Nonlocal");
             Result result = new Result();
 
             return result;
