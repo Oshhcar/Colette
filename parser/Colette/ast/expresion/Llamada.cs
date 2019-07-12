@@ -230,7 +230,6 @@ namespace Compilador.parser.Colette.ast.expresion
                                                             result.Codigo += "goto " + etqCiclo + ";\n";
                                                             result.Codigo += result.EtiquetaF + ":\n";
 
-
                                                             result.Codigo += "heap[" + ptrHeap + "] = H;\n";
                                                             result.Codigo += "heap[H] = " + rsValor.Valor + ";\n";
                                                             result.Codigo += "H = H + 1;\n";
