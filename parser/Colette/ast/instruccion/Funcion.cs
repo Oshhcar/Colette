@@ -66,7 +66,7 @@ namespace Compilador.parser.Colette.ast.instruccion
                     /*Agrego etiqueta salida*/
                     local.EtiquetaSalida = NuevaEtiqueta();
 
-                    result.Codigo += "proc " + firma + "() begin\n";
+                    result.Codigo += "proc " + e.Ambito + "_" + firma + "() begin\n";
                     result.Codigo += Bloque.GetC3D(local, true, false, false, isObjeto, errores).Codigo;
                     result.Codigo += local.EtiquetaSalida + ":\n";
                     result.Codigo += "end\n\n";

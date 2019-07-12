@@ -737,7 +737,7 @@ namespace Compilador.parser.Colette.ast.expresion
                                 }
 
                                 result.Codigo += "P = P + " + e.Size + ";\n";
-                                result.Codigo += "call " + firma + ";\n";
+                                result.Codigo += "call " + metodo.Ambito + "_" + firma + ";\n";
 
                                 if (ObtenerReturn)/*Si se espera valor*/
                                 {
@@ -766,7 +766,7 @@ namespace Compilador.parser.Colette.ast.expresion
                             {
                                 Tipo = metodo.Tipo;
                                 result.Codigo += "P = P + " + e.Size + ";\n";
-                                result.Codigo += "call " + firma + ";\n";
+                                result.Codigo += "call " + metodo.Ambito + "_" + firma + ";\n";
 
                                 if (ObtenerReturn)/*Si se espera valor*/
                                 {
@@ -973,7 +973,7 @@ namespace Compilador.parser.Colette.ast.expresion
                                                 }
 
                                                 result.Codigo += "P = P + " + e.Size + ";\n";
-                                                result.Codigo += "call " + firma + ";\n";
+                                                result.Codigo += "call " + metodo.Ambito + "_" + firma + ";\n";
 
                                                 if (ObtenerReturn)/*Si se espera valor*/
                                                 {
@@ -1015,7 +1015,7 @@ namespace Compilador.parser.Colette.ast.expresion
                                                 result.Codigo += "stack[" + tmpSelf + "] = " + valorSelf + ";\n";
 
                                                 result.Codigo += "P = P + " + e.Size + ";\n";
-                                                result.Codigo += "call " + firma + ";\n";
+                                                result.Codigo += "call " + metodo.Ambito + "_" + firma + ";\n";
 
                                                 if (ObtenerReturn)/*Si se espera valor*/
                                                 {
