@@ -87,6 +87,10 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                                         result.EtiquetaF = NuevaEtiqueta();
                                         result.EtiquetaV = NuevaEtiqueta();
                                         string etqCiclo = NuevaEtiqueta();
+                                        string etqSalida = "";
+
+                                        if (BloqueElse != null)
+                                            etqSalida = NuevaEtiqueta();
 
                                         result.Codigo += etqCiclo + ":\n";
 
@@ -97,10 +101,25 @@ namespace Compilador.parser.Colette.ast.instruccion.ciclos
                                         result.Codigo += ptr + " = " + ptr + " + 1;\n";
                                         result.Codigo += ptr + " = heap[" + ptr + "];\n";
 
-                                        result.Codigo += Bloque.GetC3D(e, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo; //arreglar
+                                        Ent local = new Ent(e.Ambito + "_for", e);
+                                        local.EtiquetaCiclo = etqCiclo;
+
+                                        if (BloqueElse != null)
+                                            local.EtiquetaSalidaCiclo = etqSalida;
+                                        else
+                                            local.EtiquetaSalidaCiclo = result.EtiquetaF;
+
+                                        result.Codigo += Bloque.GetC3D(local, funcion, true, isDeclaracion, isObjeto, errores).Codigo; //arreglar
 
                                         result.Codigo += "goto " + etqCiclo + ";\n";
                                         result.Codigo += result.EtiquetaF + ":\n";
+
+                                        if (BloqueElse != null)
+                                        {
+                                            Ent local2 = new Ent(e.Ambito + "_for", e);
+                                            result.Codigo += BloqueElse.GetC3D(local2, funcion, ciclo, isDeclaracion, isObjeto, errores).Codigo;
+                                            result.Codigo += etqSalida + ":\n";
+                                        }
                                     }
                                     else
                                     {
