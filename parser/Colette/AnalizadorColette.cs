@@ -366,13 +366,13 @@ namespace Compilador.parser.Collete
                         return GenerarArbol(hijos[0]);
                     else
                     {
-                        ParseTreeNode comp_operator = (ParseTreeNode)GenerarArbol(hijos[1]);
-                        linea = comp_operator.Token.Location.Line + 1;
-                        columna = comp_operator.Token.Location.Column + 1;
-                        return new Relacional((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), GetOperador(comp_operator), linea, columna);
+                        Expresion exp = (Expresion)GenerarArbol(hijos[0]);
+                        return new Relacional(exp, (Expresion)GenerarArbol(hijos[2]),(Operador)GenerarArbol(hijos[1]), exp.Linea, exp.Columna);
                     }
                 case "COMP_OPERATOR":
-                    return hijos[0];
+                    if (hijos.Count() == 1)
+                        return GetOperador(hijos[0]);
+                    return Operador.ISNOT;
                 case "OR_EXPR":
                     return GenerarArbol(hijos[0]);
                 case "XOR_EXPR":
@@ -578,6 +578,8 @@ namespace Compilador.parser.Collete
                     return Operador.IGUAL;
                 case "!=":
                     return Operador.DIFERENTE;
+                case "is":
+                    return Operador.IS;
             }
             return Operador.INDEFINIDO;
         }

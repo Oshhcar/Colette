@@ -48,6 +48,8 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
             OR,
             AND,
             NOT,
+            IS,
+            ISNOT,
             INDEFINIDO
         }
     }

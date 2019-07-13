@@ -20,100 +20,107 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
         {
             Result result = new Result();
 
-            Result rsOp1 = Op1.GetC3D(e, funcion, ciclo, isObjeto, errores);
-            Result rsOp2 = Op2.GetC3D(e, funcion, ciclo, isObjeto, errores);
-
-            TipoResultante(Op1.GetTipo(), Op2.GetTipo());
-
-            if (!Tipo.IsIndefinido())
+            if (Op != Operador.IS && Op != Operador.ISNOT)
             {
-                if (!Op1.GetTipo().IsObject() && !Op2.GetTipo().IsObject()) /*si los dos no son objetos*/
+                Result rsOp1 = Op1.GetC3D(e, funcion, ciclo, isObjeto, errores);
+                Result rsOp2 = Op2.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                TipoResultante(Op1.GetTipo(), Op2.GetTipo());
+
+                if (!Tipo.IsIndefinido())
                 {
-                    /*
-                    if (Op == Operador.IGUAL)
+                    if (!Op1.GetTipo().IsObject() && !Op2.GetTipo().IsObject()) /*si los dos no son objetos*/
                     {
-                        if (Op1.GetTipo() != Op2.GetTipo())
+                        /*
+                        if (Op == Operador.IGUAL)
                         {
-                            result.Codigo += rsOp1.Codigo;
-                            result.Codigo += rsOp2.Codigo;
-                            result.Valor = NuevoTemporal();
-                            result.Codigo += result.Valor + " = 0;\n";
-                            return result;
-                        }
-                    }
-
-                    if (Op == Operador.DIFERENTE)
-                    {
-                        if (Op1.GetTipo() != Op2.GetTipo())
-                        {
-                            result.Codigo += rsOp1.Codigo;
-                            result.Codigo += rsOp2.Codigo;
-                            result.Valor = NuevoTemporal();
-                            result.Codigo += result.Valor + " = 1;\n";
-                            return result;
-                        }
-                    }
-                    */
-
-                    if (Op1.GetTipo().IsNumeric() || Op1.GetTipo().IsString() || Op1.GetTipo().IsBoolean())
-                    {
-                        if (Op2.GetTipo().IsNumeric() || Op2.GetTipo().IsString() || Op2.GetTipo().IsBoolean())
-                        {
-                            result.Codigo += rsOp1.Codigo;
-                            result.Codigo += rsOp2.Codigo;
-
-                            if (Op1.GetTipo().IsString())
-                                ObtenerValor(rsOp1, result);
-                            if (Op2.GetTipo().IsString())
-                                ObtenerValor(rsOp2, result);
-
-                            result.Valor = NuevoTemporal();
-
-                            string op = "";
-                            switch (Op)
+                            if (Op1.GetTipo() != Op2.GetTipo())
                             {
-                                case Operador.MAYORQUE:
-                                    op = ">";
-                                    break;
-                                case Operador.MENORQUE:
-                                    op = "<";
-                                    break;
-                                case Operador.MAYORIGUALQUE:
-                                    op = ">=";
-                                    break;
-                                case Operador.MENORIGUALQUE:
-                                    op = "<=";
-                                    break;
-                                case Operador.IGUAL:
-                                    op = "==";
-                                    break;
-                                case Operador.DIFERENTE:
-                                    op = "!=";
-                                    break;
-                            }
-
-                            result.EtiquetaV = NuevaEtiqueta();
-                            result.EtiquetaF = NuevaEtiqueta();
-
-                            if (!Cortocircuito)
-                            {
-                                result.Codigo += "if (" + rsOp1.Valor + " " + op + " " + rsOp2.Valor + ") goto " + result.EtiquetaV + ";\n";
-                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
-
-                                string etiquetaS = NuevaEtiqueta();
-                                result.Codigo += result.EtiquetaV + ":\n";
-                                result.Codigo += result.Valor + " = 1;\n";
-                                result.Codigo += "goto " + etiquetaS + ";\n";
-                                result.Codigo += result.EtiquetaF + ":\n";
+                                result.Codigo += rsOp1.Codigo;
+                                result.Codigo += rsOp2.Codigo;
+                                result.Valor = NuevoTemporal();
                                 result.Codigo += result.Valor + " = 0;\n";
-                                result.Codigo += etiquetaS + ":\n";
+                                return result;
+                            }
+                        }
+
+                        if (Op == Operador.DIFERENTE)
+                        {
+                            if (Op1.GetTipo() != Op2.GetTipo())
+                            {
+                                result.Codigo += rsOp1.Codigo;
+                                result.Codigo += rsOp2.Codigo;
+                                result.Valor = NuevoTemporal();
+                                result.Codigo += result.Valor + " = 1;\n";
+                                return result;
+                            }
+                        }
+                        */
+
+                        if (Op1.GetTipo().IsNumeric() || Op1.GetTipo().IsString() || Op1.GetTipo().IsBoolean())
+                        {
+                            if (Op2.GetTipo().IsNumeric() || Op2.GetTipo().IsString() || Op2.GetTipo().IsBoolean())
+                            {
+                                result.Codigo += rsOp1.Codigo;
+                                result.Codigo += rsOp2.Codigo;
+
+                                if (Op1.GetTipo().IsString())
+                                    ObtenerValor(rsOp1, result);
+                                if (Op2.GetTipo().IsString())
+                                    ObtenerValor(rsOp2, result);
+
+                                result.Valor = NuevoTemporal();
+
+                                string op = "";
+                                switch (Op)
+                                {
+                                    case Operador.MAYORQUE:
+                                        op = ">";
+                                        break;
+                                    case Operador.MENORQUE:
+                                        op = "<";
+                                        break;
+                                    case Operador.MAYORIGUALQUE:
+                                        op = ">=";
+                                        break;
+                                    case Operador.MENORIGUALQUE:
+                                        op = "<=";
+                                        break;
+                                    case Operador.IGUAL:
+                                        op = "==";
+                                        break;
+                                    case Operador.DIFERENTE:
+                                        op = "!=";
+                                        break;
+                                }
+
+                                result.EtiquetaV = NuevaEtiqueta();
+                                result.EtiquetaF = NuevaEtiqueta();
+
+                                if (!Cortocircuito)
+                                {
+                                    result.Codigo += "if (" + rsOp1.Valor + " " + op + " " + rsOp2.Valor + ") goto " + result.EtiquetaV + ";\n";
+                                    result.Codigo += "goto " + result.EtiquetaF + ";\n";
+
+                                    string etiquetaS = NuevaEtiqueta();
+                                    result.Codigo += result.EtiquetaV + ":\n";
+                                    result.Codigo += result.Valor + " = 1;\n";
+                                    result.Codigo += "goto " + etiquetaS + ";\n";
+                                    result.Codigo += result.EtiquetaF + ":\n";
+                                    result.Codigo += result.Valor + " = 0;\n";
+                                    result.Codigo += etiquetaS + ":\n";
+                                }
+                                else
+                                {
+                                    result.Codigo += "ifFalse (" + rsOp1.Valor + " " + op + " " + rsOp2.Valor + ") goto " + result.EtiquetaV + ";\n";
+                                    result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                    result.EtiquetaV += ":\n";
+                                    result.EtiquetaF += ":\n";
+                                }
                             }
                             else
                             {
-                                result.Codigo += "ifFalse (" + rsOp1.Valor + " " + op + " " + rsOp2.Valor + ") goto " + result.EtiquetaV + ";\n";
-                                result.Codigo += "goto " + result.EtiquetaF + ";\n";
-                                result.EtiquetaV += ":\n";
-                                result.EtiquetaF += ":\n";
+                                errores.AddLast(new Error("Semántico", "Error de tipos en operación relacional.", Linea, Columna));
                             }
                         }
                         else
@@ -123,50 +130,94 @@ namespace Compilador.parser.Colette.ast.expresion.operacion
                     }
                     else
                     {
-                        errores.AddLast(new Error("Semántico", "Error de tipos en operación relacional.", Linea, Columna));
-                    }
-                }
-                else
-                {
-                    if (Op == Operador.IGUAL || Op == Operador.DIFERENTE) /*con objetos solo se puede == !=*/
-                    {
-                        result.Codigo += rsOp1.Codigo;
-                        result.Codigo += rsOp2.Codigo;
-                        result.Valor = NuevoTemporal();
-
-                        if (Op == Operador.IGUAL)
+                        if (Op == Operador.IGUAL || Op == Operador.DIFERENTE) /*con objetos solo se puede == !=*/
                         {
-                            if (Op1.GetTipo().Tip == Op2.GetTipo().Tip)
+                            result.Codigo += rsOp1.Codigo;
+                            result.Codigo += rsOp2.Codigo;
+                            result.Valor = NuevoTemporal();
+
+                            if (Op == Operador.IGUAL)
                             {
-                                /*comparar objetos*/
+                                if (Op1.GetTipo().Tip == Op2.GetTipo().Tip)
+                                {
+                                    /*comparar objetos*/
+                                }
+                                else
+                                {
+                                    result.Codigo += result.Valor + " = 0;\n";
+                                }
                             }
                             else
                             {
-                                result.Codigo += result.Valor + " = 0;\n";
+                                if (Op1.GetTipo().Tip == Op2.GetTipo().Tip)
+                                {
+                                    /*comparar objetos*/
+                                }
+                                else
+                                {
+                                    result.Codigo += result.Valor + " = 1;\n";
+                                }
                             }
                         }
                         else
                         {
-                            if (Op1.GetTipo().Tip == Op2.GetTipo().Tip)
-                            {
-                                /*comparar objetos*/
-                            }
-                            else
-                            {
-                                result.Codigo += result.Valor + " = 1;\n";
-                            }
+                            errores.AddLast(new Error("Semántico", "Error de tipos en operación relacional.", Linea, Columna));
                         }
                     }
-                    else
-                    {
-                        errores.AddLast(new Error("Semántico", "Error de tipos en operación relacional.", Linea, Columna));
-                    }
+                }
+                else
+                {
+                    errores.AddLast(new Error("Semántico", "Error de tipos en operación relacional.", Linea, Columna));
                 }
             }
             else
             {
+                if (Op1 is Identificador objeto)
+                {
+                    if (Op2 is Identificador c)
+                    {
+                        Sim sim = e.GetGlobal(objeto.Id);
+                        if (sim != null)
+                        {
+                            if (sim.Tipo.IsObject())
+                            {
+                                Sim clase = e.GetClase(c.Id);
+                                if (clase != null)
+                                {
+                                    Tipo.Tip = Tipo.Type.BOOLEAN;
+
+                                    if (sim.Tipo.Objeto.Equals(c.Id))
+                                    {
+                                        if(Op == Operador.IS)
+                                            result.Valor = "1";
+                                        else
+                                            result.Valor = "0";
+                                    }
+                                    else
+                                    {
+                                        if(Op == Operador.IS)
+                                            result.Valor = "0";
+                                        else
+                                            result.Valor = "1";
+                                    }
+
+                                    result.EtiquetaV = NuevaEtiqueta();
+                                    result.EtiquetaF = NuevaEtiqueta();
+
+                                    result.Codigo += "ifFalse (" + result.Valor + " == 1) goto " + result.EtiquetaV + ";\n";
+                                    result.Codigo += "goto " + result.EtiquetaF + ";\n";
+                                    result.EtiquetaV += ":\n";
+                                    result.EtiquetaF += ":\n";
+
+                                    return result;
+                                }
+                            }
+                        }
+                    }
+                }
                 errores.AddLast(new Error("Semántico", "Error de tipos en operación relacional.", Linea, Columna));
             }
+            
             return result;
         }
 
