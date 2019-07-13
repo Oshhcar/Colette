@@ -888,6 +888,7 @@ namespace Compilador.parser.Colette.ast.expresion
                                                             result.Codigo += "heap[H] = 0 - 1;\n";
                                                             result.Codigo += "H = H + 1;\n";
 
+                                                            Tipo = valor.GetTipo();
                                                         }
                                                         else
                                                         {
@@ -908,6 +909,226 @@ namespace Compilador.parser.Colette.ast.expresion
                                             {
                                                 errores.AddLast(new Error("Semántico", "La variable no es una lista.", Linea, Columna));
                                             }
+                                        }
+                                    }
+                                    break;
+                                case "insert":
+                                    if (Parametros != null)
+                                    {
+                                        if (Parametros.Count() >= 2)
+                                        {
+                                            if (refExpresion.Simbolo.Tipo.IsList())
+                                            {
+                                                Expresion posicion = Parametros.ElementAt(0);
+                                                Result rsPosicion = posicion.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                                                Expresion valor = Parametros.ElementAt(1);
+                                                Result rsValor = valor.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                                                if (rsPosicion != null && rsValor != null)
+                                                {
+                                                    if (posicion.GetTipo().IsInt())
+                                                    {
+                                                        if (valor.GetTipo().Tip == refExpresion.Simbolo.Tipo.SubTip)
+                                                        {
+                                                            result.Codigo = rsPosicion.Codigo;
+                                                            result.Codigo += rsValor.Codigo;
+
+                                                            string ptrStack = NuevoTemporal();
+                                                            result.Codigo += ptrStack + " = P + " + refExpresion.Simbolo.Pos + ";\n";
+
+                                                            string ptrHeap = NuevoTemporal();
+                                                            result.Codigo += ptrHeap + " = stack[" + ptrStack + "];\n";
+
+                                                            string ptr = NuevoTemporal();
+                                                            result.Codigo += ptr + " = stack[" + ptrStack + "];\n";
+
+                                                            result.EtiquetaF = NuevaEtiqueta();
+                                                            result.EtiquetaV = NuevaEtiqueta();
+                                                            string etqCiclo = NuevaEtiqueta();
+
+                                                            //result.Valor = NuevoTemporal();
+                                                            //result.Codigo += result.Valor + " = heap[" + ptr + "];\n";
+
+                                                            string tmp = NuevoTemporal();
+                                                            result.Codigo += tmp + " = 0;\n";
+
+                                                            result.Codigo += etqCiclo + ":\n";
+                                                            result.Codigo += "ifFalse (" + ptr + " >= 0 ) goto " + result.EtiquetaF + ";\n";
+                                                            result.Codigo += "goto " + result.EtiquetaV + ";\n";
+                                                            result.Codigo += result.EtiquetaV + ":\n";
+
+                                                            string etqFalso = NuevaEtiqueta();
+                                                            result.Codigo += "ifFalse (" + tmp + " == " + rsPosicion.Valor + ") goto " + etqFalso + ";\n";
+                                                            result.Codigo += "heap[" + ptr + "] = " + rsValor.Valor + ";\n";
+                                                            result.Codigo += "goto " + result.EtiquetaF + ";\n";
+
+                                                            result.Codigo += etqFalso + ":\n";
+                                                            result.Codigo += tmp + " = " + tmp + " + 1;\n";
+
+                                                            //result.Codigo += result.Valor + " = heap[" + ptr + "];\n";
+                                                            result.Codigo += ptrHeap + " = " + ptr + " + 1;\n";
+                                                            result.Codigo += ptr + " = heap[" + ptrHeap + "];\n";
+
+                                                            result.Codigo += "goto " + etqCiclo + ";\n";
+
+                                                            result.Codigo += result.EtiquetaF + ":\n";
+
+                                                            result.Valor = rsValor.Valor;
+                                                        }
+                                                        else
+                                                        {
+                                                            errores.AddLast(new Error("Semántico", "El valor no es del mismo tipo que la lista.", Linea, Columna));
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        errores.AddLast(new Error("Semántico", "La posición debe ser entero.", Linea, Columna));
+
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    errores.AddLast(new Error("Semántico", "Error en los argumentos.", Linea, Columna));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                errores.AddLast(new Error("Semántico", "La variable no es una lista.", Linea, Columna));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            errores.AddLast(new Error("Semántico", "La funcion type necesita 2 argumentos.", Linea, Columna));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        errores.AddLast(new Error("Semántico", "La funcion insert necesita argumentos.", Linea, Columna));
+                                    }
+                                    break;
+                                case "pop":
+                                    if (Parametros != null)
+                                    {
+                                        if (Parametros.Count() >= 1)
+                                        {
+                                            Expresion posicion = Parametros.ElementAt(0);
+                                            Result rsPosicion = posicion.GetC3D(e, funcion, ciclo, isObjeto, errores);
+
+                                            if (rsPosicion != null)
+                                            {
+                                                if (posicion.GetTipo().IsInt())
+                                                {
+                                                    if (refExpresion.Simbolo.Tipo.IsList())
+                                                    {
+                                                        result.Codigo = rsPosicion.Codigo;
+
+                                                        string ptrStack = NuevoTemporal();
+                                                        result.Codigo += ptrStack + " = P + " + refExpresion.Simbolo.Pos + ";\n";
+
+                                                        string ptrHeap = NuevoTemporal();
+                                                        result.Codigo += ptrHeap + " = stack[" + ptrStack + "];\n";
+
+                                                        string ptr = NuevoTemporal();
+                                                        result.Codigo += ptr + " = stack[" + ptrStack + "];\n";
+
+                                                        string ptrAnt = NuevoTemporal();
+                                                        result.Codigo += ptrAnt + " = " + ptr + " + 1;\n";
+                                                        string ptrAct = NuevoTemporal();
+                                                        result.Codigo += ptrAct + " = heap[" + ptrAnt + "];\n";
+
+                                                        result.EtiquetaF = NuevaEtiqueta();
+                                                        result.EtiquetaV = NuevaEtiqueta();
+                                                        string etqCiclo = NuevaEtiqueta();
+
+                                                        result.Valor = NuevoTemporal();
+                                                        result.Codigo += result.Valor + " = heap[" + ptr + "];\n";
+
+                                                        string contador = NuevoTemporal();
+                                                        result.Codigo += contador + " = 0;\n";
+
+                                                        result.Codigo += etqCiclo + ":\n";
+                                                        result.Codigo += "ifFalse (" + ptr + " >= 0 ) goto " + result.EtiquetaF + ";\n";
+                                                        result.Codigo += "goto " + result.EtiquetaV + ";\n";
+                                                        result.Codigo += result.EtiquetaV + ":\n";
+
+                                                        result.Codigo += result.Valor + " = heap[" + ptr + "];\n";
+                                                        result.Codigo += ptrHeap + " = " + ptr + " + 1;\n";
+                                                        result.Codigo += ptr + " = heap[" + ptrHeap + "];\n";
+
+                                                        result.Codigo += ptrAct + " = " + ptr + ";\n";
+                                                        result.Codigo += "if (" + contador + " == " + rsPosicion.Valor + " ) goto " + result.EtiquetaF + ";\n";
+                                                        result.Codigo += ptrAnt + " = " + ptrHeap + ";\n";
+
+                                                        result.Codigo += contador + " = " + contador + " + 1;\n";
+                                                        result.Codigo += "goto " + etqCiclo + ";\n";
+                                                        result.Codigo += result.EtiquetaF + ":\n";
+
+                                                        result.Codigo += "heap[" + ptrAnt + "] = " + ptrAct + ";\n";
+
+                                                        Tipo.Tip = refExpresion.Simbolo.Tipo.SubTip;
+                                                    }
+                                                    else
+                                                    {
+                                                        errores.AddLast(new Error("Semántico", "La variable no es una lista.", Linea, Columna));
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    errores.AddLast(new Error("Semántico", "La posición debe ser entero.", Linea, Columna));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                errores.AddLast(new Error("Semántico", "Error en argumento.", Linea, Columna));
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (refExpresion.Simbolo.Tipo.IsList())
+                                        {
+                                            string ptrStack = NuevoTemporal();
+                                            result.Codigo = ptrStack + " = P + " + refExpresion.Simbolo.Pos + ";\n";
+
+                                            string ptrHeap = NuevoTemporal();
+                                            result.Codigo += ptrHeap + " = stack[" + ptrStack + "];\n";
+
+                                            string ptr = NuevoTemporal();
+                                            result.Codigo += ptr + " = stack[" + ptrStack + "];\n";
+
+                                            string ptrAnt = NuevoTemporal();
+                                            result.Codigo += ptrAnt + " = " + ptr + ";\n";
+
+                                            result.EtiquetaF = NuevaEtiqueta();
+                                            result.EtiquetaV = NuevaEtiqueta();
+                                            string etqCiclo = NuevaEtiqueta();
+
+                                            result.Valor = NuevoTemporal();
+                                            result.Codigo += result.Valor + " = heap[" + ptr + "];\n";
+
+                                            result.Codigo += etqCiclo + ":\n";
+                                            result.Codigo += "ifFalse (" + ptr + " >= 0 ) goto " + result.EtiquetaF + ";\n";
+                                            result.Codigo += "goto " + result.EtiquetaV + ";\n";
+                                            result.Codigo += result.EtiquetaV + ":\n";
+
+                                            result.Codigo += result.Valor + " = heap[" + ptr + "];\n";
+                                            result.Codigo += ptrHeap + " = " + ptr + " + 1;\n";
+                                            result.Codigo += ptr + " = heap[" + ptrHeap + "];\n";
+
+                                            result.Codigo += "ifFalse (" + ptr + " >= 0 ) goto " + result.EtiquetaF + ";\n";
+                                            result.Codigo += ptrAnt + " = " + ptrHeap + ";\n";
+
+                                            result.Codigo += "goto " + etqCiclo + ";\n";
+                                            result.Codigo += result.EtiquetaF + ":\n";
+
+                                            result.Codigo += "heap[" + ptrAnt + "] = 0 - 1;\n";
+
+                                            Tipo.Tip = refExpresion.Simbolo.Tipo.SubTip;
+                                        }
+                                        else
+                                        {
+                                            errores.AddLast(new Error("Semántico", "La variable no es una lista.", Linea, Columna));
                                         }
                                     }
                                     break;
